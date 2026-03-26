@@ -35,6 +35,7 @@ from datetime import datetime, time, timedelta
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import text
+from pydantic import BaseModel
 
 from database import get_db
 from schemas import ImprevistoCreate, ImprevistoOut, ImprevistoResponse, VisitOut
@@ -42,6 +43,21 @@ from schemas import ImprevistoCreate, ImprevistoOut, ImprevistoResponse, VisitOu
 router = APIRouter(prefix="/api/v1/imprevistos", tags=["imprevistos"])
 
 VELOCIDAD_KMH = 40
+
+
+class EvaluarImprevistoRequest(BaseModel):
+    visit_id: int
+    distancia_eina_km: float
+    temps_eina_min: float
+    technician_id: int
+
+
+class EvaluarImprevistoResponse(BaseModel):
+    decisio: str
+    motiu: str
+    score_ia_visita: float
+    penalitzacio_eina: float
+    ruta_actualitzada: list[int] | None = None
 
 
 def travel_min(km: float) -> float:
@@ -255,3 +271,93 @@ def get_imprevistos(
         )
         for row in rows
     ]
+
+
+@router.post("/evaluar", response_model=EvaluarImprevistoResponse)
+def evaluar_imprevisto(
+    payload: EvaluarImprevistoRequest,
+    db: Session = Depends(get_db),
+) -> EvaluarImprevistoResponse:
+    """
+    Decide whether to skip task or go fetch tool, based on visit score and penalty.
+    """
+    row = db.execute(
+        text(
+            """
+            SELECT id, technician_id, visit_type, status, planned_date, COALESCE(score, 0.0) AS score
+            FROM visit
+            WHERE id = :id
+            LIMIT 1
+            """
+        ),
+        {"id": payload.visit_id},
+    ).fetchone()
+    if not row:
+        raise HTTPException(status_code=404, detail=f"Visita {payload.visit_id} no trobada")
+
+    priority_to_score = {
+        "correctivo_critico": 85.0,
+        "correctivo_no_critico": 65.0,
+        "diagnosi": 50.0,
+        "puesta_en_marcha": 35.0,
+        "preventivo": 20.0,
+        "maintenance": 20.0,
+    }
+    score_visita = float(row.score or 0.0)
+    if score_visita <= 0.0:
+        score_visita = priority_to_score.get((row.visit_type or "").lower(), 20.0)
+
+    penalitzacio = (payload.temps_eina_min * 0.6) + (payload.distancia_eina_km * 0.4)
+    decisio = "ves_a_buscar_eina" if score_visita >= penalitzacio else "esquipa"
+
+    ruta_ids = None
+    if decisio == "esquipa":
+        db.execute(
+            text("UPDATE visit SET status = :status WHERE id = :id"),
+            {"status": "blocked", "id": payload.visit_id},
+        )
+
+        day_start = datetime.combine(row.planned_date.date(), time.min)
+        day_end = datetime.combine(row.planned_date.date(), time.max)
+        remaining = db.execute(
+            text(
+                """
+                SELECT id
+                FROM visit
+                WHERE technician_id = :tech_id
+                  AND planned_date >= :day_start
+                  AND planned_date <= :day_end
+                  AND LOWER(status) IN ('pending', 'scheduled', 'in_progress', 'in progress')
+                  AND id <> :blocked_id
+                ORDER BY planned_date ASC
+                """
+            ),
+            {
+                "tech_id": payload.technician_id,
+                "day_start": day_start,
+                "day_end": day_end,
+                "blocked_id": payload.visit_id,
+            },
+        ).fetchall()
+        ruta_ids = [int(r.id) for r in remaining]
+
+    db.commit()
+
+    if decisio == "esquipa":
+        motiu = (
+            f"Score visita ({round(score_visita, 1)}) < penalitzacio eina ({round(penalitzacio, 1)}). "
+            f"Es recomana esquipar."
+        )
+    else:
+        motiu = (
+            f"Score visita ({round(score_visita, 1)}) >= penalitzacio eina ({round(penalitzacio, 1)}). "
+            f"Es recomana anar a buscar eina."
+        )
+
+    return EvaluarImprevistoResponse(
+        decisio=decisio,
+        motiu=motiu,
+        score_ia_visita=round(score_visita, 2),
+        penalitzacio_eina=round(penalitzacio, 2),
+        ruta_actualitzada=ruta_ids,
+    )

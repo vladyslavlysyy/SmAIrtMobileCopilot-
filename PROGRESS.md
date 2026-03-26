@@ -4,52 +4,80 @@ Fecha: 2026-03-26
 
 ## Resumen ejecutivo
 
-El proyecto quedo estabilizado sobre PostgreSQL real y contratos de API alineados con el esquema existente. Se resolvieron errores de consultas antiguas, conflictos de procesos en puerto 8000 y desajustes de nombres de campos entre backend y frontend.
+Se completo la integracion del nuevo flujo de negocio:
+- Admin genera ruta IA y asigna visitas.
+- Movil solo visualiza geometria (sin recalcular orden IA).
+- Imprevistos devuelve decision operativa y puede actualizar ruta del dia.
 
-## Avances clave
+Todo se adapto al esquema real de BD vigente (visit -> assignable_id), evitando romper por supuestos de schema no existentes.
 
-1. Backend alineado con schema real
-- Routers reescritos o ajustados para usar SQL compatible con tablas reales.
-- Eliminados supuestos ORM que no existian en la BD actual.
-- Manejo de rollback en consultas opcionales para evitar transacciones abortadas en cascada.
+## Cambios tecnicos de hoy
 
-2. Endpoints estabilizados
-- /api/v1/metrics devuelve datos consistentes con filtros opcionales.
-- /api/v1/visits acepta parametros opcionales.
-- Nuevo endpoint /api/v1/visits/all para recuperar todas las visitas con filtros opcionales por tecnico y rango de fechas.
+1. Motor IA de rutas
+- Nuevo archivo `backend/optimizer.py`.
+- Feature engineering desde BD real:
+  - priority, visit_type_num, days_waiting, visitas_totales, impacto_cliente, tiempo_llegada, km.
+- Uso de modelo XGBoost si existe `backend/modelo_rutas_fsm_optimizado.json`.
+- Fallback heuristico cuando no hay modelo o no se puede cargar.
+- Refinado con OSMnx cuando esta disponible.
 
-3. Frontend conectado correctamente
-- Normalizacion de campos de metricas para compatibilidad backend/frontend:
-  - completadas -> completades
-  - pendientes -> pendentes
-- Dashboard de metricas mostrando pendientes segun datos reales.
+2. Flujo de visitas manuales
+- `backend/routers/visits.py`
+  - POST `/api/v1/visits/from-contract`
+  - POST `/api/v1/visits/from-incidence`
 
-4. Testing operativo
-- Suite canonica backend: backend/tests/test_all_endpoints.py
-- Resultado de smoke tests: sin fallos en los endpoints actuales.
+3. Flujo Admin de ruta
+- `backend/routers/ruta.py`
+  - POST `/api/v1/ruta/generar`
+  - POST `/api/v1/ruta/assignar`
+  - POST `/api/v1/ruta/geometria`
 
-5. Documentacion operativa
-- README consolidado con:
-  - arranque de Docker, backend y frontend
-  - endpoints clave
-  - pruebas oficiales
-  - troubleshooting de puertos
+4. Flujo de imprevistos
+- `backend/routers/imprevistos.py`
+  - POST `/api/v1/imprevistos/evaluar`
+  - Decision: `ves_a_buscar_eina` o `esquipa`.
+  - Si esquipa: bloquea visita y devuelve ruta actualizada del tecnico ese dia.
 
-## Limpieza realizada
+5. Dependencias
+- `backend/requirements.txt`
+  - xgboost, numpy, pandas anadidos.
 
-- Eliminacion de documentos legacy y redundantes para reducir drift de informacion.
-- Eliminacion de tests antiguos no alineados con el contrato actual.
-- Ignorados artefactos generados en git (__pycache__, *.tsbuildinfo).
+6. Testing
+- `backend/tests/test_all_endpoints.py` ampliado con endpoints nuevos.
+- Smoke test backend ejecutado hoy: `Failures: 0`.
+- Flujo E2E validado (Admin -> Assignar -> Movil): OK.
+
+## Validaciones realizadas
+
+1. Smoke test completo de API
+- Salud, visitas, metricas, reportes, usuarios, rutas e imprevistos: OK.
+
+2. E2E de negocio
+- Crear visita desde contrato: OK.
+- Crear visita desde incidencia: OK.
+- Generar ruta IA: OK.
+- Asignar ruta a tecnico: OK.
+- Geometria movil: OK.
+- Evaluacion de imprevisto: OK.
+
+## Riesgos / notas abiertas
+
+1. Instalacion de `numpy==1.26.4` en algunos entornos Windows puede intentar compilacion local y fallar por toolchain.
+- El sistema no queda bloqueado porque optimizer tiene fallback heuristico.
+- Recomendado: fijar variantes con wheel precompilado para entorno Windows.
+
+2. El mapeo contrato/incidencia -> assignable en la BD actual usa IDs alineados en datos semilla.
+- Si en futuro esos IDs divergen, habra que introducir tabla/columna de relacion explicita.
 
 ## Estado actual
 
-- Backend: operativo y validado por smoke tests.
-- Frontend: funcional para dashboards principales.
-- DB: conectada por Docker en 5432 con consultas activas.
+- Backend: estable y validado.
+- Frontend: operativo para dashboards y consumo de API.
+- BD: conectada y consistente con el flujo implementado.
 
-## Pendientes recomendados
+## Siguientes pasos recomendados
 
-1. Añadir paginacion en /api/v1/visits/all (limit/offset).
-2. Integrar tests con CI para evitar regresiones.
-3. Cerrar deuda de type-check en modulos frontend no usados en flujo principal.
-4. Definir versionado de API para cambios futuros de contrato.
+1. Endurecer install de dependencias en Windows (wheel-first).
+2. Añadir paginacion a `/api/v1/visits/all`.
+3. Integrar smoke tests en CI.
+4. Definir versionado de API para evoluciones de contrato.

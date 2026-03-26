@@ -15,12 +15,39 @@ from datetime import date, datetime, time
 from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import text, func
+from sqlalchemy.exc import OperationalError
+from pydantic import BaseModel
 
 from database import get_db
 from models import Visit, VisitStatus, Technician
 from schemas import VisitOut
 
 router = APIRouter(prefix="/api/v1", tags=["visits"])
+
+
+def _execute_with_retry(db: Session, statement, params: dict | None = None, retries: int = 1):
+    """Retry once when PostgreSQL drops the underlying connection unexpectedly."""
+    last_error = None
+    for _ in range(retries + 1):
+        try:
+            return db.execute(statement, params or {})
+        except OperationalError as exc:
+            last_error = exc
+            db.rollback()
+    raise last_error
+
+
+class CreateFromContractRequest(BaseModel):
+    contract_id: int
+    technician_id: int | None = None
+    visit_type: str = "preventivo"
+    planned_date: str | None = None
+
+
+class CreateFromIncidenceRequest(BaseModel):
+    incidence_id: int
+    technician_id: int | None = None
+    escalate_to: str | None = None  # None|p4|p5
 
 
 def _rows_to_visits(rows) -> list[VisitOut]:
@@ -198,3 +225,189 @@ def get_week_load(
     }).fetchall()
 
     return {str(row.day): row.total for row in rows}
+
+
+@router.post("/visits/from-contract", response_model=VisitOut, status_code=201)
+def create_visit_from_contract(
+    payload: CreateFromContractRequest,
+    db: Session = Depends(get_db),
+) -> VisitOut:
+    """
+    Create a visit from a contract in manual admin flow.
+
+    Note: current schema links visit -> assignable_id, so contract_id is mapped
+    to assignable_id when IDs are aligned in seed/source data.
+    """
+    vt = (payload.visit_type or "preventivo").lower()
+    if vt not in {"preventivo", "puesta_en_marcha"}:
+        raise HTTPException(status_code=422, detail="visit_type ha de ser preventivo o puesta_en_marcha")
+
+    try:
+        contract = _execute_with_retry(
+            db,
+            text("SELECT id FROM contract WHERE id = :id LIMIT 1"),
+            {"id": payload.contract_id},
+        ).fetchone()
+    except OperationalError:
+        raise HTTPException(status_code=503, detail="Base de dades temporalment no disponible")
+
+    if not contract:
+        raise HTTPException(status_code=404, detail=f"Contracte {payload.contract_id} no trobat")
+
+    try:
+        assignable = _execute_with_retry(
+            db,
+            text("SELECT id FROM assignable WHERE id = :id LIMIT 1"),
+            {"id": payload.contract_id},
+        ).fetchone()
+    except OperationalError:
+        raise HTTPException(status_code=503, detail="Base de dades temporalment no disponible")
+
+    if not assignable:
+        raise HTTPException(
+            status_code=422,
+            detail="No existeix assignable associat al contracte (mapping per ID requerit)",
+        )
+
+    try:
+        next_id = _execute_with_retry(
+            db,
+            text("SELECT COALESCE(MAX(id), 0) + 1 AS next_id FROM visit"),
+        ).fetchone().next_id
+    except OperationalError:
+        raise HTTPException(status_code=503, detail="Base de dades temporalment no disponible")
+
+    planned_dt = datetime.strptime(payload.planned_date, "%Y-%m-%dT%H:%M") if payload.planned_date else datetime.utcnow()
+
+    try:
+        _execute_with_retry(
+            db,
+            text(
+                """
+                INSERT INTO visit (id, assignable_id, technician_id, visit_type, status, planned_date, estimated_duration, score)
+                VALUES (:id, :assignable_id, :technician_id, :visit_type, :status, :planned_date, :estimated_duration, :score)
+                """
+            ),
+            {
+                "id": int(next_id),
+                "assignable_id": payload.contract_id,
+                "technician_id": payload.technician_id,
+                "visit_type": vt,
+                "status": "pending",
+                "planned_date": planned_dt,
+                "estimated_duration": 45,
+                "score": None,
+            },
+        )
+        db.commit()
+    except OperationalError:
+        db.rollback()
+        raise HTTPException(status_code=503, detail="Base de dades temporalment no disponible")
+
+    row = _execute_with_retry(
+        db,
+        text(
+            """
+            SELECT
+                v.id,
+                v.assignable_id,
+                v.technician_id,
+                v.visit_type,
+                v.status,
+                v.planned_date,
+                v.estimated_duration,
+                v.score,
+                NULL::integer as route_order,
+                COALESCE(c.latitude, 0.0) as latitude,
+                COALESCE(c.longitude, 0.0) as longitude,
+                COALESCE(c.postal_code, '') as postal_code
+            FROM visit v
+            LEFT JOIN assignable a ON v.assignable_id = a.id
+            LEFT JOIN charger c ON a.charger_id = c.id
+            WHERE v.id = :id
+            """
+        ),
+        {"id": int(next_id)},
+    ).fetchone()
+
+    return _rows_to_visits([row])[0]
+
+
+@router.post("/visits/from-incidence", response_model=VisitOut, status_code=201)
+def create_visit_from_incidence(
+    payload: CreateFromIncidenceRequest,
+    db: Session = Depends(get_db),
+) -> VisitOut:
+    """
+    Create diagnosis visit from incidence, with optional escalation to P4/P5.
+    """
+    incidence = db.execute(
+        text("SELECT id FROM incidence WHERE id = :id LIMIT 1"),
+        {"id": payload.incidence_id},
+    ).fetchone()
+    if not incidence:
+        raise HTTPException(status_code=404, detail=f"Incidencia {payload.incidence_id} no trobada")
+
+    assignable = db.execute(
+        text("SELECT id FROM assignable WHERE id = :id LIMIT 1"),
+        {"id": payload.incidence_id},
+    ).fetchone()
+    if not assignable:
+        raise HTTPException(
+            status_code=422,
+            detail="No existeix assignable associat a la incidència (mapping per ID requerit)",
+        )
+
+    visit_type = "diagnosi"
+    if (payload.escalate_to or "").lower() == "p4":
+        visit_type = "correctivo_no_critico"
+    elif (payload.escalate_to or "").lower() == "p5":
+        visit_type = "correctivo_critico"
+
+    next_id = db.execute(text("SELECT COALESCE(MAX(id), 0) + 1 AS next_id FROM visit")).fetchone().next_id
+    db.execute(
+        text(
+            """
+            INSERT INTO visit (id, assignable_id, technician_id, visit_type, status, planned_date, estimated_duration, score)
+            VALUES (:id, :assignable_id, :technician_id, :visit_type, :status, :planned_date, :estimated_duration, :score)
+            """
+        ),
+        {
+            "id": int(next_id),
+            "assignable_id": payload.incidence_id,
+            "technician_id": payload.technician_id,
+            "visit_type": visit_type,
+            "status": "pending",
+            "planned_date": datetime.utcnow(),
+            "estimated_duration": 45,
+            "score": None,
+        },
+    )
+    db.commit()
+
+    row = db.execute(
+        text(
+            """
+            SELECT
+                v.id,
+                v.assignable_id,
+                v.technician_id,
+                v.visit_type,
+                v.status,
+                v.planned_date,
+                v.estimated_duration,
+                v.score,
+                NULL::integer as route_order,
+                COALESCE(c.latitude, 0.0) as latitude,
+                COALESCE(c.longitude, 0.0) as longitude,
+                COALESCE(c.postal_code, '') as postal_code
+            FROM visit v
+            LEFT JOIN assignable a ON v.assignable_id = a.id
+            LEFT JOIN charger c ON a.charger_id = c.id
+            WHERE v.id = :id
+            """
+        ),
+        {"id": int(next_id)},
+    ).fetchone()
+
+    return _rows_to_visits([row])[0]

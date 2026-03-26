@@ -42,6 +42,14 @@ def run() -> int:
             "/api/v1/visits/week",
             params={"technician_id": 1, "week_start": date.today().isoformat()},
         )),
+        ("POST /api/v1/visits/from-contract", lambda: client.post(
+            "/api/v1/visits/from-contract",
+            json={"contract_id": 1, "technician_id": 1, "visit_type": "preventivo"},
+        )),
+        ("POST /api/v1/visits/from-incidence", lambda: client.post(
+            "/api/v1/visits/from-incidence",
+            json={"incidence_id": 11, "technician_id": 1, "escalate_to": "p4"},
+        )),
         ("GET /api/v1/metrics", lambda: client.get("/api/v1/metrics")),
         ("GET /api/v1/metrics (ranged)", lambda: client.get(
             "/api/v1/metrics",
@@ -56,6 +64,10 @@ def run() -> int:
         ("POST /api/v1/imprevistos", lambda: client.post(
             "/api/v1/imprevistos",
             json={"visit_id": 1, "tipo": "trafico", "descripcion": "smoke test", "tiempo_perdido_min": 5},
+        )),
+        ("POST /api/v1/imprevistos/evaluar", lambda: client.post(
+            "/api/v1/imprevistos/evaluar",
+            json={"visit_id": 1, "distancia_eina_km": 5.0, "temps_eina_min": 20.0, "technician_id": 1},
         )),
         ("GET /api/v1/users", lambda: client.get("/api/v1/users")),
         ("GET /api/v1/users/1", lambda: client.get("/api/v1/users/1")),
@@ -89,6 +101,31 @@ def run() -> int:
                 "ubicacion_actual": {"latitude": 41.1, "longitude": 1.2},
                 "ruta_actual_ids": [1],
                 "nueva_incidencia_id": 1,
+            },
+        )),
+        ("POST /api/v1/ruta/generar", lambda: client.post(
+            "/api/v1/ruta/generar",
+            json={
+                "technician_id": 1,
+                "origen": {"latitude": 41.1, "longitude": 1.2},
+                "target_date": "2026-03-27",
+                "limite_horas": 8,
+            },
+        )),
+        ("POST /api/v1/ruta/assignar", lambda: client.post(
+            "/api/v1/ruta/assignar",
+            json={
+                "technician_id": 1,
+                "visit_ids_ordered": [1, 2],
+                "target_date": "2026-03-27",
+                "hora_inici": "08:00",
+            },
+        )),
+        ("POST /api/v1/ruta/geometria", lambda: client.post(
+            "/api/v1/ruta/geometria",
+            json={
+                "visit_ids": [1, 2],
+                "origen": {"latitude": 41.1, "longitude": 1.2},
             },
         )),
     ]

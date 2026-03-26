@@ -2,23 +2,98 @@
 
 Proyecto full-stack para operaciones de mantenimiento de cargadores electricos.
 
-- Frontend: Next.js (carpeta frontend)
-- Backend: FastAPI (carpeta backend)
-- Base de datos: PostgreSQL (Docker, puerto 5432)
+- Frontend: Next.js (carpeta `frontend`)
+- Backend: FastAPI (carpeta `backend`)
+- BD: PostgreSQL en Docker (puerto 5432)
 
 ## Estado actual
 
-- API backend estable con endpoints de visitas, metricas, reportes, imprevistos, usuarios y ruta.
-- Frontend conectado al backend en tiempo real.
-- Endpoint nuevo para consultar todas las visitas con filtros opcionales:
-  - GET /api/v1/visits/all
+- Flujo Admin -> generar ruta IA -> asignar visitas al tecnico: operativo.
+- Flujo movil -> visualizar ruta (sin recalcular IA): operativo.
+- Flujo de imprevistos -> evaluar esquipa o buscar herramienta: operativo.
+- Suite de smoke test backend: verde (Failures: 0).
 
-## Estructura del proyecto
+## Flujo funcional (resumen)
 
-- frontend: aplicacion web Next.js
-- backend: API FastAPI y logica de negocio
-- README.md: guia operativa consolidada
-- PROGRESS.md: resumen de avances y decisiones tecnicas
+### Flujo 1: Planificacion manual por Admin
+
+1. Admin crea visitas:
+   - desde contrato: `POST /api/v1/visits/from-contract`
+   - desde incidencia: `POST /api/v1/visits/from-incidence`
+2. Admin genera propuesta de ruta IA:
+   - `POST /api/v1/ruta/generar`
+3. Admin revisa/modifica orden si quiere (frontend).
+4. Admin confirma y asigna a tecnico:
+   - `POST /api/v1/ruta/assignar`
+5. Se guarda calendario diario (`technician_id` + `planned_date`).
+
+### Flujo 2: Tecnico movil
+
+1. Lee agenda diaria:
+   - `GET /api/v1/visits?technician_id=...&date=...`
+2. Si necesita dibujar ruta del dia:
+   - `POST /api/v1/ruta/geometria`
+   - Solo genera geometria del orden ya decidido, sin IA.
+
+### Flujo 3: Imprevistos
+
+1. Movil reporta evaluacion de imprevisto:
+   - `POST /api/v1/imprevistos/evaluar`
+2. El backend compara score de la visita vs penalizacion de herramienta.
+3. Devuelve decision:
+   - `ves_a_buscar_eina` o `esquipa`
+4. Si `esquipa`, bloquea visita y retorna ruta actualizada de ese dia.
+
+## Que hace cada archivo clave
+
+### Backend core
+
+- `backend/main.py`
+  - Arranque FastAPI, CORS, registro de routers.
+
+- `backend/models.py`
+  - Modelo ORM alineado al esquema real de la BD actual.
+
+- `backend/schemas.py`
+  - Contratos request/response de la API.
+
+- `backend/database.py`
+  - Conexion y sesion SQLAlchemy.
+
+### Backend dominio
+
+- `backend/optimizer.py`
+  - Motor IA de rutas.
+  - Calcula features desde BD.
+  - Usa XGBoost si existe `backend/modelo_rutas_fsm_optimizado.json`.
+  - Fallback heuristico si no hay modelo o falla carga.
+  - Refina con OSMnx si disponible y genera GeoJSON.
+
+- `backend/routers/visits.py`
+  - Consultas de visitas (`/visits`, `/visits/all`, `/visits/week`).
+  - Creacion manual desde contrato/incidencia.
+
+- `backend/routers/ruta.py`
+  - Ruteo historico (`/ruta/calcular`, `/ruta/asignar-incidencia`).
+  - Nuevo flujo admin (`/ruta/generar`, `/ruta/assignar`, `/ruta/geometria`).
+
+- `backend/routers/imprevistos.py`
+  - Registro y consulta de imprevistos.
+  - Evaluacion de decision operativa (`/imprevistos/evaluar`).
+
+- `backend/routers/metrics.py`
+  - KPIs agregados para dashboard de metricas.
+
+### Testing y docs
+
+- `backend/tests/test_all_endpoints.py`
+  - Smoke test canonico para endpoints activos.
+
+- `README.md`
+  - Guia operativa y de flujos.
+
+- `PROGRESS.md`
+  - Estado de avance tecnico y cambios aplicados.
 
 ## Arranque rapido
 
@@ -31,7 +106,7 @@ docker start awesome_banzai
 docker ps --filter "name=awesome_banzai"
 ```
 
-Si necesitas crearlo:
+Si hay que crearlo:
 
 ```powershell
 docker run -d --name awesome_banzai -p 5432:5432 -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=adminpassword -e POSTGRES_DB=mantenimiento_db ivanmoliinero/postgres-mantenimiento-db:v1
@@ -62,41 +137,31 @@ npm run dev
 
 ## Endpoints clave
 
-### Salud
-
-- GET /health
-
 ### Visitas
 
-- GET /api/v1/visits
-  - Params opcionales: technician_id, date
-  - Si no se envia date, usa el dia actual.
+- `GET /api/v1/visits`
+- `GET /api/v1/visits/all`
+- `GET /api/v1/visits/week`
+- `POST /api/v1/visits/from-contract`
+- `POST /api/v1/visits/from-incidence`
 
-- GET /api/v1/visits/all
-  - Params opcionales: technician_id, date_from, date_to
-  - Devuelve todas las visitas o un subconjunto por filtros.
+### Rutas
 
-- GET /api/v1/visits/week
-  - Params: technician_id, week_start
+- `POST /api/v1/ruta/generar`
+- `POST /api/v1/ruta/assignar`
+- `POST /api/v1/ruta/geometria`
 
-Ejemplos:
+### Imprevistos
 
-```powershell
-Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/v1/visits/all" -UseBasicParsing
-Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/v1/visits/all?technician_id=1" -UseBasicParsing
-Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/v1/visits/all?date_from=2026-03-01&date_to=2026-04-30" -UseBasicParsing
-```
+- `POST /api/v1/imprevistos/evaluar`
 
 ### Metricas
 
-- GET /api/v1/metrics
-  - Params opcionales: date_from, date_to, technician_id
+- `GET /api/v1/metrics`
 
-Nota: si hay pocas o ninguna visita completada, es normal ver km y horas en 0.
+## Pruebas
 
-## Testing oficial (actual)
-
-Suite canónica mantenida:
+Suite oficial actual:
 
 ```powershell
 cd backend
@@ -110,7 +175,13 @@ Esperado:
 Failures: 0
 ```
 
-## Limpieza de procesos (si hay puertos ocupados)
+## Notas de dependencias IA
+
+- El optimizador funciona con y sin modelo.
+- Si existe `backend/modelo_rutas_fsm_optimizado.json`, usa prediccion XGBoost.
+- Si no existe, cae en heuristica y no bloquea el flujo.
+
+## Limpieza de puertos (Windows)
 
 ```powershell
 $ports = 8000,4028
@@ -121,9 +192,3 @@ foreach ($port in $ports) {
   }
 }
 ```
-
-## Notas de mantenimiento
-
-- Se eliminaron tests legacy y documentos duplicados para evitar drift de contrato.
-- La documentacion activa queda centralizada en este README y en PROGRESS.md.
-- Artefactos generados (__pycache__, *.tsbuildinfo) quedan ignorados por git.

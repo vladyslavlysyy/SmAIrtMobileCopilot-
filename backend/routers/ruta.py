@@ -3,6 +3,7 @@
 from datetime import datetime, timedelta
 from functools import lru_cache
 from typing import Any, Union
+from pydantic import BaseModel
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -20,11 +21,31 @@ from schemas import (
     EstadisticasRuta,
     ImpactoSimulacion,
 )
+from optimizer import generar_ruta_ia, generar_geometria_simple
 
 router = APIRouter(prefix="/api/v1/ruta", tags=["ruta"])
 
 LIMITE_JORNADA_MIN = 480
 MAP_PLACE = "Tarragona, Spain"
+
+
+class GenerarRutaAdminRequest(BaseModel):
+    technician_id: int
+    origen: Coordenada
+    target_date: str | None = None  # YYYY-MM-DD
+    limite_horas: float = 8.0
+
+
+class AssignarRutaAdminRequest(BaseModel):
+    technician_id: int
+    visit_ids_ordered: list[int]
+    target_date: str  # YYYY-MM-DD
+    hora_inici: str = "08:00"
+
+
+class GeometriaRutaRequest(BaseModel):
+    visit_ids: list[int]
+    origen: Coordenada | None = None
 
 
 def _require_routing_libs() -> tuple[Any, Any, Any]:
@@ -413,3 +434,93 @@ def asignar_incidencia(
             recomendado=(tiempo_extra <= 30 and distancia_extra <= 10),
         ),
     )
+
+
+@router.post("/generar")
+def generar_ruta_admin(
+    payload: GenerarRutaAdminRequest,
+    db: Session = Depends(get_db),
+):
+    """
+    Admin flow: generate IA route candidates for a technician and date.
+    """
+    target = datetime.strptime(payload.target_date, "%Y-%m-%d").date() if payload.target_date else None
+    return generar_ruta_ia(
+        db=db,
+        technician_id=payload.technician_id,
+        origen_lat=payload.origen.latitude,
+        origen_lon=payload.origen.longitude,
+        target_date=target,
+        limite_horas=payload.limite_horas,
+    )
+
+
+@router.post("/assignar")
+def assignar_ruta_admin(
+    payload: AssignarRutaAdminRequest,
+    db: Session = Depends(get_db),
+):
+    """
+    Admin confirms (or manually edited) route order and assigns schedule to technician.
+    """
+    if not payload.visit_ids_ordered:
+        raise HTTPException(status_code=422, detail="visit_ids_ordered buit")
+
+    target_date = datetime.strptime(payload.target_date, "%Y-%m-%d").date()
+    hh, mm = map(int, payload.hora_inici.split(":"))
+    minutes_cursor = hh * 60 + mm
+
+    existing = _fetch_visits_with_coords(db, payload.visit_ids_ordered)
+    missing = [vid for vid in payload.visit_ids_ordered if vid not in existing]
+    if missing:
+        raise HTTPException(status_code=404, detail=f"Visites no trobades: {missing}")
+
+    for vid in payload.visit_ids_ordered:
+        visit = existing[vid]
+        planned_dt = datetime.combine(target_date, datetime.min.time()) + timedelta(minutes=minutes_cursor)
+        db.execute(
+            text(
+                """
+                UPDATE visit
+                SET technician_id = :tech_id,
+                    planned_date = :planned_date,
+                    status = :status
+                WHERE id = :id
+                """
+            ),
+            {
+                "tech_id": payload.technician_id,
+                "planned_date": planned_dt,
+                "status": "pending",
+                "id": vid,
+            },
+        )
+        minutes_cursor += int(visit.get("estimated_duration") or 45)
+
+    db.commit()
+    return {
+        "ok": True,
+        "technician_id": payload.technician_id,
+        "target_date": payload.target_date,
+        "visits_assigned": len(payload.visit_ids_ordered),
+    }
+
+
+@router.post("/geometria")
+def geometria_ruta(payload: GeometriaRutaRequest, db: Session = Depends(get_db)):
+    """
+    Mobile flow: draw geometry from an already ordered route (no IA reordering).
+    """
+    if not payload.visit_ids:
+        return {
+            "coordenadas_ruta": [],
+            "segmentos": [],
+            "distancia_total_km": 0,
+            "tiempo_total_min": 0,
+            "ruta_geojson": {"type": "Feature", "geometry": {"type": "LineString", "coordinates": []}},
+        }
+
+    visit_map = _fetch_visits_with_coords(db, payload.visit_ids)
+    ordered = [visit_map[vid] for vid in payload.visit_ids if vid in visit_map]
+    origin = (payload.origen.latitude, payload.origen.longitude) if payload.origen else None
+    return generar_geometria_simple(ordered, origin)
