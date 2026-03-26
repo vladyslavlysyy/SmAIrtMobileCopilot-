@@ -28,14 +28,14 @@ docker run --name awesome_banzai \
 Check logs to confirm initialization and seed execution:
 
 ```bash
-docker logs -f postgres_mantenimiento
+docker logs -f awesome_banzai
 ```
 
 ## Stop And Remove Container
 
 ```bash
-docker stop postgres_mantenimiento
-docker rm postgres_mantenimiento
+docker stop awesome_banzai
+docker rm awesome_banzai
 ```
 
 ## Optional: Use Docker Compose
