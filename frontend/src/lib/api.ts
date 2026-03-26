@@ -405,7 +405,21 @@ export const api = {
       technician_id: params.technicianId,
     });
     const response = await fetch(`${BASE_URL}/api/v1/metrics${qs}`);
-    return handleResponse(response);
+    const raw = await handleResponse<any>(response);
+    return {
+      completades: raw.completades ?? raw.completadas ?? 0,
+      pendentes: raw.pendentes ?? raw.pendientes ?? 0,
+      en_progreso: raw.en_progreso ?? 0,
+      km_por_tecnico: raw.km_por_tecnico ?? [],
+      horas_efectivas_total: raw.horas_efectivas_total ?? 0,
+      retardos_por_causa: raw.retardos_por_causa ?? [],
+      sla_por_tipo: (raw.sla_por_tipo ?? []).map((s: any) => ({
+        visit_type: s.visit_type,
+        total: s.total,
+        completades: s.completades ?? s.completadas ?? 0,
+        porcentaje_sla: s.porcentaje_sla ?? 0,
+      })),
+    };
   },
 };
 

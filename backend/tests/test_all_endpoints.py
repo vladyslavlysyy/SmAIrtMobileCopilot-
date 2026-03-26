@@ -33,11 +33,20 @@ def run() -> int:
             "/api/v1/visits",
             params={"technician_id": 1, "date": date.today().isoformat()},
         )),
+        ("GET /api/v1/visits/all", lambda: client.get("/api/v1/visits/all")),
+        ("GET /api/v1/visits/all (filtered)", lambda: client.get(
+            "/api/v1/visits/all",
+            params={"technician_id": 1, "date_from": "2026-03-01", "date_to": "2026-04-30"},
+        )),
         ("GET /api/v1/visits/week", lambda: client.get(
             "/api/v1/visits/week",
             params={"technician_id": 1, "week_start": date.today().isoformat()},
         )),
         ("GET /api/v1/metrics", lambda: client.get("/api/v1/metrics")),
+        ("GET /api/v1/metrics (ranged)", lambda: client.get(
+            "/api/v1/metrics",
+            params={"date_from": "2026-03-01", "date_to": "2026-04-30"},
+        )),
         ("GET /api/v1/reports/1", lambda: client.get("/api/v1/reports/1")),
         ("POST /api/v1/reports", lambda: client.post(
             "/api/v1/reports",

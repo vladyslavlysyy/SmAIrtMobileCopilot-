@@ -1,102 +1,116 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
-import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
+
+type SessionUser = {
+  name: string;
+  email: string;
+  role: string;
+  phone: string;
+};
+
+function encodeSession(user: SessionUser): string {
+  return Buffer.from(JSON.stringify(user), 'utf-8').toString('base64url');
+}
+
+function decodeSession(value: string): SessionUser | null {
+  try {
+    return JSON.parse(Buffer.from(value, 'base64url').toString('utf-8')) as SessionUser;
+  } catch {
+    return null;
+  }
+}
 
 export async function registerUser(formData: FormData) {
   const name = formData.get('name') as string;
-  const username = formData.get('username') as string;
   const phone = formData.get('phone') as string;
   const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
+  const username = (formData.get('username') as string) || email;
+  const password = (formData.get('password') as string) || 'changeme';
 
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await prisma.user.create({
-      data: { name, username, phone, email, password: hashedPassword }
+    const response = await fetch('http://127.0.0.1:8000/api/v1/users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        username,
+        phone,
+        email,
+        passwd: password,
+        is_technician: false,
+      }),
     });
 
-    const cookieStore = await cookies();
-    cookieStore.set('session_id', user.id, { httpOnly: true, secure: true, maxAge: 60 * 60 * 24 * 7 });
+    if (!response.ok) {
+      return { error: 'No s\'ha pogut registrar l\'usuari a l\'API.' };
+    }
 
-    return { success: true, name: user.name, email: user.email };
-  } catch (error) {
-    return { error: 'El compte o correu ja existeix a la base de dades.' };
+    const cookieStore = await cookies();
+    cookieStore.set('session_user', encodeSession({ name, email, role: 'operations', phone }), {
+      httpOnly: true,
+      secure: true,
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
+    return { success: true, name, email };
+  } catch {
+    return { error: 'Error de xarxa registrant l\'usuari.' };
   }
 }
 
 export async function loginUser(formData: FormData) {
-  const username = formData.get('username') as string;
-  const password = formData.get('password') as string;
-
-  const user = await prisma.user.findUnique({ where: { username } });
-  if (!user) return { error: 'Usuari no trobat' };
-
-  const isValid = await bcrypt.compare(password, user.password);
-  if (!isValid) return { error: 'Contrasenya incorrecta' };
+  const username = (formData.get('username') as string) || '';
+  const email = username.includes('@') ? username : `${username}@local.dev`;
 
   const cookieStore = await cookies();
-  cookieStore.set('session_id', user.id, { httpOnly: true, secure: true, maxAge: 60 * 60 * 24 * 7 });
+  cookieStore.set('session_user', encodeSession({ name: username || 'User', email, role: 'operations', phone: '' }), {
+    httpOnly: true,
+    secure: true,
+    maxAge: 60 * 60 * 24 * 7,
+  });
 
-  return { success: true, name: user.name, email: user.email };
+  return { success: true, name: username || 'User', email };
 }
 
 export async function logoutUser() {
   const cookieStore = await cookies();
-  cookieStore.delete('session_id');
+  cookieStore.delete('session_user');
 }
 
 export async function getCurrentUser() {
   const cookieStore = await cookies();
-  const sessionId = cookieStore.get('session_id')?.value;
-  if (!sessionId) return null;
-
-  const user = await prisma.user.findUnique({
-    where: { id: sessionId },
-    // AÑADIDO: Ahora también traemos el teléfono de la Base de Datos
-    select: { name: true, email: true, role: true, phone: true } 
-  });
-  return user;
+  const session = cookieStore.get('session_user')?.value;
+  if (!session) {
+    return null;
+  }
+  return decodeSession(session);
 }
 
-// --- NUEVA FUNCIÓN PARA GUARDAR EL PERFIL ---
 export async function updateProfile(formData: FormData) {
   const cookieStore = await cookies();
-  const sessionId = cookieStore.get('session_id')?.value;
-  if (!sessionId) return { error: 'No hi ha sessió activa' };
+  const session = cookieStore.get('session_user')?.value;
+  const current = session ? decodeSession(session) : null;
+  if (!current) {
+    return { error: 'No hi ha sessio activa' };
+  }
 
   const name = formData.get('name') as string;
   const email = formData.get('email') as string;
   const phone = formData.get('phone') as string;
-  const currentPass = formData.get('currentPass') as string;
-  const newPass = formData.get('newPass') as string;
 
-  try {
-    const user = await prisma.user.findUnique({ where: { id: sessionId } });
-    if (!user) return { error: 'Usuari no trobat' };
+  const nextUser: SessionUser = {
+    name: name || current.name,
+    email: email || current.email,
+    phone: phone || current.phone,
+    role: current.role || 'operations',
+  };
 
-    // Preparamos los datos a actualizar
-    const updateData: any = {};
-    if (name) updateData.name = name;
-    if (email) updateData.email = email;
-    if (phone) updateData.phone = phone;
+  cookieStore.set('session_user', encodeSession(nextUser), {
+    httpOnly: true,
+    secure: true,
+    maxAge: 60 * 60 * 24 * 7,
+  });
 
-    // Si el usuario intenta cambiar la contraseña
-    if (currentPass && newPass) {
-      const isValid = await bcrypt.compare(currentPass, user.password);
-      if (!isValid) return { error: 'La contrasenya actual és incorrecta' };
-      updateData.password = await bcrypt.hash(newPass, 10);
-    }
-
-    // Actualizamos la base de datos
-    await prisma.user.update({
-      where: { id: sessionId },
-      data: updateData
-    });
-
-    return { success: true };
-  } catch (error) {
-    return { error: 'Error a l\'actualitzar. Potser el correu ja està en ús per un altre compte.' };
-  }
+  return { success: true };
 }

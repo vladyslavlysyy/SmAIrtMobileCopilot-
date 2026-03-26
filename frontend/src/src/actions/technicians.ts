@@ -1,37 +1,53 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
+const API_BASE = 'http://127.0.0.1:8000';
 
 export async function getTechnicians() {
-  return await prisma.technician.findMany({
-    orderBy: { createdAt: 'asc' }
-  });
+  const response = await fetch(`${API_BASE}/api/v1/users`, { cache: 'no-store' });
+  if (!response.ok) {
+    return [];
+  }
+
+  const users = await response.json();
+  return (users || [])
+    .filter((u: any) => u.is_technician)
+    .map((u: any) => ({
+      id: String(u.id),
+      name: u.name,
+      email: u.email || '',
+      phone: u.phone || '',
+      vehicle: 'N/A',
+      status: 'En servei actiu',
+      loc: 'Base',
+    }));
 }
 
 export async function saveTechnician(formData: FormData) {
-  const id = formData.get('id') as string | null;
   const name = formData.get('name') as string;
   const email = formData.get('email') as string;
   const phone = formData.get('phone') as string;
-  const vehicle = formData.get('vehicle') as string;
-  const status = formData.get('status') as string;
-  const loc = formData.get('loc') as string;
 
   try {
-    if (id) {
-      // Si tiene ID, actualizamos el técnico existente
-      await prisma.technician.update({
-        where: { id },
-        data: { name, email, phone, vehicle, status, loc }
-      });
-    } else {
-      // Si NO tiene ID, creamos un técnico nuevo
-      await prisma.technician.create({
-        data: { name, email, phone, vehicle, status, loc }
-      });
+    const createRes = await fetch(`${API_BASE}/api/v1/users`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        username: email || `tech_${Date.now()}`,
+        phone,
+        email,
+        passwd: 'changeme',
+        is_technician: true,
+        zone: 'General',
+      }),
+    });
+
+    if (!createRes.ok && createRes.status !== 409) {
+      return { error: 'Error al guardar el tecnic a l\'API.' };
     }
+
     return { success: true };
-  } catch (error) {
-    return { error: 'Error al guardar el tècnic. Potser el correu ja existeix.' };
+  } catch {
+    return { error: 'Error de xarxa al guardar el tecnic.' };
   }
 }

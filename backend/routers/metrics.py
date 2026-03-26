@@ -87,12 +87,17 @@ def get_metrics(
     Un sol endpoint que alimenta tot el dashboard de mètriques.
     Utilitza SQL queries per llegir directament de la BD.
     """
+    has_date_filter = date_from is not None or date_to is not None
     today = datetime.utcnow().date()
     from_dt = datetime.combine(date_from or today.replace(day=1), datetime.min.time())
     to_dt = datetime.combine(date_to or today, datetime.max.time())
 
+    date_filter = "AND v.planned_date >= :from_dt AND v.planned_date <= :to_dt" if has_date_filter else ""
     tech_filter = "AND v.technician_id = :technician_id" if technician_id is not None else ""
-    params = {"from_dt": from_dt, "to_dt": to_dt}
+    params = {}
+    if has_date_filter:
+        params["from_dt"] = from_dt
+        params["to_dt"] = to_dt
     if technician_id is not None:
         params["technician_id"] = technician_id
 
@@ -102,8 +107,8 @@ def get_metrics(
             COUNT(CASE WHEN LOWER(v.status) IN ('pending', 'scheduled', 'pendiente') THEN 1 END) AS pendientes,
             COUNT(CASE WHEN LOWER(v.status) IN ('in_progress', 'in progress', 'en_progreso') THEN 1 END) AS en_progreso
         FROM visit v
-        WHERE v.planned_date >= :from_dt
-          AND v.planned_date <= :to_dt
+                WHERE 1=1
+                    {date_filter}
           {tech_filter}
     """)
     count_row = db.execute(count_query, params).fetchone()
@@ -119,8 +124,8 @@ def get_metrics(
         FROM visit v
         LEFT JOIN assignable a ON v.assignable_id = a.id
         LEFT JOIN charger c ON a.charger_id = c.id
-        WHERE v.planned_date >= :from_dt
-          AND v.planned_date <= :to_dt
+                WHERE 1=1
+                    {date_filter}
           AND LOWER(v.status) IN ('completed', 'completado', 'done')
           {tech_filter}
         ORDER BY v.technician_id ASC, v.planned_date ASC
@@ -149,8 +154,8 @@ def get_metrics(
     hours_query = text(f"""
         SELECT SUM(COALESCE(v.estimated_duration, 45)) / 60.0 AS total_horas
         FROM visit v
-        WHERE v.planned_date >= :from_dt
-          AND v.planned_date <= :to_dt
+                WHERE 1=1
+                    {date_filter}
           AND LOWER(v.status) IN ('completed', 'completado', 'done')
           {tech_filter}
     """)
@@ -162,8 +167,8 @@ def get_metrics(
             SELECT i.tipo, COUNT(i.id) AS total
             FROM imprevisto i
             JOIN visit v ON i.visit_id = v.id
-            WHERE v.planned_date >= :from_dt
-              AND v.planned_date <= :to_dt
+                        WHERE 1=1
+                            {date_filter}
               {tech_filter}
             GROUP BY i.tipo
         """)
@@ -184,8 +189,8 @@ def get_metrics(
             COUNT(v.id) AS total,
             COUNT(CASE WHEN LOWER(v.status) IN ('completed', 'completado', 'done') THEN 1 END) AS completadas
         FROM visit v
-        WHERE v.planned_date >= :from_dt
-          AND v.planned_date <= :to_dt
+                WHERE 1=1
+                    {date_filter}
           {tech_filter}
         GROUP BY v.visit_type
     """)

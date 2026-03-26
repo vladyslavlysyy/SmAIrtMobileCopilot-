@@ -24,3 +24,10 @@ node_modules/
 # Build artifacts
 dist/
 build/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# TypeScript incremental cache
+*.tsbuildinfo
