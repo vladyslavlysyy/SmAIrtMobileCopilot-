@@ -14,10 +14,10 @@ GET /api/v1/visits
 from datetime import date, datetime, time
 from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import text, func
 
 from database import get_db
-from models import Visit, VisitStatus
+from models import Visit, VisitStatus, Technician
 from schemas import VisitOut
 
 router = APIRouter(prefix="/api/v1", tags=["visits"])
@@ -31,36 +31,69 @@ def get_visits(
 ) -> list[VisitOut]:
     """
     Retorna les visites d'un tècnic per a un dia concret.
+    Utilitza SQL queries per treure dades del charger via assignable.
 
     Ordre de retorn:
       1. route_order ASC  (si el model ja ha calculat la ruta)
       2. planned_date ASC (fallback si route_order és NULL)
-
-    Això permet al frontend mostrar la llista ordenada tan aviat com
-    el model de prioritat hagi corregut, sense canvis d'interfície.
     """
     # Rang del dia: de 00:00:00 a 23:59:59
     day_start = datetime.combine(date, time.min)
     day_end   = datetime.combine(date, time.max)
 
-    visits = (
-        db.query(Visit)
-        .filter(
-            Visit.technician_id == technician_id,
-            Visit.planned_date  >= day_start,
-            Visit.planned_date  <= day_end,
-        )
-        # NULLS LAST: les visites sense route_order van al final
-        .order_by(
-            Visit.route_order.asc().nulls_last(),
-            Visit.planned_date.asc(),
-        )
-        .all()
-    )
+    # SQL query amb JOIN a charger per obtenir coordenades
+    query_str = text("""
+        SELECT 
+            v.id,
+            v.assignable_id,
+            v.technician_id,
+            v.visit_type,
+            v.status,
+            v.planned_date,
+            v.estimated_duration,
+            v.score,
+            v.route_order,
+            COALESCE(c.latitude, 0.0) as latitude,
+            COALESCE(c.longitude, 0.0) as longitude,
+            COALESCE(c.postal_code, '') as postal_code
+        FROM visit v
+        LEFT JOIN assignable a ON v.assignable_id = a.id
+        LEFT JOIN charger c ON a.charger_id = c.id
+        WHERE v.technician_id = :tech_id
+          AND v.planned_date >= :day_start
+          AND v.planned_date <= :day_end
+        ORDER BY 
+            COALESCE(v.route_order, 999999) ASC,
+            v.planned_date ASC
+    """)
+    
+    rows = db.execute(query_str, {
+        "tech_id": technician_id,
+        "day_start": day_start,
+        "day_end": day_end,
+    }).fetchall()
 
-    if not visits:
-        # 200 amb llista buida és correcte; el frontend gestiona l'estat buit
+    if not rows:
         return []
+
+    # Map SQL rows to VisitOut schema
+    visits = []
+    for row in rows:
+        visit = VisitOut(
+            id=row.id,
+            assignable_id=row.assignable_id,
+            technician_id=row.technician_id,
+            visit_type=row.visit_type,
+            status=row.status,
+            planned_date=row.planned_date,
+            estimated_duration=row.estimated_duration,
+            score=row.score,
+            route_order=row.route_order,
+            latitude=row.latitude,
+            longitude=row.longitude,
+            postal_code=row.postal_code,
+        )
+        visits.append(visit)
 
     return visits
 
@@ -82,19 +115,23 @@ def get_week_load(
     week_end = datetime.combine(week_start + timedelta(days=6), time.max)
     week_start_dt = datetime.combine(week_start, time.min)
 
-    rows = (
-        db.query(
-            func.date(Visit.planned_date).label("day"),
-            func.count(Visit.id).label("total"),
-        )
-        .filter(
-            Visit.technician_id == technician_id,
-            Visit.planned_date  >= week_start_dt,
-            Visit.planned_date  <= week_end,
-            Visit.status.in_([VisitStatus.pending, VisitStatus.in_progress]),
-        )
-        .group_by(func.date(Visit.planned_date))
-        .all()
-    )
+    query_str = text("""
+        SELECT 
+            DATE(v.planned_date) as day,
+            COUNT(v.id) as total
+        FROM visit v
+        WHERE v.technician_id = :tech_id
+          AND v.planned_date >= :week_start
+          AND v.planned_date <= :week_end
+          AND v.status IN ('pending', 'in_progress')
+        GROUP BY DATE(v.planned_date)
+        ORDER BY DATE(v.planned_date) ASC
+    """)
+    
+    rows = db.execute(query_str, {
+        "tech_id": technician_id,
+        "week_start": week_start_dt,
+        "week_end": week_end,
+    }).fetchall()
 
     return {str(row.day): row.total for row in rows}

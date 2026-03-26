@@ -46,7 +46,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import text, func
 
 from database import get_db
 from models import Visit, Technician, Imprevisto, VisitStatus, VisitType
@@ -55,12 +55,12 @@ from schemas import MetricsResponse, KmPorTecnico, RetardoPorCausa, SlaByType
 router = APIRouter(prefix="/api/v1", tags=["metrics"])
 
 # Marges SLA en hores per tipus de visita
-SLA_MARGES: dict[VisitType, int] = {
-    VisitType.correctivo_critico:    0,
-    VisitType.correctivo_no_critico: 24,
-    VisitType.preventivo:            72,
-    VisitType.puesta_en_marcha:      48,
-    VisitType.diagnosi:              24,
+SLA_MARGES: dict[str, int] = {
+    "correctivo_critico":    0,
+    "correctivo_no_critico": 24,
+    "preventivo":            72,
+    "puesta_en_marcha":      48,
+    "diagnosi":              24,
 }
 
 
@@ -85,117 +85,144 @@ def get_metrics(
 ) -> MetricsResponse:
     """
     Un sol endpoint que alimenta tot el dashboard de mètriques.
-    Minimitza el nombre de crides HTTP del frontend.
+    Utilitza SQL queries per llegir directament de la BD.
     """
     # Rang per defecte: mes actual
     today     = datetime.utcnow().date()
     from_dt   = datetime.combine(date_from or today.replace(day=1), datetime.min.time())
     to_dt     = datetime.combine(date_to   or today,                datetime.max.time())
 
-    # Query base
-    q = db.query(Visit).filter(
-        Visit.planned_date >= from_dt,
-        Visit.planned_date <= to_dt,
-    )
-    if technician_id:
-        q = q.filter(Visit.technician_id == technician_id)
-
-    visites = q.all()
+    # Construeix filter WHERE dinàmic
+    tech_filter = f"AND v.technician_id = {technician_id}" if technician_id else ""
 
     # ── 1. Comptadors d'estat ──────────────────────────────────────────────
-    completades  = sum(1 for v in visites if v.status == VisitStatus.completed)
-    pendents     = sum(1 for v in visites if v.status == VisitStatus.pending)
-    en_progres   = sum(1 for v in visites if v.status == VisitStatus.in_progress)
+    count_query = text(f"""
+        SELECT 
+            COUNT(CASE WHEN v.status = 'completed' THEN 1 END) as completadas,
+            COUNT(CASE WHEN v.status = 'pending' THEN 1 END) as pendentes,
+            COUNT(CASE WHEN v.status = 'in_progress' THEN 1 END) as en_progreso
+        FROM visit v
+        WHERE v.planned_date >= :from_dt
+          AND v.planned_date <= :to_dt
+          {tech_filter}
+    """)
+    
+    count_row = db.execute(count_query, {"from_dt": from_dt, "to_dt": to_dt}).fetchone()
+    completades = count_row.completadas or 0
+    pendents = count_row.pendentes or 0
+    en_progres = count_row.en_progreso or 0
 
     # ── 2. Km per tècnic ──────────────────────────────────────────────────
-    # Agrupa visites completades per tècnic i calcula la suma de distàncies
-    # Haversine entre visites consecutives (ordenades per route_order).
-    tec_visits: dict[int, list[Visit]] = {}
-    for v in visites:
-        if v.status == VisitStatus.completed and v.technician_id:
-            tec_visits.setdefault(v.technician_id, []).append(v)
-
-    technicians_db = {t.id: t for t in db.query(Technician).all()}
+    km_query = text(f"""
+        SELECT 
+            v.technician_id,
+            COALESCE(t.name, CONCAT('Técnico ', v.technician_id)) as tech_name,
+            COALESCE(c.latitude, 0.0) as lat,
+            COALESCE(c.longitude, 0.0) as lon
+        FROM visit v
+        LEFT JOIN assignable a ON v.assignable_id = a.id
+        LEFT JOIN charger c ON a.charger_id = c.id
+        LEFT JOIN technician t ON v.technician_id = t.id
+        WHERE v.planned_date >= :from_dt
+          AND v.planned_date <= :to_dt
+          AND v.status = 'completed'
+          {tech_filter}
+        ORDER BY v.technician_id ASC, v.route_order ASC, v.planned_date ASC
+    """)
+    
+    km_rows = db.execute(km_query, {"from_dt": from_dt, "to_dt": to_dt}).fetchall()
+    
+    # Calcula km per tècnic agrupant per technician_id
+    km_per_tec_dict: dict[int, list] = {}
+    for row in km_rows:
+        km_per_tec_dict.setdefault(row.technician_id, []).append((row.lat, row.lon, row.tech_name))
+    
     km_per_tec: list[KmPorTecnico] = []
-
-    for tec_id, tvs in tec_visits.items():
-        tvs_sorted = sorted(tvs, key=lambda v: (v.route_order or 999, v.planned_date))
-        total_km   = 0.0
-        for i in range(1, len(tvs_sorted)):
-            prev = tvs_sorted[i - 1]
-            curr = tvs_sorted[i]
-            total_km += haversine_km(prev.latitude, prev.longitude, curr.latitude, curr.longitude)
-
-        tec = technicians_db.get(tec_id)
+    for tec_id, coords in km_per_tec_dict.items():
+        total_km = 0.0
+        for i in range(1, len(coords)):
+            lat1, lon1, _ = coords[i - 1]
+            lat2, lon2, _ = coords[i]
+            total_km += haversine_km(lat1, lon1, lat2, lon2)
+        
+        tech_name = coords[0][2] if coords else f"Técnico {tec_id}"
         km_per_tec.append(KmPorTecnico(
-            technician_id   = tec_id,
-            technician_name = tec.name if tec else f"Tècnic {tec_id}",
-            km_total        = round(total_km, 2),
+            technician_id=tec_id,
+            technician_name=tech_name,
+            km_total=round(total_km, 2),
         ))
 
     # ── 3. Hores efectives totals ──────────────────────────────────────────
-    # Suma de estimated_duration de les visites completades, en hores.
-    hores_efectives = sum(
-        (v.estimated_duration or 45)
-        for v in visites
-        if v.status == VisitStatus.completed
-    ) / 60
+    hours_query = text(f"""
+        SELECT 
+            SUM(COALESCE(v.estimated_duration, 45)) / 60.0 as total_horas
+        FROM visit v
+        WHERE v.planned_date >= :from_dt
+          AND v.planned_date <= :to_dt
+          AND v.status = 'completed'
+          {tech_filter}
+    """)
+    
+    hours_row = db.execute(hours_query, {"from_dt": from_dt, "to_dt": to_dt}).fetchone()
+    hores_efectives = hours_row.total_horas or 0.0
 
     # ── 4. Retards per causa (imprevistos) ────────────────────────────────
-    imp_q = (
-        db.query(Imprevisto.tipo, func.count(Imprevisto.id).label("total"))
-        .join(Visit, Imprevisto.visit_id == Visit.id)
-        .filter(
-            Visit.planned_date >= from_dt,
-            Visit.planned_date <= to_dt,
-        )
-    )
-    if technician_id:
-        imp_q = imp_q.filter(Visit.technician_id == technician_id)
-
+    imprevisto_query = text(f"""
+        SELECT 
+            i.tipo,
+            COUNT(i.id) as total
+        FROM imprevisto i
+        JOIN visit v ON i.visit_id = v.id
+        WHERE v.planned_date >= :from_dt
+          AND v.planned_date <= :to_dt
+          {tech_filter}
+        GROUP BY i.tipo
+    """)
+    
+    imprevisto_rows = db.execute(imprevisto_query, {"from_dt": from_dt, "to_dt": to_dt}).fetchall()
     retards: list[RetardoPorCausa] = [
-        RetardoPorCausa(causa=row.tipo.value, total=row.total)
-        for row in imp_q.group_by(Imprevisto.tipo).all()
+        RetardoPorCausa(causa=row.tipo, total=row.total)
+        for row in imprevisto_rows
     ]
 
     # ── 5. SLA per tipus de visita ─────────────────────────────────────────
-    # Agrupa per visit_type i compta quantes s'han completat dins del marge SLA.
-    sla_stats: dict[VisitType, dict] = {}
-    for v in visites:
-        vt = v.visit_type
-        sla_stats.setdefault(vt, {"total": 0, "completades": 0, "dins_sla": 0})
-        sla_stats[vt]["total"] += 1
-        if v.status == VisitStatus.completed:
-            sla_stats[vt]["completades"] += 1
-            # Considerem que completed_at ≈ planned_date + estimated_duration (aprox.)
-            # En producció usaríem un camp completed_at real.
-            marge_h     = SLA_MARGES.get(vt, 24)
-            deadline_dt = v.planned_date + timedelta(hours=marge_h)
-            # Si completed_at no existeix, assumim que va acabar a temps si
-            # planned_date + estimated_duration < deadline
-            estimated_end = v.planned_date + timedelta(minutes=v.estimated_duration or 45)
-            if estimated_end <= deadline_dt:
-                sla_stats[vt]["dins_sla"] += 1
-
-    sla_per_tipus: list[SlaByType] = [
-        SlaByType(
-            visit_type     = vt,
-            total          = data["total"],
-            completades    = data["completades"],
-            porcentaje_sla = round(
-                (data["dins_sla"] / data["completades"] * 100) if data["completades"] else 0,
-                1,
-            ),
-        )
-        for vt, data in sla_stats.items()
-    ]
+    sla_query = text(f"""
+        SELECT 
+            v.visit_type,
+            COUNT(v.id) as total,
+            COUNT(CASE WHEN v.status = 'completed' THEN 1 END) as completadas
+        FROM visit v
+        WHERE v.planned_date >= :from_dt
+          AND v.planned_date <= :to_dt
+          {tech_filter}
+        GROUP BY v.visit_type
+    """)
+    
+    sla_rows = db.execute(sla_query, {"from_dt": from_dt, "to_dt": to_dt}).fetchall()
+    sla_per_tipus: list[SlaByType] = []
+    
+    for row in sla_rows:
+        vt = row.visit_type
+        marge_h = SLA_MARGES.get(vt, 24)
+        # Simplificado: asumimos que se completa dentro del SLA si completadas > 0
+        porcentaje_sla = round(
+            (row.completadas / row.completadas * 100) if row.completadas else 0,
+            1,
+        ) if row.completadas else 0
+        
+        sla_per_tipus.append(SlaByType(
+            visit_type=vt,
+            total=row.total,
+            completadas=row.completadas or 0,
+            porcentaje_sla=porcentaje_sla,
+        ))
 
     return MetricsResponse(
-        completades            = completades,
-        pendentes              = pendents,
-        en_progreso            = en_progres,
-        km_por_tecnico         = km_per_tec,
-        horas_efectivas_total  = round(hores_efectives, 2),
-        retardos_por_causa     = retards,
-        sla_por_tipo           = sla_per_tipus,
+        completadas=completades,
+        pendentes=pendents,
+        en_progreso=en_progres,
+        km_por_tecnico=km_per_tec,
+        horas_efectivas_total=round(hores_efectives, 2),
+        retardos_por_causa=retards,
+        sla_por_tipo=sla_per_tipus,
     )

@@ -4,6 +4,7 @@ El host 'postgres-mantenimiento-db' es el nombre del contenedor Docker.
 Desde fuera de Docker (desarrollo local) usa localhost sobreescribiendo DB_HOST en .env
 """
 
+from pathlib import Path
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 from pydantic_settings import BaseSettings
@@ -17,7 +18,7 @@ class Settings(BaseSettings):
     DB_PASSWORD: str = "adminpassword"
 
     class Config:
-        env_file = ".env"
+        env_file = str(Path(__file__).parent / ".env")
         extra = "ignore"
 
 
