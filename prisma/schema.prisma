@@ -19,3 +19,14 @@ model User {
   role      String   @default("operations")
   createdAt DateTime @default(now())
 }
+
+model Technician {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  phone     String
+  vehicle   String
+  status    String   @default("En servei actiu")
+  loc       String   @default("Base")
+  createdAt DateTime @default(now())
+}

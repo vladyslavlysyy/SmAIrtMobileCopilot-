@@ -1,163 +1,231 @@
 'use client';
 
 import React, { useState } from 'react';
-import { User, MapPin, Zap, Clock, Phone, X, Eye, ChevronDown, Check, Users } from 'lucide-react';
+import { User, MapPin, Zap, Clock, Phone, X, Eye, ChevronDown, Check, Users, Settings, Plus, Save, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-
-// BASE DE DATOS FINTICIA DEL EQUIPO (Con toda la info intacta)
-const TECHNICIANS = [
-  { name: 'Marc Puigdomènech', vehicle: 'Renault Zoe · E-1247-TGN', status: 'En servei actiu', loc: 'Tarragona Centre', progress: '2 de 7 visites', pct: '28.6%', color: 'text-green-400', bg: 'bg-green-500/20', border: 'border-green-500/40' },
-  { name: 'Laia Ferré', vehicle: 'Nissan Kangoo · E-9988-BCN', status: 'En servei actiu', loc: 'Reus Nord', progress: '4 de 6 visites', pct: '66.6%', color: 'text-green-400', bg: 'bg-green-500/20', border: 'border-green-500/40' },
-  { name: 'Jordi Casals', vehicle: 'Peugeot e-Vito · E-3344-LLE', status: 'En pausa (Dinar)', loc: 'Salou', progress: '3 de 8 visites', pct: '37.5%', color: 'text-amber-400', bg: 'bg-amber-500/20', border: 'border-amber-500/40' },
-  { name: 'Núria Valls', vehicle: 'Renault Kangoo ZE · E-1122-GIR', status: 'Finalitzat', loc: 'Base Tarragona', progress: '5 de 5 visites', pct: '100%', color: 'text-slate-400', bg: 'bg-slate-500/20', border: 'border-slate-500/40' },
-  { name: 'Pau Ribas', vehicle: 'Nissan Leaf · E-5566-TAR', status: 'En ruta', loc: 'Cambrils', progress: '1 de 4 visites', pct: '25%', color: 'text-blue-400', bg: 'bg-blue-500/20', border: 'border-blue-500/40' },
-];
+import { saveTechnician } from '@/actions/technicians';
 
 interface TechHeaderProps {
-  selectedTech?: string;
-  onSelect?: (techName: string) => void;
+  technicians: any[];
+  selectedTechId: string | null;
+  onSelect: (id: string) => void;
+  onRefresh: () => void;
 }
 
-export default function TechnicianHeader({ selectedTech = 'Marc Puigdomènech', onSelect }: TechHeaderProps) {
+export default function TechnicianHeader({ technicians, selectedTechId, onSelect, onRefresh }: TechHeaderProps) {
   const [showSelector, setShowSelector] = useState(false);
   const [showCallModal, setShowCallModal] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [editData, setEditData] = useState<any>(null);
 
-  // Encontramos los datos del técnico actual
-  const techData = TECHNICIANS.find(t => t.name === selectedTech) || TECHNICIANS[0];
+  // Buscamos al técnico seleccionado actualmente
+  const techData = technicians.find(t => t.id === selectedTechId) || null;
 
   const handleCall = (contact: string) => {
     setShowCallModal(false);
-    toast.success(`Trucant a ${contact}...`, { description: 'Connexió establerta. Durada màxima: 10 min.' });
+    toast.success(`Trucant a ${contact}...`, { description: 'Connexió establerta.' });
+  };
+
+  const openNewModal = () => {
+    setEditData(null);
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = () => {
+    if (techData) {
+      setEditData(techData);
+      setIsModalOpen(true);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSaving(true);
+    const formData = new FormData(e.currentTarget);
+    
+    if (editData?.id) {
+      formData.append('id', editData.id);
+    }
+
+    const res = await saveTechnician(formData);
+    
+    if (res.error) {
+      toast.error(res.error);
+    } else {
+      toast.success(editData ? 'Tècnic actualitzat correctament' : 'Nou tècnic registrat');
+      setIsModalOpen(false);
+      onRefresh(); // Recargar datos desde la Base de Datos
+    }
+    setIsSaving(false);
   };
 
   return (
     <>
-      <div className="bg-gradient-to-r from-slate-900 to-blue-900 px-6 py-5 border-b border-slate-700 relative overflow-visible z-20">
-        
-        {/* Etiqueta Admin */}
+      <div className="bg-gradient-to-r from-slate-900 to-blue-900 px-6 py-5 border-b border-slate-700 relative z-20">
         <div className="absolute top-0 right-0 bg-blue-600/20 text-blue-300 text-[10px] font-bold px-3 py-1 rounded-bl-lg flex items-center gap-1 uppercase tracking-wider">
           <Eye size={10} /> Vista de Supervisió Admin
         </div>
 
         <div className="flex flex-wrap items-start justify-between gap-4 max-w-screen-2xl mx-auto mt-2">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-blue-500/30 border-2 border-blue-400/50 flex items-center justify-center flex-shrink-0">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-full bg-blue-500/30 border-2 border-blue-400/50 flex items-center justify-center flex-shrink-0 mt-1">
               <User size={22} className="text-blue-300" />
             </div>
             <div>
-              <div className="flex items-center gap-2 mb-0.5">
-                
-                {/* SELECTOR INTERACTIVO DE TÉCNICO */}
+              {techData ? (
                 <div className="relative">
-                  <button 
-                    onClick={() => setShowSelector(!showSelector)}
-                    className="flex items-center gap-2 hover:bg-white/5 px-2 py-1 -ml-2 rounded-lg transition-colors group"
-                  >
-                    <h1 className="text-white font-bold text-lg">{techData.name}</h1>
-                    <ChevronDown size={14} className="text-slate-400 group-hover:text-white transition-colors" />
-                  </button>
+                  <div className="flex items-center gap-2 mb-1">
+                    <button onClick={() => setShowSelector(!showSelector)} className="flex items-center gap-2 hover:bg-white/5 px-2 py-1 -ml-2 rounded-lg transition-colors group">
+                      <h1 className="text-white font-bold text-xl">{techData.name}</h1>
+                      <ChevronDown size={16} className="text-slate-400 group-hover:text-white transition-colors" />
+                    </button>
+                    <button onClick={openEditModal} className="text-slate-400 hover:text-blue-400 p-1.5 bg-slate-800/50 rounded-md transition-colors" title="Modificar Tècnic">
+                      <Settings size={14} />
+                    </button>
+                  </div>
 
-                  {/* El desplegable */}
-                  {showSelector && onSelect && (
+                  {showSelector && (
                     <>
                       <div className="fixed inset-0 z-40" onClick={() => setShowSelector(false)} />
                       <div className="absolute top-full left-0 mt-1 w-72 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl py-2 z-50 animate-in fade-in slide-in-from-top-2">
-                        <div className="px-3 py-2 border-b border-slate-700/50 mb-1">
-                          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                            <Users size={12}/> El teu Equip
-                          </p>
+                        <div className="px-3 py-2 border-b border-slate-700/50 mb-1 flex justify-between items-center">
+                          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1"><Users size={12}/> El teu Equip</p>
                         </div>
-                        {TECHNICIANS.map(t => (
-                          <button
-                            key={t.name}
-                            onClick={() => { onSelect(t.name); setShowSelector(false); }}
-                            className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-slate-700/50 transition-colors text-left"
-                          >
-                            <span className={`text-sm font-medium ${t.name === selectedTech ? 'text-blue-400' : 'text-slate-200'}`}>
-                              {t.name}
-                            </span>
-                            {t.name === selectedTech && <Check size={16} className="text-blue-400" />}
-                          </button>
-                        ))}
+                        <div className="max-h-60 overflow-y-auto">
+                          {technicians.map(t => (
+                            <button key={t.id} onClick={() => { onSelect(t.id); setShowSelector(false); }} className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-slate-700/50 transition-colors text-left">
+                              <span className={`text-sm font-medium ${t.id === selectedTechId ? 'text-blue-400' : 'text-slate-200'}`}>{t.name}</span>
+                              {t.id === selectedTechId && <Check size={16} className="text-blue-400" />}
+                            </button>
+                          ))}
+                        </div>
                       </div>
                     </>
                   )}
-                </div>
 
-                <span className={`px-2 py-0.5 ${techData.bg} border ${techData.border} ${techData.color} text-xs font-medium rounded-full`}>
-                  {techData.status}
-                </span>
-              </div>
-              <div className="flex items-center gap-3 text-slate-300 text-sm">
-                <span className="flex items-center gap-1"><MapPin size={12} />{techData.loc}</span>
-                <span className="flex items-center gap-1"><Clock size={12} />Torn: 08:00 – 17:00</span>
-                <span className="flex items-center gap-1"><Zap size={12} />{techData.vehicle}</span>
-              </div>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="px-2 py-0.5 bg-blue-500/20 border border-blue-500/40 text-blue-400 text-xs font-medium rounded-full">
+                      {techData.status}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center gap-4 text-slate-300 text-sm mt-3">
+                    <span className="flex items-center gap-1.5"><MapPin size={14} className="text-slate-400"/> {techData.loc}</span>
+                    <span className="flex items-center gap-1.5"><Zap size={14} className="text-slate-400"/> {techData.vehicle}</span>
+                  </div>
+                </div>
+              ) : (
+                <h1 className="text-white font-bold text-xl py-1">Cap tècnic actiu</h1>
+              )}
             </div>
           </div>
 
-          {/* Botones y reloj de la derecha que te había quitado */}
-          <div className="flex items-center gap-3">
-            <div className="text-right">
-              <p className="text-slate-400 text-xs">Dijous, 26 de Març</p>
-              <p className="text-white font-bold text-lg font-mono tabular-nums">11:36</p>
+          <div className="text-right mt-1 flex flex-col items-end gap-3">
+            <div className="flex items-center gap-3">
+              <div className="text-right">
+                <p className="text-slate-400 text-xs">Dijous, 26 de Març</p>
+                <p className="text-white font-bold text-lg font-mono tabular-nums">11:36</p>
+              </div>
+              {techData && (
+                <button onClick={() => setShowCallModal(true)} className="flex items-center gap-2 px-3 py-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-sm font-medium rounded-lg transition-all duration-150">
+                  <Phone size={14} /> Operacions
+                </button>
+              )}
             </div>
-            <button
-              onClick={() => setShowCallModal(true)}
-              className="flex items-center gap-2 px-3 py-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-sm font-medium rounded-lg transition-all duration-150 active:scale-95"
-            >
-              <Phone size={14} />
-              Operacions
+            <button onClick={openNewModal} className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors shadow-sm">
+              <Plus size={16} /> Nou Tècnic
             </button>
           </div>
         </div>
 
-        {/* Barra de progreso original que cambia dinámicamente */}
-        <div className="mt-4 max-w-screen-2xl mx-auto">
-          <div className="flex justify-between text-xs text-slate-400 mb-1.5">
-            <span>Progrés de la jornada</span>
-            <span className="font-mono">{techData.progress}</span>
+        {techData && (
+          <div className="mt-5 max-w-screen-2xl mx-auto">
+            <div className="flex justify-between text-xs text-slate-400 mb-2">
+              <span>Progrés de la jornada</span>
+              <span className="font-mono">--</span>
+            </div>
+            <div className="h-2.5 bg-slate-800 rounded-full overflow-hidden border border-slate-700/50">
+              <div className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full transition-all duration-700" style={{ width: '50%' }} />
+            </div>
           </div>
-          <div className="h-2 bg-slate-700 rounded-full overflow-hidden border border-slate-600/50">
-            <div 
-              className="h-2 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full transition-all duration-700 ease-out" 
-              style={{ width: techData.pct }} 
-            />
-          </div>
-          <div className="flex justify-between text-xs text-slate-500 mt-1">
-            <span>08:00</span>
-            <span className="text-cyan-400 font-medium">↑ Ara: 11:36</span>
-            <span>17:00</span>
-          </div>
-        </div>
+        )}
       </div>
 
-      {/* Modal de llamadas original */}
-      {showCallModal && (
+      {isModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden">
+            <div className="flex justify-between items-center p-5 border-b border-slate-700/50 bg-slate-800/50">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                {editData ? <Settings size={18} className="text-blue-400" /> : <Plus size={18} className="text-blue-400" />}
+                {editData ? 'Modificar Tècnic' : 'Registrar Nou Tècnic'}
+              </h3>
+              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-white transition-colors"><X size={20} /></button>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-400 mb-1">Nom Complet</label>
+                <input required name="name" type="text" defaultValue={editData?.name || ''} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:ring-1 focus:ring-blue-500 outline-none" placeholder="Ex: Maria Garcia" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-400 mb-1">Correu (App Tècnic)</label>
+                  <input required name="email" type="email" defaultValue={editData?.email || ''} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:ring-1 focus:ring-blue-500 outline-none" placeholder="maria@etecnic.com" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-400 mb-1">Telèfon de flota</label>
+                  <input required name="phone" type="tel" defaultValue={editData?.phone || ''} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:ring-1 focus:ring-blue-500 outline-none" placeholder="+34 600..." />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-400 mb-1">Furgoneta / Vehicle Assignat</label>
+                <input required name="vehicle" type="text" defaultValue={editData?.vehicle || ''} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:ring-1 focus:ring-blue-500 outline-none" placeholder="Ex: Renault Zoe · E-1247-TGN" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-400 mb-1">Zona Habitual</label>
+                  <input required name="loc" type="text" defaultValue={editData?.loc || 'Base Tarragona'} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:ring-1 focus:ring-blue-500 outline-none" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-400 mb-1">Estat</label>
+                  <select name="status" defaultValue={editData?.status || 'En servei actiu'} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:ring-1 focus:ring-blue-500 outline-none">
+                    <option value="En servei actiu">En servei actiu</option>
+                    <option value="En ruta">En ruta</option>
+                    <option value="En pausa (Dinar)">En pausa (Dinar)</option>
+                    <option value="Fora de servei">Fora de servei</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="pt-4 mt-2 border-t border-slate-700 flex justify-end gap-3">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-5 py-2.5 text-slate-300 hover:text-white transition-colors">Cancel·lar</button>
+                <button disabled={isSaving} type="submit" className="bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 px-6 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50">
+                  {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+                  {editData ? 'Guardar Canvis' : 'Crear Tècnic'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {showCallModal && techData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-card rounded-2xl border border-border w-full max-w-sm shadow-2xl">
             <div className="flex items-center justify-between px-5 py-4 border-b border-border">
               <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-blue-100 rounded-lg">
-                  <Phone size={16} className="text-blue-600" />
-                </div>
+                <div className="p-1.5 bg-blue-100 rounded-lg"><Phone size={16} className="text-blue-600" /></div>
                 <h3 className="font-bold text-foreground">Contactar {techData.name.split(' ')[0]}</h3>
               </div>
-              <button onClick={() => setShowCallModal(false)} className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-all">
-                <X size={16} />
-              </button>
+              <button onClick={() => setShowCallModal(false)} className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-all"><X size={16} /></button>
             </div>
             <div className="p-5 space-y-3">
-              <p className="text-sm text-muted-foreground mb-4">Selecciona l'acció:</p>
               {[
-                { name: `Trucar a ${techData.name}`, role: 'Mòbil d\'empresa', ext: '600 123 456' },
+                { name: `Trucar a ${techData.name}`, role: 'Mòbil d\'empresa', ext: techData.phone || 'Sense telèfon' },
                 { name: 'Enviar missatge urgent', role: 'Notificació a l\'App', ext: 'App Push' },
               ].map((contact) => (
-                <button
-                  key={contact.name}
-                  onClick={() => handleCall(contact.name)}
-                  className="w-full flex items-center justify-between p-3 bg-muted/40 border border-border rounded-xl hover:bg-primary/5 hover:border-primary/30 transition-all group"
-                >
+                <button key={contact.name} onClick={() => handleCall(contact.name)} className="w-full flex items-center justify-between p-3 bg-muted/40 border border-border rounded-xl hover:bg-primary/5 hover:border-primary/30 transition-all group">
                   <div className="text-left">
                     <p className="text-sm font-semibold text-foreground group-hover:text-primary">{contact.name}</p>
                     <p className="text-xs text-muted-foreground">{contact.role}</p>
@@ -170,11 +238,6 @@ export default function TechnicianHeader({ selectedTech = 'Marc Puigdomènech', 
                   </div>
                 </button>
               ))}
-            </div>
-            <div className="px-5 py-4 border-t border-border">
-              <button onClick={() => setShowCallModal(false)} className="w-full py-2.5 text-sm font-medium text-muted-foreground bg-muted border border-border rounded-xl hover:bg-muted/80 transition-all">
-                Cancel·lar
-              </button>
             </div>
           </div>
         </div>
