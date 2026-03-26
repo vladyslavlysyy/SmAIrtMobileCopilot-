@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Search,
   ChevronDown,
@@ -11,6 +11,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { api, type Visit } from '@/lib/api';
 
 type WorkType =
   | 'correctiu-critic'
@@ -22,6 +23,7 @@ type WorkType =
 interface RecentIntervention {
   id: string;
   date: string;
+  plannedDateIso: string;
   workType: WorkType;
   address: string;
   municipality: string;
@@ -50,187 +52,127 @@ const WORK_TYPE_CLASSES: Record<WorkType, string> = {
   diagnosi: 'badge-diagnosi',
 };
 
-const recentInterventions: RecentIntervention[] = [
-  {
-    id: 'hist-001',
-    date: '26/03/2026',
-    workType: 'preventiu',
-    address: "C/ de l'Onze de Setembre, 3",
-    municipality: 'Tarragona',
-    client: 'Consorci Sanitari de Tarragona',
-    technician: 'Marc Puigdomènech',
-    duration: 58,
+const VISIT_TYPE_TO_WORK_TYPE: Record<string, WorkType> = {
+  correctivo_critico: 'correctiu-critic',
+  correctivo_no_critico: 'correctiu-no-critic',
+  preventivo: 'preventiu',
+  puesta_en_marcha: 'posada-marxa',
+  diagnosi: 'diagnosi',
+};
+
+function formatDate(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '—';
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+function extractMunicipality(address: string | null, postalCode: string | null): string {
+  if (address) {
+    const parts = address.split(',').map((part) => part.trim()).filter(Boolean);
+    if (parts.length > 1) return parts[parts.length - 1];
+  }
+  if (postalCode) return `CP ${postalCode}`;
+  return 'Sense municipi';
+}
+
+function mapVisitToRecentIntervention(
+  visit: Visit,
+  technicianNameById: Map<number, string>,
+  satByVisit: Map<number, string>
+): RecentIntervention {
+  const normalizedWorkType = VISIT_TYPE_TO_WORK_TYPE[visit.visit_type] ?? 'diagnosi';
+  const status = visit.status === 'completed' ? 'completada' : 'en-curs';
+  const technician =
+    visit.technician_id != null
+      ? (technicianNameById.get(visit.technician_id) ?? `Tècnic #${visit.technician_id}`)
+      : 'No assignat';
+
+  return {
+    id: `VIS-${visit.id}`,
+    date: formatDate(visit.planned_date),
+    plannedDateIso: visit.planned_date,
+    workType: normalizedWorkType,
+    address: visit.address ?? (visit.postal_code ? `Zona ${visit.postal_code}` : 'Sense adreça'),
+    municipality: extractMunicipality(visit.address, visit.postal_code),
+    client: visit.contract_id ? `Contracte #${visit.contract_id}` : 'Client no disponible',
+    technician,
+    duration: visit.estimated_duration ?? 0,
     kmViatge: 0,
-    slaComplert: true,
-    satNumber: null,
-    status: 'completada',
-  },
-  {
-    id: 'hist-002',
-    date: '26/03/2026',
-    workType: 'preventiu',
-    address: 'Av. de Roma, 78',
-    municipality: 'Tarragona',
-    client: 'Consorci Sanitari de Tarragona',
-    technician: 'Marc Puigdomènech',
-    duration: 62,
-    kmViatge: 3,
-    slaComplert: true,
-    satNumber: null,
-    status: 'completada',
-  },
-  {
-    id: 'hist-003',
-    date: '25/03/2026',
-    workType: 'correctiu-critic',
-    address: 'Rbla. Nova, 88',
-    municipality: 'Tarragona',
-    client: 'Generalitat de Catalunya',
-    technician: 'Laia Ferré',
-    duration: 115,
-    kmViatge: 8,
-    slaComplert: false,
-    satNumber: 'SAT-2839',
-    status: 'completada',
-  },
-  {
-    id: 'hist-004',
-    date: '25/03/2026',
-    workType: 'posada-marxa',
-    address: 'C/ Prat de la Riba, 12',
-    municipality: 'Reus',
-    client: 'Reus Mobilitat SL',
-    technician: 'Jordi Casals',
-    duration: 142,
-    kmViatge: 15,
-    slaComplert: true,
-    satNumber: 'OBR-C038',
-    status: 'completada',
-  },
-  {
-    id: 'hist-005',
-    date: '24/03/2026',
-    workType: 'diagnosi',
-    address: 'Av. Tarragona, 34',
-    municipality: 'Vila-seca',
-    client: 'Repsol Complexe Petroquímic',
-    technician: 'Pau Ribas',
-    duration: 48,
-    kmViatge: 22,
-    slaComplert: true,
-    satNumber: 'SAT-2844',
-    status: 'completada',
-  },
-  {
-    id: 'hist-006',
-    date: '24/03/2026',
-    workType: 'correctiu-no-critic',
-    address: 'C/ Sant Joan, 15',
-    municipality: 'Cambrils',
-    client: 'Cambrils Park Resort',
-    technician: 'Jordi Casals',
-    duration: 67,
-    kmViatge: 28,
-    slaComplert: true,
-    satNumber: 'SAT-2841',
-    status: 'completada',
-  },
-  {
-    id: 'hist-007',
-    date: '23/03/2026',
-    workType: 'preventiu',
-    address: 'Pg. Jaume I, 45',
-    municipality: 'Salou',
-    client: 'Ajuntament de Salou',
-    technician: 'Núria Valls',
-    duration: 55,
-    kmViatge: 19,
-    slaComplert: true,
-    satNumber: null,
-    status: 'completada',
-  },
-  {
-    id: 'hist-008',
-    date: '22/03/2026',
-    workType: 'correctiu-critic',
-    address: 'Av. dels Paisos Catalans, 200',
-    municipality: 'Reus',
-    client: 'Ajuntament de Reus',
-    technician: 'Laia Ferré',
-    duration: 98,
-    kmViatge: 12,
-    slaComplert: false,
-    satNumber: 'SAT-2831',
-    status: 'completada',
-  },
-  {
-    id: 'hist-009',
-    date: '21/03/2026',
-    workType: 'posada-marxa',
-    address: 'Av. Catalunya, 112',
-    municipality: 'Cambrils',
-    client: 'Mercadona SA',
-    technician: 'Jordi Casals',
-    duration: 155,
-    kmViatge: 30,
-    slaComplert: true,
-    satNumber: 'OBR-C036',
-    status: 'completada',
-  },
-  {
-    id: 'hist-010',
-    date: '20/03/2026',
-    workType: 'diagnosi',
-    address: 'Polígon Francolí, Carrer A, 8',
-    municipality: 'Tarragona',
-    client: 'Indústries Químiques Tarragona SL',
-    technician: 'Marc Puigdomènech',
-    duration: 41,
-    kmViatge: 7,
-    slaComplert: true,
-    satNumber: 'SAT-2826',
-    status: 'completada',
-  },
-  {
-    id: 'hist-011',
-    date: '19/03/2026',
-    workType: 'correctiu-critic',
-    address: 'C/ Major, 5',
-    municipality: 'Tarragona',
-    client: 'Ajuntament de Tarragona',
-    technician: 'Laia Ferré',
-    duration: 88,
-    kmViatge: 4,
-    slaComplert: true,
-    satNumber: 'SAT-2820',
-    status: 'completada',
-  },
-  {
-    id: 'hist-012',
-    date: '18/03/2026',
-    workType: 'preventiu',
-    address: 'Av. Vidal i Barraquer, 12',
-    municipality: 'Tarragona',
-    client: 'Hospital Joan XXIII',
-    technician: 'Núria Valls',
-    duration: 52,
-    kmViatge: 6,
-    slaComplert: true,
-    satNumber: null,
-    status: 'completada',
-  },
-];
+    slaComplert: status === 'completada',
+    satNumber: satByVisit.get(visit.id) ?? null,
+    status,
+  };
+}
 
 type SortKey = 'date' | 'duration' | 'kmViatge';
 const PAGE_SIZE_OPTIONS = [5, 10, 25];
 
 export default function RecentInterventionsTable() {
+  const [recentInterventions, setRecentInterventions] = useState<RecentIntervention[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<SortKey>('date');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [detailItem, setDetailItem] = useState<RecentIntervention | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadRecentInterventions = async () => {
+      setIsLoading(true);
+      try {
+        const [visits, users] = await Promise.all([
+          api.getAllVisits({}),
+          api.getUsers().catch(() => []),
+        ]);
+
+        const technicianNameById = new Map<number, string>(
+          users
+            .filter((u) => u.is_technician && u.technician_id != null)
+            .map((u) => [u.technician_id as number, u.name])
+        );
+
+        const sortedByDate = [...visits].sort(
+          (a, b) => new Date(b.planned_date).getTime() - new Date(a.planned_date).getTime()
+        );
+        const limitedVisits = sortedByDate.slice(0, 100);
+
+        const reportLookups = await Promise.allSettled(
+          limitedVisits.map((visit) => api.getReport(visit.id))
+        );
+        const satByVisit = new Map<number, string>();
+        reportLookups.forEach((lookup, index) => {
+          if (lookup.status === 'fulfilled') {
+            satByVisit.set(limitedVisits[index].id, `REP-${lookup.value.id}`);
+          }
+        });
+
+        const mapped = limitedVisits.map((visit) =>
+          mapVisitToRecentIntervention(visit, technicianNameById, satByVisit)
+        );
+
+        if (isMounted) setRecentInterventions(mapped);
+      } catch {
+        if (isMounted) {
+          setRecentInterventions([]);
+          toast.error('No s\'han pogut carregar les intervencions recents');
+        }
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    loadRecentInterventions();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleSort = (key: SortKey) => {
     if (sortBy === key) setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
@@ -254,7 +196,9 @@ export default function RecentInterventionsTable() {
     })
     .sort((a, b) => {
       let val = 0;
-      if (sortBy === 'duration') val = a.duration - b.duration;
+      if (sortBy === 'date') {
+        val = new Date(a.plannedDateIso).getTime() - new Date(b.plannedDateIso).getTime();
+      } else if (sortBy === 'duration') val = a.duration - b.duration;
       else if (sortBy === 'kmViatge') val = a.kmViatge - b.kmViatge;
       return sortDir === 'desc' ? -val : val;
     });
@@ -296,8 +240,9 @@ export default function RecentInterventionsTable() {
               Historial d&apos;Intervencions Recents
             </h3>
             <p className="text-muted-foreground text-xs mt-0.5">
-              {filtered.length} intervencions · {totalKm} km totals · Durada mitjana: {avgDuration}
-              min · SLA: {slaRate}%
+              {isLoading
+                ? 'Carregant intervencions recents...'
+                : `${filtered.length} intervencions · ${totalKm} km totals · Durada mitjana: ${avgDuration} min · SLA: ${slaRate}%`}
             </p>
           </div>
           <div className="relative">
@@ -370,6 +315,20 @@ export default function RecentInterventionsTable() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
+              {isLoading && (
+                <tr>
+                  <td colSpan={10} className="px-4 py-10 text-center text-sm text-muted-foreground">
+                    Carregant dades del backend...
+                  </td>
+                </tr>
+              )}
+              {!isLoading && paginated.length === 0 && (
+                <tr>
+                  <td colSpan={10} className="px-4 py-10 text-center text-sm text-muted-foreground">
+                    No hi ha intervencions per mostrar.
+                  </td>
+                </tr>
+              )}
               {paginated.map((intervention) => (
                 <tr
                   key={intervention.id}

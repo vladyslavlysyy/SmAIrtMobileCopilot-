@@ -221,6 +221,17 @@ export interface HealthResponse {
   status: 'ok' | string;
 }
 
+export interface UserInfo {
+  id: number;
+  name: string;
+  username: string | null;
+  phone: string;
+  email: string;
+  is_technician: boolean;
+  technician_id: number | null;
+  created_at: string;
+}
+
 // ═══════════════════════════════════════════════
 // UTILITY FUNCTIONS
 // ═══════════════════════════════════════════════
@@ -275,6 +286,24 @@ export const api = {
   getVisits: async (date?: string, technicianId?: number): Promise<Visit[]> => {
     const qs = buildQueryString({ date, technician_id: technicianId });
     const response = await fetch(`${BASE_URL}/api/v1/visits${qs}`);
+    return handleResponse(response);
+  },
+
+  /**
+   * GET /api/v1/visits/all?technician_id={id}&date_from={YYYY-MM-DD}&date_to={YYYY-MM-DD}
+   * Returns all visits with optional filters (used by metrics recent interventions)
+   */
+  getAllVisits: async (params?: {
+    technicianId?: number;
+    dateFrom?: string;
+    dateTo?: string;
+  }): Promise<Visit[]> => {
+    const qs = buildQueryString({
+      technician_id: params?.technicianId,
+      date_from: params?.dateFrom,
+      date_to: params?.dateTo,
+    });
+    const response = await fetch(`${BASE_URL}/api/v1/visits/all${qs}`);
     return handleResponse(response);
   },
 
@@ -420,6 +449,15 @@ export const api = {
         porcentaje_sla: s.porcentaje_sla ?? 0,
       })),
     };
+  },
+
+  /**
+   * GET /api/v1/users
+   * Returns user directory; technician names are used in metrics table.
+   */
+  getUsers: async (): Promise<UserInfo[]> => {
+    const response = await fetch(`${BASE_URL}/api/v1/users`);
+    return handleResponse(response);
   },
 };
 

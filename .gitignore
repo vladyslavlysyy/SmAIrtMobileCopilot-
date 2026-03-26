@@ -31,3 +31,6 @@ __pycache__/
 
 # TypeScript incremental cache
 *.tsbuildinfo
+
+# Virtual envs
+.venv
