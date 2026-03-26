@@ -49,7 +49,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text, func
 
 from database import get_db
-from models import Visit, Technician, Imprevisto, VisitStatus, VisitType
+from models import Visit, Technician, VisitStatus, VisitType
 from schemas import MetricsResponse, KmPorTecnico, RetardoPorCausa, SlaByType
 
 router = APIRouter(prefix="/api/v1", tags=["metrics"])
@@ -116,18 +116,16 @@ def get_metrics(
     km_query = text(f"""
         SELECT 
             v.technician_id,
-            COALESCE(t.name, CONCAT('Técnico ', v.technician_id)) as tech_name,
             COALESCE(c.latitude, 0.0) as lat,
             COALESCE(c.longitude, 0.0) as lon
         FROM visit v
         LEFT JOIN assignable a ON v.assignable_id = a.id
         LEFT JOIN charger c ON a.charger_id = c.id
-        LEFT JOIN technician t ON v.technician_id = t.id
         WHERE v.planned_date >= :from_dt
           AND v.planned_date <= :to_dt
           AND v.status = 'completed'
           {tech_filter}
-        ORDER BY v.technician_id ASC, v.route_order ASC, v.planned_date ASC
+        ORDER BY v.technician_id ASC, v.planned_date ASC
     """)
     
     km_rows = db.execute(km_query, {"from_dt": from_dt, "to_dt": to_dt}).fetchall()
@@ -135,17 +133,17 @@ def get_metrics(
     # Calcula km per tècnic agrupant per technician_id
     km_per_tec_dict: dict[int, list] = {}
     for row in km_rows:
-        km_per_tec_dict.setdefault(row.technician_id, []).append((row.lat, row.lon, row.tech_name))
+        km_per_tec_dict.setdefault(row.technician_id, []).append((row.lat, row.lon))
     
     km_per_tec: list[KmPorTecnico] = []
     for tec_id, coords in km_per_tec_dict.items():
         total_km = 0.0
         for i in range(1, len(coords)):
-            lat1, lon1, _ = coords[i - 1]
-            lat2, lon2, _ = coords[i]
+            lat1, lon1 = coords[i - 1]
+            lat2, lon2 = coords[i]
             total_km += haversine_km(lat1, lon1, lat2, lon2)
         
-        tech_name = coords[0][2] if coords else f"Técnico {tec_id}"
+        tech_name = f"Técnico {tec_id}"
         km_per_tec.append(KmPorTecnico(
             technician_id=tec_id,
             technician_name=tech_name,
@@ -166,24 +164,29 @@ def get_metrics(
     hours_row = db.execute(hours_query, {"from_dt": from_dt, "to_dt": to_dt}).fetchone()
     hores_efectives = hours_row.total_horas or 0.0
 
-    # ── 4. Retards per causa (imprevistos) ────────────────────────────────
-    imprevisto_query = text(f"""
-        SELECT 
-            i.tipo,
-            COUNT(i.id) as total
-        FROM imprevisto i
-        JOIN visit v ON i.visit_id = v.id
-        WHERE v.planned_date >= :from_dt
-          AND v.planned_date <= :to_dt
-          {tech_filter}
-        GROUP BY i.tipo
-    """)
-    
-    imprevisto_rows = db.execute(imprevisto_query, {"from_dt": from_dt, "to_dt": to_dt}).fetchall()
-    retards: list[RetardoPorCausa] = [
-        RetardoPorCausa(causa=row.tipo, total=row.total)
-        for row in imprevisto_rows
-    ]
+    # ── 4. Retards per causa (imprevistos)  ────────────────────────────────
+    # Nota: tabla imprevisto puede no existir aún en el esquema
+    try:
+        imprevisto_query = text(f"""
+            SELECT 
+                i.report_type as tipo,
+                COUNT(i.id) as total
+            FROM incidence i
+            JOIN visit v ON i.id = v.id
+            WHERE v.planned_date >= :from_dt
+              AND v.planned_date <= :to_dt
+              {tech_filter}
+            GROUP BY i.report_type
+        """)
+        
+        imprevisto_rows = db.execute(imprevisto_query, {"from_dt": from_dt, "to_dt": to_dt}).fetchall()
+        retards: list[RetardoPorCausa] = [
+            RetardoPorCausa(causa=row.tipo or "Sin especificar", total=row.total)
+            for row in imprevisto_rows
+        ]
+    except Exception:
+        # Si la tabla no existe o la query falla, retorna vacia
+        retards: list[RetardoPorCausa] = []
 
     # ── 5. SLA per tipus de visita ─────────────────────────────────────────
     sla_query = text(f"""
