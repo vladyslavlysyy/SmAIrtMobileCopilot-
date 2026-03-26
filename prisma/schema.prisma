@@ -1,0 +1,21 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  username  String   @unique
+  email     String   @unique
+  phone     String
+  password  String   // Aquí guardaremos el hash seguro, NUNCA en texto plano
+  role      String   @default("operations")
+  createdAt DateTime @default(now())
+}
