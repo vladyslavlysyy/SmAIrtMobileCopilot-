@@ -1,7 +1,12 @@
 """
 database.py — Conexión a PostgreSQL y sesión SQLAlchemy
-El host 'postgres-mantenimiento-db' es el nombre del contenedor Docker.
-Desde fuera de Docker (desarrollo local) usa localhost sobreescribiendo DB_HOST en .env
+
+Configuración desde .env:
+  DB_HOST       → host PostgreSQL (localhost para dev, postgres-mantenimiento-db para Docker)
+  DB_PORT       → puerto PostgreSQL (5432 por defecto)
+  DB_NAME       → nombre de la base datos (mantenimiento_db)
+  DB_USER       → usuario PostgreSQL (admin)
+  DB_PASSWORD   → contraseña (adminpassword)
 """
 
 from pathlib import Path
@@ -11,11 +16,12 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    DB_HOST: str = "localhost"
+    """Carga variables desde .env (requerido)"""
+    DB_HOST: str
     DB_PORT: int = 5432
-    DB_NAME: str = "mantenimiento_db"
-    DB_USER: str = "admin"
-    DB_PASSWORD: str = "adminpassword"
+    DB_NAME: str
+    DB_USER: str
+    DB_PASSWORD: str
 
     class Config:
         env_file = str(Path(__file__).parent / ".env")
