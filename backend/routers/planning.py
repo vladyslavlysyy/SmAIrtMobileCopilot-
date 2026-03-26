@@ -325,8 +325,8 @@ def plan_p5(db: Session, nv: Visit, today: date) -> list[CandidateTechnician]:
                     freed_min += travel_min(haversine_km(*new, prescindible.lat, prescindible.lon)) * 2
 
                 if t_cur - freed_min + emin <= LIMITE_JORNADA_MIN:
-                    p_name = {1: "preventiu", 2: "posada en marxa",
-                              3: "diagnosi", 4: "correctiu no crític"}.get(cancel_priority, "")
+                    p_name = {1: "maintenance", 2: "commissioning",
+                              3: "diagnosis", 4: "non-critical corrective"}.get(cancel_priority, "")
                     candidates.append(CandidateTechnician(
                         technician_id      = tec.id,
                         technician_name    = tec.name,
@@ -410,7 +410,14 @@ def plan_p3(db: Session, nv: Visit, today: date) -> list[CandidateTechnician]:
             .join(Visit.contract)
             .filter(
                 Visit.status.in_([VisitStatus.pending, VisitStatus.in_progress]),
-                Visit.visit_type.in_(["puesta_en_marcha", "correctivo_critico", "correctivo_no_critico"]),
+                Visit.visit_type.in_([
+                    "commissioning",
+                    "critical_corrective",
+                    "non_critical_corrective",
+                    "puesta_en_marcha",
+                    "correctivo_critico",
+                    "correctivo_no_critico",
+                ]),
                 Visit.planned_date >= datetime.combine(today, time.min),
             )
             .first()

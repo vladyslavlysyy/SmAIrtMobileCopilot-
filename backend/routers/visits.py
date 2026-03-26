@@ -19,7 +19,7 @@ from sqlalchemy.exc import OperationalError
 from pydantic import BaseModel
 
 from database import get_db
-from models import Visit, VisitStatus, Technician
+from models import Visit, VisitStatus, Technician, normalize_visit_type
 from schemas import VisitOut
 
 router = APIRouter(prefix="/api/v1", tags=["visits"])
@@ -40,7 +40,7 @@ def _execute_with_retry(db: Session, statement, params: dict | None = None, retr
 class CreateFromContractRequest(BaseModel):
     contract_id: int
     technician_id: int | None = None
-    visit_type: str = "preventivo"
+    visit_type: str = "maintenance"
     planned_date: str | None = None
 
 
@@ -58,7 +58,7 @@ def _rows_to_visits(rows) -> list[VisitOut]:
                 id=row.id,
                 assignable_id=row.assignable_id,
                 technician_id=row.technician_id,
-                visit_type=row.visit_type,
+                visit_type=normalize_visit_type(row.visit_type),
                 status=row.status,
                 planned_date=row.planned_date,
                 estimated_duration=row.estimated_duration,
@@ -238,9 +238,9 @@ def create_visit_from_contract(
     Note: current schema links visit -> assignable_id, so contract_id is mapped
     to assignable_id when IDs are aligned in seed/source data.
     """
-    vt = (payload.visit_type or "preventivo").lower()
-    if vt not in {"preventivo", "puesta_en_marcha"}:
-        raise HTTPException(status_code=422, detail="visit_type ha de ser preventivo o puesta_en_marcha")
+    vt = normalize_visit_type(payload.visit_type or "maintenance")
+    if vt not in {"maintenance", "commissioning"}:
+        raise HTTPException(status_code=422, detail="visit_type must be maintenance or commissioning")
 
     try:
         contract = _execute_with_retry(
@@ -358,11 +358,11 @@ def create_visit_from_incidence(
             detail="No existeix assignable associat a la incidència (mapping per ID requerit)",
         )
 
-    visit_type = "diagnosi"
+    visit_type = "diagnosis"
     if (payload.escalate_to or "").lower() == "p4":
-        visit_type = "correctivo_no_critico"
+        visit_type = "non_critical_corrective"
     elif (payload.escalate_to or "").lower() == "p5":
-        visit_type = "correctivo_critico"
+        visit_type = "critical_corrective"
 
     next_id = db.execute(text("SELECT COALESCE(MAX(id), 0) + 1 AS next_id FROM visit")).fetchone().next_id
     db.execute(

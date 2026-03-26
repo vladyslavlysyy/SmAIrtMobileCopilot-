@@ -25,11 +25,11 @@ from database import Base
 # ENUMS
 # ─────────────────────────────────────────────────────────────────────────────
 class VisitType(str, enum.Enum):
-    correctivo_critico    = "correctivo_critico"     # P5 per defecte
-    correctivo_no_critico = "correctivo_no_critico"  # P4 per defecte
-    diagnosi              = "diagnosi"               # P3 per defecte
-    puesta_en_marcha      = "puesta_en_marcha"       # P2 per defecte
-    preventivo            = "preventivo"             # P1 per defecte
+    critical_corrective     = "critical_corrective"      # P5 per defecte
+    non_critical_corrective = "non_critical_corrective"  # P4 per defecte
+    diagnosis               = "diagnosis"                # P3 per defecte
+    commissioning           = "commissioning"            # P2 per defecte
+    maintenance             = "maintenance"              # P1 per defecte
 
 
 class VisitStatus(str, enum.Enum):
@@ -55,12 +55,37 @@ class ImprevistoType(str, enum.Enum):
 
 # Prioritat per defecte derivada del tipus de visita
 DEFAULT_PRIORITY: dict[str, int] = {
-    "correctivo_critico":    5,
-    "correctivo_no_critico": 4,
-    "diagnosi":              3,
-    "puesta_en_marcha":      2,
-    "preventivo":            1,
+    "critical_corrective": 5,
+    "non_critical_corrective": 4,
+    "diagnosis": 3,
+    "commissioning": 2,
+    "maintenance": 1,
 }
+
+VISIT_TYPE_ALIASES: dict[str, str] = {
+    "critical_corrective": "critical_corrective",
+    "non_critical_corrective": "non_critical_corrective",
+    "diagnosis": "diagnosis",
+    "commissioning": "commissioning",
+    "maintenance": "maintenance",
+    "correctivo_critico": "critical_corrective",
+    "correctivo_no_critico": "non_critical_corrective",
+    "diagnosi": "diagnosis",
+    "puesta_en_marcha": "commissioning",
+    "preventivo": "maintenance",
+    "correctiu-critic": "critical_corrective",
+    "correctiu-no-critic": "non_critical_corrective",
+    "posada-marxa": "commissioning",
+    "preventiu": "maintenance",
+    "maintainance": "maintenance",
+}
+
+
+def normalize_visit_type(value: str | None, default: str = "maintenance") -> str:
+    if value is None:
+        return default
+    raw = str(value).strip().lower()
+    return VISIT_TYPE_ALIASES.get(raw, raw or default)
 
 # Coordenades de referència per zona (inici/fi de jornada del tècnic)
 # S'usen per calcular el viatge d'anada i tornada al dipòsit.
@@ -183,7 +208,7 @@ class Visit(Base):
     def effective_priority(self) -> int:
         """Prioritat derivada de visit_type. Quan arribin les migrations,
         aquest mètode llegirà el camp `priority` directament."""
-        return DEFAULT_PRIORITY.get(self.visit_type, 1)
+        return DEFAULT_PRIORITY.get(normalize_visit_type(self.visit_type), 1)
 
     @property
     def _charger(self) -> "Charger | None":

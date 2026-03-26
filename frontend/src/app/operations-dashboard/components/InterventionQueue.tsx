@@ -14,11 +14,11 @@ import { useAppStore } from '@/store/appStore';
 
 function sortByPriority(visits: Visit[]) {
   const priority: Record<Visit['visit_type'], number> = {
-    correctivo_critico: 5,
-    correctivo_no_critico: 4,
-    diagnosi: 3,
-    puesta_en_marcha: 2,
-    preventivo: 1,
+    critical_corrective: 5,
+    non_critical_corrective: 4,
+    diagnosis: 3,
+    commissioning: 2,
+    maintenance: 1,
   };
   return [...visits].sort((a, b) => {
     const pa = priority[a.visit_type] ?? 0;

@@ -24,25 +24,24 @@ import numpy as np
 import pandas as pd
 from sqlalchemy import text
 from sqlalchemy.orm import Session
+from models import normalize_visit_type
 
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "modelo_rutas_fsm_optimizado.json")
 DEFAULT_SPEED_KMH = 60.0
 
 VISIT_TYPE_NUM_MAP = {
-    "correctivo_critico": 5,
-    "correctivo_no_critico": 4,
-    "diagnosi": 3,
-    "puesta_en_marcha": 2,
-    "preventivo": 1,
+    "critical_corrective": 5,
+    "non_critical_corrective": 4,
+    "diagnosis": 3,
+    "commissioning": 2,
     "maintenance": 1,
 }
 
 PRIORITY_FROM_VISIT_TYPE = {
-    "correctivo_critico": 5,
-    "correctivo_no_critico": 4,
-    "diagnosi": 3,
-    "puesta_en_marcha": 2,
-    "preventivo": 1,
+    "critical_corrective": 5,
+    "non_critical_corrective": 4,
+    "diagnosis": 3,
+    "commissioning": 2,
     "maintenance": 1,
 }
 
@@ -127,7 +126,7 @@ def _fetch_pending_tasks(
     for r in rows:
         if r.latitude is None or r.longitude is None:
             continue
-        visit_type = (r.visit_type or "preventivo").lower()
+        visit_type = normalize_visit_type(r.visit_type)
         priority = int(r.assignable_priority or PRIORITY_FROM_VISIT_TYPE.get(visit_type, 3) or 3)
         days_waiting = max((today - r.planned_date.date()).days, 0) if r.planned_date else 0
         out.append(

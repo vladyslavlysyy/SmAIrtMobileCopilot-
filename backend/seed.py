@@ -57,7 +57,7 @@ def main() -> None:
 		# Contracts and incidence
 		contract1 = Contract(
 			id=next_id(db, Contract),
-			type="preventivo",
+			type="maintenance",
 			client_id=1001,
 			charger_id=c1.id,
 			domain_id=2001,
@@ -69,7 +69,7 @@ def main() -> None:
 		)
 		contract2 = Contract(
 			id=contract1.id + 1,
-			type="preventivo",
+			type="maintenance",
 			client_id=1002,
 			charger_id=c2.id,
 			domain_id=2002,
@@ -99,7 +99,7 @@ def main() -> None:
 				contract_id=contract1.id,
 				incidence_id=None,
 				technician_id=t1.id,
-				visit_type=VisitType.preventivo.value,
+				visit_type=VisitType.maintenance.value,
 				status=VisitStatus.pending.value,
 				planned_date=now + timedelta(hours=1),
 				address="Demo Stop A - Tarragona",
@@ -112,7 +112,7 @@ def main() -> None:
 				contract_id=contract2.id,
 				incidence_id=None,
 				technician_id=t1.id,
-				visit_type=VisitType.puesta_en_marcha.value,
+				visit_type=VisitType.commissioning.value,
 				status=VisitStatus.pending.value,
 				planned_date=now + timedelta(hours=2, minutes=30),
 				address="Demo Stop B - Reus",
@@ -125,7 +125,7 @@ def main() -> None:
 				contract_id=None,
 				incidence_id=incidence1.id,
 				technician_id=t1.id,
-				visit_type=VisitType.correctivo_critico.value,
+				visit_type=VisitType.critical_corrective.value,
 				status=VisitStatus.pending.value,
 				planned_date=now + timedelta(hours=4),
 				address="Demo Stop C - Cambrils",

@@ -16,10 +16,10 @@ import { api, PRIORITY_LABELS, type RouteResponse, type Visit } from '@/lib/api'
 import { useAppStore } from '@/store/appStore';
 
 function getVisitBadgeClass(visitType: Visit['visit_type']) {
-  if (visitType === 'correctivo_critico') return 'badge-correctiu-critic';
-  if (visitType === 'correctivo_no_critico') return 'badge-correctiu-no-critic';
-  if (visitType === 'diagnosi') return 'badge-diagnosi';
-  if (visitType === 'puesta_en_marcha') return 'badge-posada-marxa';
+  if (visitType === 'critical_corrective') return 'badge-correctiu-critic';
+  if (visitType === 'non_critical_corrective') return 'badge-correctiu-no-critic';
+  if (visitType === 'diagnosis') return 'badge-diagnosi';
+  if (visitType === 'commissioning') return 'badge-posada-marxa';
   return 'badge-preventiu';
 }
 

@@ -44,7 +44,7 @@ def run() -> int:
         )),
         ("POST /api/v1/visits/from-contract", lambda: client.post(
             "/api/v1/visits/from-contract",
-            json={"contract_id": 1, "technician_id": 1, "visit_type": "preventivo"},
+            json={"contract_id": 1, "technician_id": 1, "visit_type": "maintenance"},
         )),
         ("POST /api/v1/visits/from-incidence", lambda: client.post(
             "/api/v1/visits/from-incidence",

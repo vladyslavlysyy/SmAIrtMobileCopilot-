@@ -10,11 +10,11 @@ export const BASE_URL = 'http://localhost:8000';
 // ═══════════════════════════════════════════════
 
 export type VisitType =
-  | 'correctivo_critico'
-  | 'correctivo_no_critico'
-  | 'diagnosi'
-  | 'puesta_en_marcha'
-  | 'preventivo';
+  | 'critical_corrective'
+  | 'non_critical_corrective'
+  | 'diagnosis'
+  | 'commissioning'
+  | 'maintenance';
 
 export type VisitStatus = 'pending' | 'in_progress' | 'completed' | 'blocked' | 'cancelled';
 
@@ -253,6 +253,34 @@ function buildQueryString(params: Record<string, string | number | undefined>): 
   return query ? `?${query}` : '';
 }
 
+function normalizeVisitType(value: unknown): VisitType {
+  const raw = String(value ?? '').toLowerCase();
+  if (raw === 'critical_corrective' || raw === 'correctivo_critico' || raw === 'correctiu-critic') {
+    return 'critical_corrective';
+  }
+  if (
+    raw === 'non_critical_corrective' ||
+    raw === 'correctivo_no_critico' ||
+    raw === 'correctiu-no-critic'
+  ) {
+    return 'non_critical_corrective';
+  }
+  if (raw === 'diagnosis' || raw === 'diagnosi') {
+    return 'diagnosis';
+  }
+  if (raw === 'commissioning' || raw === 'puesta_en_marcha' || raw === 'posada-marxa') {
+    return 'commissioning';
+  }
+  return 'maintenance';
+}
+
+function normalizeVisit(visit: any): Visit {
+  return {
+    ...visit,
+    visit_type: normalizeVisitType(visit?.visit_type),
+  } as Visit;
+}
+
 // ═══════════════════════════════════════════════
 // API ENDPOINTS
 // ═══════════════════════════════════════════════
@@ -276,7 +304,8 @@ export const api = {
       date,
     });
     const response = await fetch(`${BASE_URL}/api/v1/visits${qs}`);
-    return handleResponse(response);
+    const raw = await handleResponse<any[]>(response);
+    return raw.map(normalizeVisit);
   },
 
   /**
@@ -286,7 +315,8 @@ export const api = {
   getVisits: async (date?: string, technicianId?: number): Promise<Visit[]> => {
     const qs = buildQueryString({ date, technician_id: technicianId });
     const response = await fetch(`${BASE_URL}/api/v1/visits${qs}`);
-    return handleResponse(response);
+    const raw = await handleResponse<any[]>(response);
+    return raw.map(normalizeVisit);
   },
 
   /**
@@ -304,7 +334,8 @@ export const api = {
       date_to: params?.dateTo,
     });
     const response = await fetch(`${BASE_URL}/api/v1/visits/all${qs}`);
-    return handleResponse(response);
+    const raw = await handleResponse<any[]>(response);
+    return raw.map(normalizeVisit);
   },
 
   /**
@@ -466,27 +497,27 @@ export const api = {
 // ═══════════════════════════════════════════════
 
 export const PRIORITY_LEVELS: Record<VisitType, number> = {
-  correctivo_critico: 5,
-  correctivo_no_critico: 4,
-  diagnosi: 3,
-  puesta_en_marcha: 2,
-  preventivo: 1,
+  critical_corrective: 5,
+  non_critical_corrective: 4,
+  diagnosis: 3,
+  commissioning: 2,
+  maintenance: 1,
 };
 
 export const PRIORITY_COLORS: Record<VisitType, string> = {
-  correctivo_critico: '#EF4444', // red
-  correctivo_no_critico: '#F97316', // orange
-  diagnosi: '#EAB308', // yellow
-  puesta_en_marcha: '#22C55E', // green
-  preventivo: '#3B82F6', // blue
+  critical_corrective: '#EF4444', // red
+  non_critical_corrective: '#F97316', // orange
+  diagnosis: '#EAB308', // yellow
+  commissioning: '#22C55E', // green
+  maintenance: '#3B82F6', // blue
 };
 
 export const PRIORITY_LABELS: Record<VisitType, string> = {
-  correctivo_critico: 'P5 - Crítico',
-  correctivo_no_critico: 'P4 - Urgente',
-  diagnosi: 'P3 - Diagnóstico',
-  puesta_en_marcha: 'P2 - Puesta en marcha',
-  preventivo: 'P1 - Preventivo',
+  critical_corrective: 'P5 - Crítico',
+  non_critical_corrective: 'P4 - Urgente',
+  diagnosis: 'P3 - Diagnóstico',
+  commissioning: 'P2 - Puesta en marcha',
+  maintenance: 'P1 - Preventivo',
 };
 
 export const STATUS_LABELS: Record<VisitStatus, string> = {

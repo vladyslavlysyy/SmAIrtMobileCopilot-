@@ -14,11 +14,11 @@ import { toast } from 'sonner';
 import { api, type Visit } from '@/lib/api';
 
 type WorkType =
-  | 'correctiu-critic'
-  | 'correctiu-no-critic'
-  | 'preventiu'
-  | 'posada-marxa'
-  | 'diagnosi';
+  | 'critical-corrective'
+  | 'non-critical-corrective'
+  | 'maintenance'
+  | 'commissioning'
+  | 'diagnosis';
 
 interface RecentIntervention {
   id: string;
@@ -37,27 +37,33 @@ interface RecentIntervention {
 }
 
 const WORK_TYPE_LABELS: Record<WorkType, string> = {
-  'correctiu-critic': 'Correctiu Crític',
-  'correctiu-no-critic': 'Correctiu No Crític',
-  preventiu: 'Preventiu',
-  'posada-marxa': 'Posada en Marxa',
-  diagnosi: 'Diagnosi',
+  'critical-corrective': 'Correctiu Crític',
+  'non-critical-corrective': 'Correctiu No Crític',
+  maintenance: 'Preventiu',
+  commissioning: 'Posada en Marxa',
+  diagnosis: 'Diagnosi',
 };
 
 const WORK_TYPE_CLASSES: Record<WorkType, string> = {
-  'correctiu-critic': 'badge-correctiu-critic',
-  'correctiu-no-critic': 'badge-correctiu-no-critic',
-  preventiu: 'badge-preventiu',
-  'posada-marxa': 'badge-posada-marxa',
-  diagnosi: 'badge-diagnosi',
+  'critical-corrective': 'badge-correctiu-critic',
+  'non-critical-corrective': 'badge-correctiu-no-critic',
+  maintenance: 'badge-preventiu',
+  commissioning: 'badge-posada-marxa',
+  diagnosis: 'badge-diagnosi',
 };
 
 const VISIT_TYPE_TO_WORK_TYPE: Record<string, WorkType> = {
-  correctivo_critico: 'correctiu-critic',
-  correctivo_no_critico: 'correctiu-no-critic',
-  preventivo: 'preventiu',
-  puesta_en_marcha: 'posada-marxa',
-  diagnosi: 'diagnosi',
+  critical_corrective: 'critical-corrective',
+  non_critical_corrective: 'non-critical-corrective',
+  maintenance: 'maintenance',
+  commissioning: 'commissioning',
+  diagnosis: 'diagnosis',
+  correctivo_critico: 'critical-corrective',
+  correctivo_no_critico: 'non-critical-corrective',
+  preventivo: 'maintenance',
+  puesta_en_marcha: 'commissioning',
+  diagnosi: 'diagnosis',
+  maintainance: 'maintenance',
 };
 
 function formatDate(iso: string): string {
@@ -83,7 +89,7 @@ function mapVisitToRecentIntervention(
   technicianNameById: Map<number, string>,
   satByVisit: Map<number, string>
 ): RecentIntervention {
-  const normalizedWorkType = VISIT_TYPE_TO_WORK_TYPE[visit.visit_type] ?? 'diagnosi';
+  const normalizedWorkType = VISIT_TYPE_TO_WORK_TYPE[visit.visit_type] ?? 'diagnosis';
   const status = visit.status === 'completed' ? 'completada' : 'en-curs';
   const technician =
     visit.technician_id != null

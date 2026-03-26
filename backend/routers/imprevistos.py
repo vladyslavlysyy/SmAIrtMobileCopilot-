@@ -38,6 +38,7 @@ from sqlalchemy import text
 from pydantic import BaseModel
 
 from database import get_db
+from models import normalize_visit_type
 from schemas import ImprevistoCreate, ImprevistoOut, ImprevistoResponse, VisitOut
 
 router = APIRouter(prefix="/api/v1/imprevistos", tags=["imprevistos"])
@@ -296,16 +297,15 @@ def evaluar_imprevisto(
         raise HTTPException(status_code=404, detail=f"Visita {payload.visit_id} no trobada")
 
     priority_to_score = {
-        "correctivo_critico": 85.0,
-        "correctivo_no_critico": 65.0,
-        "diagnosi": 50.0,
-        "puesta_en_marcha": 35.0,
-        "preventivo": 20.0,
+        "critical_corrective": 85.0,
+        "non_critical_corrective": 65.0,
+        "diagnosis": 50.0,
+        "commissioning": 35.0,
         "maintenance": 20.0,
     }
     score_visita = float(row.score or 0.0)
     if score_visita <= 0.0:
-        score_visita = priority_to_score.get((row.visit_type or "").lower(), 20.0)
+        score_visita = priority_to_score.get(normalize_visit_type(row.visit_type), 20.0)
 
     penalitzacio = (payload.temps_eina_min * 0.6) + (payload.distancia_eina_km * 0.4)
     decisio = "ves_a_buscar_eina" if score_visita >= penalitzacio else "esquipa"

@@ -56,11 +56,11 @@ router = APIRouter(prefix="/api/v1", tags=["metrics"])
 
 # Marges SLA en hores per tipus de visita
 SLA_MARGES: dict[str, int] = {
-    "correctivo_critico":    0,
-    "correctivo_no_critico": 24,
-    "preventivo":            72,
-    "puesta_en_marcha":      48,
-    "diagnosi":              24,
+    "critical_corrective": 0,
+    "non_critical_corrective": 24,
+    "maintenance": 72,
+    "commissioning": 48,
+    "diagnosis": 24,
 }
 
 
