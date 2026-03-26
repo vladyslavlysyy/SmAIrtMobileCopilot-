@@ -101,6 +101,7 @@ class Technician(Base):
     zone: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
     visits: Mapped[list["Visit"]] = relationship("Visit", back_populates="technician")
+    users: Mapped[list["UserInfo"]] = relationship("UserInfo", back_populates="technician")
 
     @property
     def depot(self) -> tuple[float, float]:
@@ -233,3 +234,21 @@ class Imprevisto(Base):
     created_at:       Mapped[datetime]     = mapped_column(DateTime, default=datetime.utcnow)
 
     visit: Mapped["Visit"] = relationship("Visit")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# USER INFO
+# ─────────────────────────────────────────────────────────────────────────────
+class UserInfo(Base):
+    __tablename__ = "user_info"
+
+    id:            Mapped[int]           = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    name:          Mapped[str]           = mapped_column(String(255), nullable=False)
+    telefono:      Mapped[str]           = mapped_column(String(50), nullable=False)
+    email:         Mapped[str]           = mapped_column(String(255), nullable=False, unique=True)
+    passwd:        Mapped[str]           = mapped_column(String(255), nullable=False)
+    is_technician: Mapped[bool]          = mapped_column(Boolean, default=False)
+    technician_id: Mapped[int | None]    = mapped_column(BigInteger, ForeignKey("technician.id"), nullable=True)
+    created_at:    Mapped[datetime]      = mapped_column(DateTime, default=datetime.utcnow)
+
+    technician: Mapped["Technician | None"] = relationship("Technician", back_populates="users")

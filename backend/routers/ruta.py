@@ -1,212 +1,304 @@
-"""
-routers/ruta.py
+"""Ruteo con OSMnx + NetworkX (TSP sobre mini-grafo de paradas)."""
 
-Dos endpoints de ruta, en orden de uso natural del técnico:
-
-  1. POST /api/v1/ruta/calcular
-       El técnico acepta la lista ordenada propuesta y pide las
-       coordenadas para pintar el mapa + hora estimada de cada parada.
-
-  2. POST /api/v1/ruta/asignar-incidencia
-       Llega una incidencia nueva. Se inserta en el punto óptimo de la
-       ruta activa y se valida que no exceda la jornada (480 min).
-       Devuelve JORNADA_EXCEDIDA si no cabe.
-
-Geometría:
-  - Distancias calculadas con Haversine (sin API externa, funciona offline)
-  - Velocidad media: 40 km/h (zona metropolitana Camp de Tarragona)
-  - Jornada máxima: 480 min (8h)
-
-Consumido por:
-  - RouteTimeline.tsx      → botón "Acceptar ruta" → /calcular
-  - ContingencyBanner.tsx  → nueva incidencia crítica → /asignar-incidencia
-"""
-
-import math
 from datetime import datetime, timedelta
-from typing import Union
+from functools import lru_cache
+from typing import Any, Union
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from database import get_db
-from models import Visit, VisitType, VisitStatus
+from models import Visit
 from schemas import (
-    CalcularRutaRequest, CalcularRutaResponse, SegmentoRuta, Coordenada,
-    AsignarIncidenciaRequest, AsignarOkResponse, AsignarErrorResponse,
-    EstadisticasRuta, ImpactoSimulacion,
+    CalcularRutaRequest,
+    CalcularRutaResponse,
+    SegmentoRuta,
+    Coordenada,
+    AsignarIncidenciaRequest,
+    AsignarOkResponse,
+    AsignarErrorResponse,
+    EstadisticasRuta,
+    ImpactoSimulacion,
 )
 
 router = APIRouter(prefix="/api/v1/ruta", tags=["ruta"])
 
-# ─────────────────────────────────────────────────────────────────────────────
-# CONSTANTES
-# ─────────────────────────────────────────────────────────────────────────────
-VELOCIDAD_KMH      = 40
-LIMITE_JORNADA_MIN = 480   # 8 horas
+LIMITE_JORNADA_MIN = 480
+MAP_PLACE = "Tarragona, Spain"
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# HELPERS GEOMÉTRICOS
-# ─────────────────────────────────────────────────────────────────────────────
-def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
-    """Distancia en km entre dos coordenadas (Haversine)."""
-    R = 6371.0
-    p1, p2 = math.radians(lat1), math.radians(lat2)
-    dp = math.radians(lat2 - lat1)
-    dl = math.radians(lon2 - lon1)
-    a  = math.sin(dp / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2) ** 2
-    return 2 * R * math.asin(math.sqrt(a))
+def _require_routing_libs() -> tuple[Any, Any, Any]:
+    try:
+        import osmnx as ox
+        import networkx as nx
+        from networkx.algorithms.approximation import traveling_salesman_problem
+    except Exception as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=(
+                "Falten dependències de ruteig. Instal·la 'osmnx' i 'networkx' "
+                "al venv del backend."
+            ),
+        ) from exc
+    return ox, nx, traveling_salesman_problem
 
 
-def travel_min(km: float) -> float:
-    return (km / VELOCIDAD_KMH) * 60
+@lru_cache(maxsize=2)
+def _get_drive_graph(place: str):
+    ox, _, _ = _require_routing_libs()
+    graph = ox.graph_from_place(place, network_type="drive")
+    graph = ox.add_edge_speeds(graph)
+    graph = ox.add_edge_travel_times(graph)
+    return graph
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# HELPERS DE RUTA
-# ─────────────────────────────────────────────────────────────────────────────
-def visitas_a_dicts(visits: list[Visit]) -> list[dict]:
-    return [
-        {
-            "id":           v.id,
-            "lat":          v.latitude,
-            "lon":          v.longitude,
-            "duration_min": v.estimated_duration or 45,
-            "visit_type":   v.visit_type,
-            "address":      v.address,
-        }
-        for v in visits
-    ]
+def _rotate_start(path: list[int], start_idx: int) -> list[int]:
+    if not path:
+        return path
+    if start_idx in path:
+        pivot = path.index(start_idx)
+        return path[pivot:] + path[:pivot]
+    return path
 
 
-def calcular_stats(
-    origen: tuple[float, float],
-    visitas: list[dict],
-) -> tuple[float, float]:
-    """Devuelve (tiempo_total_min, distancia_total_km)."""
-    total_km = total_min = 0.0
-    pos = origen
-    for v in visitas:
-        km = haversine_km(pos[0], pos[1], v["lat"], v["lon"])
-        total_km  += km
-        total_min += travel_min(km) + v["duration_min"]
-        pos = (v["lat"], v["lon"])
-    return total_min, total_km
-
-
-def insertar_optimo(
-    origen: tuple[float, float],
-    ruta: list[dict],
-    nueva: dict,
-) -> list[dict]:
+def generar_ruta_optima(paradas: list[dict], place: str = MAP_PLACE) -> dict:
     """
-    Inserta `nueva` en la posición que minimiza el desvío total.
-    Las visitas correctivo_critico existentes no se reordenan:
-    la nueva se inserta antes del primer no-crítico.
+    Espera `paradas` con formato:
+    {"id": int|str, "coords": (lat, lon), "estancia": int, "address": str|None}
+    La primera parada debe ser el origen (estancia=0 recomendado).
     """
-    primer_no_critico = next(
-        (i for i, v in enumerate(ruta) if v["visit_type"] != VisitType.correctivo_critico),
-        len(ruta),
-    )
+    if len(paradas) < 2:
+        raise HTTPException(status_code=422, detail="Calen almenys origen + 1 parada.")
 
-    puntos       = [origen] + [(v["lat"], v["lon"]) for v in ruta]
-    mejor_coste  = float("inf")
-    mejor_idx    = primer_no_critico
+    ox, nx, traveling_salesman_problem = _require_routing_libs()
+    G = _get_drive_graph(place)
 
-    for i in range(primer_no_critico, len(ruta) + 1):
-        prev     = puntos[i]
-        sig      = puntos[i + 1] if i + 1 < len(puntos) else None
-        coste    = haversine_km(prev[0], prev[1], nueva["lat"], nueva["lon"])
-        if sig:
-            coste += haversine_km(nueva["lat"], nueva["lon"], sig[0], sig[1])
-            coste -= haversine_km(prev[0], prev[1], sig[0], sig[1])
-        if coste < mejor_coste:
-            mejor_coste = coste
-            mejor_idx   = i
+    nodos_paradas: list[int] = []
+    idx_to_parada: dict[int, dict] = {}
 
-    return ruta[:mejor_idx] + [nueva] + ruta[mejor_idx:]
+    for i, p in enumerate(paradas):
+        lat, lon = p["coords"]
+        node = ox.nearest_nodes(G, lon, lat)
+        nodos_paradas.append(node)
+        idx_to_parada[i] = p
+
+    # Mini-grafo completo entre paradas para aislar el TSP de cortes de conectividad urbana.
+    tsp_graph = nx.complete_graph(len(nodos_paradas))
+    for i in range(len(nodos_paradas)):
+        for j in range(len(nodos_paradas)):
+            if i == j:
+                continue
+            u = nodos_paradas[i]
+            v = nodos_paradas[j]
+            try:
+                cost = nx.shortest_path_length(G, u, v, weight="travel_time")
+            except nx.NetworkXNoPath:
+                cost = 999999
+            tsp_graph[i][j]["weight"] = cost
+
+    tsp_idx_route = list(traveling_salesman_problem(tsp_graph, weight="weight", cycle=False))
+    tsp_idx_route = _rotate_start(tsp_idx_route, 0)
+
+    # Si por heurística el origen no queda primero, lo forzamos.
+    if tsp_idx_route and tsp_idx_route[0] != 0:
+        tsp_idx_route = [0] + [i for i in tsp_idx_route if i != 0]
+
+    ruta_nodos = [nodos_paradas[i] for i in tsp_idx_route]
+    paradas_ordenadas = [idx_to_parada[i] for i in tsp_idx_route]
+
+    geometria_geojson: list[list[float]] = []
+    distancia_total_m = 0.0
+    tiempo_total_seg = 0.0
+    legs: list[dict] = []
+
+    for idx in range(len(ruta_nodos) - 1):
+        u = ruta_nodos[idx]
+        v = ruta_nodos[idx + 1]
+
+        try:
+            path_nodes = nx.shortest_path(G, u, v, weight="travel_time")
+        except nx.NetworkXNoPath:
+            continue
+
+        leg_m = nx.path_weight(G, path_nodes, weight="length")
+        leg_s = nx.path_weight(G, path_nodes, weight="travel_time")
+        distancia_total_m += leg_m
+        tiempo_total_seg += leg_s
+
+        to_stop = paradas_ordenadas[idx + 1]
+        legs.append(
+            {
+                "to_id": to_stop.get("id"),
+                "distance_km": round(leg_m / 1000, 2),
+                "travel_min": round(leg_s / 60, 1),
+            }
+        )
+
+        for n_u, n_v in zip(path_nodes[:-1], path_nodes[1:]):
+            edge_data = G.get_edge_data(n_u, n_v)
+            if not edge_data:
+                continue
+            edge = edge_data[min(edge_data.keys())]
+            if "geometry" in edge:
+                coords = list(edge["geometry"].coords)
+                geometria_geojson.extend([[c[0], c[1]] for c in coords])
+            else:
+                geometria_geojson.append([G.nodes[n_u]["x"], G.nodes[n_u]["y"]])
+
+    return {
+        "resumen": {
+            "distancia_km": round(distancia_total_m / 1000, 2),
+            "tiempo_conduccion_min": round(tiempo_total_seg / 60, 2),
+            "tiempo_paradas_min": sum(int(p.get("estancia", 0) or 0) for p in paradas_ordenadas),
+        },
+        "paradas_ordenadas": paradas_ordenadas,
+        "ruta_geojson": {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": geometria_geojson,
+            },
+        },
+        "legs": legs,
+    }
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# ENDPOINT 1 — calcular ruta aceptada
-# ─────────────────────────────────────────────────────────────────────────────
+def validar_jornada_laboral(
+    paradas: list[dict],
+    limite_horas: float = 6,
+    place: str = MAP_PLACE,
+) -> dict:
+    """
+    Valida si la ruta óptima TSP cabe en una jornada laboral.
+    Formato de `paradas`: [{"coords": (lat, lon), "estancia": int, ...}, ...]
+    """
+    if len(paradas) < 2:
+        raise HTTPException(status_code=422, detail="Calen almenys origen + 1 parada.")
+
+    ox, nx, traveling_salesman_problem = _require_routing_libs()
+    G = _get_drive_graph(place)
+
+    nodos_paradas = [ox.nearest_nodes(G, p["coords"][1], p["coords"][0]) for p in paradas]
+
+    tsp_graph = nx.complete_graph(len(nodos_paradas))
+    for i in range(len(nodos_paradas)):
+        for j in range(len(nodos_paradas)):
+            if i == j:
+                continue
+            try:
+                tiempo_segundos = nx.shortest_path_length(
+                    G,
+                    nodos_paradas[i],
+                    nodos_paradas[j],
+                    weight="travel_time",
+                )
+            except nx.NetworkXNoPath:
+                tiempo_segundos = 999999
+            tsp_graph[i][j]["weight"] = tiempo_segundos
+
+    ruta_indices = list(traveling_salesman_problem(tsp_graph, weight="weight", cycle=False))
+    ruta_indices = _rotate_start(ruta_indices, 0)
+    if ruta_indices and ruta_indices[0] != 0:
+        ruta_indices = [0] + [i for i in ruta_indices if i != 0]
+
+    tiempo_conduccion_segundos = 0.0
+    for i in range(len(ruta_indices) - 1):
+        u = ruta_indices[i]
+        v = ruta_indices[i + 1]
+        tiempo_conduccion_segundos += float(tsp_graph[u][v].get("weight", 0.0))
+
+    tiempo_conduccion_min = tiempo_conduccion_segundos / 60
+    tiempo_paradas_min = sum(int(p.get("estancia", 0) or 0) for p in paradas)
+    tiempo_total_min = tiempo_conduccion_min + tiempo_paradas_min
+    tiempo_total_horas = tiempo_total_min / 60
+
+    return {
+        "conduccion_minutos": round(tiempo_conduccion_min, 1),
+        "paradas_minutos": int(tiempo_paradas_min),
+        "total_horas": round(tiempo_total_horas, 2),
+        "limite_horas": float(limite_horas),
+        "excede_jornada": bool(tiempo_total_horas > limite_horas),
+    }
+
+
+def _visit_to_stop(v: Visit) -> dict:
+    if v.lat is None or v.lon is None:
+        raise HTTPException(status_code=422, detail=f"La visita {v.id} no té coordenades.")
+    return {
+        "id": v.id,
+        "coords": (float(v.lat), float(v.lon)),
+        "estancia": int(v.estimated_duration or 45),
+        "address": v.address,
+    }
+
+
 @router.post("/calcular", response_model=CalcularRutaResponse)
 def calcular_ruta(
     payload: CalcularRutaRequest,
     db: Session = Depends(get_db),
 ) -> CalcularRutaResponse:
-    """
-    El técnico acepta la lista ordenada propuesta por el modelo.
-    Devuelve:
-      - coordenadas_ruta  → polyline para el mapa
-      - segmentos         → detalle por parada (distancia, tiempo, hora estimada)
-      - totales           → distancia y tiempo de toda la jornada
-
-    La hora estimada de llegada a cada parada se calcula a partir
-    de la hora actual del servidor. En producción se recibiría del cliente.
-    """
     if not payload.visit_ids_ordered:
         raise HTTPException(status_code=422, detail="La llista de visites és buida.")
 
-    # Cargar visitas en el orden que el técnico ha aceptado
-    visitas_db = db.query(Visit).filter(Visit.id.in_(payload.visit_ids_ordered)).all()
-    visita_map = {v.id: v for v in visitas_db}
+    visits = db.query(Visit).filter(Visit.id.in_(payload.visit_ids_ordered)).all()
+    visit_map = {v.id: v for v in visits}
 
-    visitas_ordenadas = []
-    for vid in payload.visit_ids_ordered:
-        if vid not in visita_map:
-            raise HTTPException(status_code=404, detail=f"Visita {vid} no trobada.")
-        visitas_ordenadas.append(visita_map[vid])
+    for visit_id in payload.visit_ids_ordered:
+        if visit_id not in visit_map:
+            raise HTTPException(status_code=404, detail=f"Visita {visit_id} no trobada.")
 
-    # Persistir route_order en BD para que GET /visits lo refleje
-    for idx, v in enumerate(visitas_ordenadas):
-        v.route_order = idx
-    db.commit()
+    paradas = [
+        {
+            "id": "origen",
+            "coords": (payload.origen.latitude, payload.origen.longitude),
+            "estancia": 0,
+            "address": "Origen",
+        }
+    ]
+    paradas.extend(_visit_to_stop(visit_map[visit_id]) for visit_id in payload.visit_ids_ordered)
 
-    # Calcular segmentos
-    origen    = (payload.origen.latitude, payload.origen.longitude)
-    pos       = origen
-    ahora     = datetime.now()
-    hora_acum = ahora
+    resultado = generar_ruta_optima(paradas)
+    ordered_stops = [p for p in resultado["paradas_ordenadas"] if p.get("id") != "origen"]
+    leg_by_to_id = {leg["to_id"]: leg for leg in resultado.get("legs", [])}
 
-    segmentos:        list[SegmentoRuta] = []
-    coordenadas_ruta: list[Coordenada]   = [Coordenada(latitude=origen[0], longitude=origen[1])]
-    total_km  = 0.0
-    total_min = 0.0
+    hora_acum = datetime.now()
+    segmentos: list[SegmentoRuta] = []
 
-    for v in visitas_ordenadas:
-        km      = haversine_km(pos[0], pos[1], v.latitude, v.longitude)
-        t_viaje = travel_min(km)
+    for stop in ordered_stops:
+        visit = visit_map[stop["id"]]
+        leg = leg_by_to_id.get(visit.id, {"distance_km": 0.0, "travel_min": 0.0})
+        hora_acum += timedelta(minutes=float(leg["travel_min"]))
 
-        hora_acum += timedelta(minutes=t_viaje)
-        total_km  += km
-        total_min += t_viaje + (v.estimated_duration or 45)
+        segmentos.append(
+            SegmentoRuta(
+                visit_id=visit.id,
+                address=visit.address,
+                coordenada=Coordenada(latitude=float(stop["coords"][0]), longitude=float(stop["coords"][1])),
+                distancia_km=float(leg["distance_km"]),
+                tiempo_viaje_min=float(leg["travel_min"]),
+                hora_llegada_est=hora_acum.strftime("%H:%M"),
+            )
+        )
+        hora_acum += timedelta(minutes=int(stop.get("estancia", 0) or 0))
 
-        segmentos.append(SegmentoRuta(
-            visit_id         = v.id,
-            address          = v.address,
-            coordenada       = Coordenada(latitude=v.latitude, longitude=v.longitude),
-            distancia_km     = round(km, 2),
-            tiempo_viaje_min = round(t_viaje, 1),
-            hora_llegada_est = hora_acum.strftime("%H:%M"),
-        ))
-        coordenadas_ruta.append(Coordenada(latitude=v.latitude, longitude=v.longitude))
+    coords = resultado["ruta_geojson"]["geometry"].get("coordinates", [])
+    if coords:
+        coordenadas_ruta = [Coordenada(latitude=latlon[1], longitude=latlon[0]) for latlon in coords]
+    else:
+        coordenadas_ruta = [
+            Coordenada(latitude=p["coords"][0], longitude=p["coords"][1])
+            for p in resultado["paradas_ordenadas"]
+        ]
 
-        hora_acum += timedelta(minutes=v.estimated_duration or 45)
-        pos = (v.latitude, v.longitude)
-
+    tiempo_total = resultado["resumen"]["tiempo_conduccion_min"] + resultado["resumen"]["tiempo_paradas_min"]
     return CalcularRutaResponse(
-        coordenadas_ruta    = coordenadas_ruta,
-        segmentos           = segmentos,
-        distancia_total_km  = round(total_km, 2),
-        tiempo_total_min    = round(total_min, 1),
+        coordenadas_ruta=coordenadas_ruta,
+        segmentos=segmentos,
+        distancia_total_km=float(resultado["resumen"]["distancia_km"]),
+        tiempo_total_min=float(round(tiempo_total, 2)),
     )
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# ENDPOINT 2 — asignar incidencia nueva a ruta activa
-# ─────────────────────────────────────────────────────────────────────────────
 @router.post(
     "/asignar-incidencia",
     response_model=Union[AsignarOkResponse, AsignarErrorResponse],
@@ -215,76 +307,74 @@ def asignar_incidencia(
     payload: AsignarIncidenciaRequest,
     db: Session = Depends(get_db),
 ) -> Union[AsignarOkResponse, AsignarErrorResponse]:
-    """
-    Inserta una nueva incidencia en el punto óptimo de la ruta activa.
-    Respeta el orden estricto de correctivo_critico existentes.
-    Valida que la jornada no supere los 480 min.
-    """
-    origen = (payload.ubicacion_actual.latitude, payload.ubicacion_actual.longitude)
+    current_visits = db.query(Visit).filter(Visit.id.in_(payload.ruta_actual_ids)).all()
+    current_map = {v.id: v for v in current_visits}
+    ordered_current = [current_map[i] for i in payload.ruta_actual_ids if i in current_map]
 
-    # Cargar ruta actual
-    visitas_db  = db.query(Visit).filter(Visit.id.in_(payload.ruta_actual_ids)).all()
-    visita_map  = {v.id: v for v in visitas_db}
-    ruta_actual = [visita_map[i] for i in payload.ruta_actual_ids if i in visita_map]
-
-    # Cargar nueva incidencia
-    nueva_db = db.query(Visit).filter(Visit.id == payload.nueva_incidencia_id).first()
-    if not nueva_db:
+    new_visit = db.query(Visit).filter(Visit.id == payload.nueva_incidencia_id).first()
+    if not new_visit:
         return AsignarErrorResponse(
-            codigo_error            = "INCIDENCIA_NO_ENCONTRADA",
-            estadisticas_simulacion = {},
-            mensaje                 = f"No s'ha trobat la incidència amb ID {payload.nueva_incidencia_id}.",
+            codigo_error="INCIDENCIA_NO_ENCONTRADA",
+            estadisticas_simulacion={},
+            mensaje=f"No s'ha trobat la incidència amb ID {payload.nueva_incidencia_id}.",
         )
 
-    ruta_dicts  = visitas_a_dicts(ruta_actual)
-    nueva_dict  = visitas_a_dicts([nueva_db])[0]
+    origen = {
+        "id": "origen",
+        "coords": (payload.ubicacion_actual.latitude, payload.ubicacion_actual.longitude),
+        "estancia": 0,
+        "address": "Origen",
+    }
 
-    # Stats actuales (sin la nueva)
-    tiempo_actual, km_actual = calcular_stats(origen, ruta_dicts)
+    current_stops = [origen] + [_visit_to_stop(v) for v in ordered_current]
+    new_stops = current_stops + [_visit_to_stop(new_visit)]
 
-    # Ruta candidata con la nueva insertada en posición óptima
-    ruta_nueva   = insertar_optimo(origen, ruta_dicts, nueva_dict)
-    tiempo_nuevo, km_nuevo = calcular_stats(origen, ruta_nueva)
+    actual = generar_ruta_optima(current_stops)
+    propuesta = generar_ruta_optima(new_stops)
 
-    # Validar jornada
-    if tiempo_nuevo > LIMITE_JORNADA_MIN:
+    jornada = validar_jornada_laboral(
+        new_stops,
+        limite_horas=(LIMITE_JORNADA_MIN / 60),
+    )
+
+    tiempo_actual = actual["resumen"]["tiempo_conduccion_min"] + actual["resumen"]["tiempo_paradas_min"]
+    tiempo_nuevo = propuesta["resumen"]["tiempo_conduccion_min"] + propuesta["resumen"]["tiempo_paradas_min"]
+    km_actual = float(actual["resumen"]["distancia_km"])
+    km_nuevo = float(propuesta["resumen"]["distancia_km"])
+
+    if jornada["excede_jornada"]:
+        estimado_min = jornada["conduccion_minutos"] + jornada["paradas_minutos"]
+        excedido = max(0, round(estimado_min - LIMITE_JORNADA_MIN))
         return AsignarErrorResponse(
-            asignacion_permitida    = False,
-            codigo_error            = "JORNADA_EXCEDIDA",
-            estadisticas_simulacion = {
-                "tiempo_total_estimado": f"{round(tiempo_nuevo)} min",
-                "limite_jornada":        f"{LIMITE_JORNADA_MIN} min",
-                "tiempo_excedido":       f"{round(tiempo_nuevo - LIMITE_JORNADA_MIN)} min",
+            asignacion_permitida=False,
+            codigo_error="JORNADA_EXCEDIDA",
+            estadisticas_simulacion={
+                "tiempo_total_estimado": f"{round(estimado_min)} min",
+                "limite_jornada": f"{LIMITE_JORNADA_MIN} min",
+                "tiempo_excedido": f"{excedido} min",
             },
-            mensaje = (
-                "No és possible afegir la incidència perquè la ruta "
-                "superaria la jornada laboral."
-            ),
+            mensaje="No és possible afegir la incidència perquè la ruta superaria la jornada laboral.",
         )
 
-    # Persistir nuevo route_order
-    for idx, v_dict in enumerate(ruta_nueva):
-        v = visita_map.get(v_dict["id"]) or nueva_db
-        v.route_order = idx
-    db.commit()
-
-    tiempo_extra = round(tiempo_nuevo - tiempo_actual)
-    km_extra     = round(km_nuevo - km_actual, 1)
-
-    coordenadas = [Coordenada(latitude=origen[0], longitude=origen[1])] + [
-        Coordenada(latitude=v["lat"], longitude=v["lon"]) for v in ruta_nueva
+    orden_optimo_ids = [p["id"] for p in propuesta["paradas_ordenadas"] if p.get("id") != "origen"]
+    coords = propuesta["ruta_geojson"]["geometry"].get("coordinates", [])
+    coordenadas_ruta = [
+        Coordenada(latitude=latlon[1], longitude=latlon[0]) for latlon in coords
     ]
 
+    tiempo_extra = round(tiempo_nuevo - tiempo_actual)
+    distancia_extra = round(km_nuevo - km_actual, 1)
+
     return AsignarOkResponse(
-        orden_optimo_ids        = [v["id"] for v in ruta_nueva],
-        coordenadas_ruta        = coordenadas,
-        estadisticas_nueva_ruta = EstadisticasRuta(
-            tiempo_total = f"{round(tiempo_nuevo)} min",
-            distancia    = f"{round(km_nuevo, 1)} km",
+        orden_optimo_ids=orden_optimo_ids,
+        coordenadas_ruta=coordenadas_ruta,
+        estadisticas_nueva_ruta=EstadisticasRuta(
+            tiempo_total=f"{round(tiempo_nuevo)} min",
+            distancia=f"{round(km_nuevo, 1)} km",
         ),
-        impacto_simulacion = ImpactoSimulacion(
-            tiempo_extra    = f"+{tiempo_extra} min",
-            distancia_extra = f"+{km_extra} km",
-            recomendado     = (tiempo_extra <= 30 and km_extra <= 10),
+        impacto_simulacion=ImpactoSimulacion(
+            tiempo_extra=f"+{tiempo_extra} min",
+            distancia_extra=f"+{distancia_extra} km",
+            recomendado=(tiempo_extra <= 30 and distancia_extra <= 10),
         ),
     )

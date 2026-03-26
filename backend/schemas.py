@@ -187,3 +187,31 @@ class MetricsResponse(BaseModel):
     horas_efectivas_total: float
     retardos_por_causa:    list[RetardoPorCausa]
     sla_por_tipo:          list[SlaByType]
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# USERS
+# ─────────────────────────────────────────────────────────────────────────────
+class UserInfoCreate(BaseModel):
+    name: str
+    telefono: str
+    email: str
+    passwd: str
+    is_technician: bool = False
+    zone: Optional[str] = None
+
+
+class UserInfoOut(BaseModel):
+    id: int
+    name: str
+    telefono: str
+    email: str
+    is_technician: bool
+    technician_id: Optional[int]
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class ClassifyTechnicianRequest(BaseModel):
+    zone: Optional[str] = None
