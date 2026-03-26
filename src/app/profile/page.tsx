@@ -278,7 +278,7 @@ export default function ProfilePage() {
                   className="bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 px-6 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 active:scale-95"
                 >
                   {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-                  Guardar Canvis a BD
+                  Guardar Canvis
                 </button>
               </div>
             </form>
