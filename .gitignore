@@ -1,0 +1,16 @@
+# Dependencias
+/node_modules
+/.pnp
+.pnp.js
+
+# Next.js
+/.next/
+/out/
+/build
+
+# Variables de entorno
+.env
+.env*.local
+
+# Mac
+.DS_Store
