@@ -54,7 +54,8 @@ def run() -> int:
             "/api/v1/users",
             json={
                 "name": "smoke-test-user",
-                "telefono": "000000000",
+                "username": "smoke_test_user",
+                "phone": "000000000",
                 "email": "smoke-test-user@example.com",
                 "passwd": "x",
                 "is_technician": False,
