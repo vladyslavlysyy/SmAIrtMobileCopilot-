@@ -5,31 +5,25 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import AppLogo from '@/components/ui/AppLogo';
 import { 
-  LayoutDashboard, HardHat, BarChart3, ChevronLeft, ChevronRight, 
-  Bell, LogOut, X, CheckCheck, AlertTriangle, Info, AlertCircle, 
-  User, Lock, Mail, Phone, Loader2, Users
+  LayoutDashboard, BarChart3, ChevronLeft, ChevronRight, 
+  LogOut, User, Lock, Mail, Phone, Loader2, Users, Settings
 } from 'lucide-react';
-import { useAppStore } from '@/store/appStore';
 import { toast } from 'sonner';
 import { loginUser, registerUser, logoutUser, getCurrentUser } from '@/actions/auth';
 
 interface AppLayoutProps { children: React.ReactNode; }
 
-// MENÚ ACTUALIZADO CON ROL DE ADMIN
 const navItems = [
   { id: 'nav-operations', label: 'Operacions', icon: LayoutDashboard, href: '/operations-dashboard', badge: 3 },
-  { id: 'nav-technician', label: 'Supervisió Tècnics', icon: HardHat, href: '/field-technician-dashboard', badge: null },
-  { id: 'nav-team', label: 'Equip i Tècnics', icon: Users, href: '/team-management', badge: null }, // <- Nueva sección para gestionar técnicos
+  { id: 'nav-team', label: 'Equip i Tècnics', icon: Users, href: '/field-technician-dashboard', badge: null },
   { id: 'nav-metrics', label: 'Mètriques', icon: BarChart3, href: '/metrics-dashboard', badge: null },
 ];
 
 export default function AppLayout({ children }: AppLayoutProps) {
   const [collapsed, setCollapsed] = useState(false);
-  const [showAlerts, setShowAlerts] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   
-  const { alerts, unreadAlerts, markAlertRead, markAllAlertsRead } = useAppStore();
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [realUser, setRealUser] = useState<{name: string, email: string} | null>(null);
   const [isLoadingSession, setIsLoadingSession] = useState(true);
@@ -41,12 +35,6 @@ export default function AppLayout({ children }: AppLayoutProps) {
       setIsLoadingSession(false);
     });
   }, []);
-
-  const getAlertIcon = (type: string) => {
-    if (type === 'error') return <AlertCircle size={14} className="text-red-500 flex-shrink-0" />;
-    if (type === 'warning') return <AlertTriangle size={14} className="text-amber-500 flex-shrink-0" />;
-    return <Info size={14} className="text-blue-500 flex-shrink-0" />;
-  };
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -190,15 +178,15 @@ export default function AppLayout({ children }: AppLayoutProps) {
           )}
         </div>
 
-        {/* ETIQUETA CLARA DE ADMINISTRADOR */}
+        {/* Tarjeta de administrador (Ahora clickeable para ir al perfil) */}
         {!collapsed && (
-          <div className="mx-3 mt-4 mb-2 px-3 py-3 rounded-lg bg-slate-800 border border-slate-700">
+          <Link href="/profile" className="mx-3 mt-4 mb-2 px-3 py-3 rounded-lg bg-slate-800 border border-slate-700 hover:border-blue-500/50 hover:bg-slate-700/50 transition-colors block group">
             <p className="text-blue-400 text-xs font-bold uppercase mb-1 flex items-center gap-1">
               <Shield size={12} /> Administrador
             </p>
-            <p className="text-white text-sm font-semibold truncate">{realUser.name}</p>
+            <p className="text-white text-sm font-semibold truncate group-hover:text-blue-300 transition-colors">{realUser.name}</p>
             <p className="text-slate-400 text-xs truncate mt-0.5">{realUser.email}</p>
-          </div>
+          </Link>
         )}
 
         <nav className="flex-1 px-2 py-2 space-y-1">
@@ -225,12 +213,13 @@ export default function AppLayout({ children }: AppLayoutProps) {
           })}
         </nav>
 
+        {/* Acciones inferiores sin alertas */}
         <div className="px-2 pb-4 border-t border-slate-800 pt-3 space-y-1">
-          <button onClick={() => setShowAlerts(true)} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-all duration-150">
-            <Bell size={18} className="flex-shrink-0" />
-            {!collapsed && <span className="text-sm font-medium">Alertes</span>}
-            {unreadAlerts > 0 && <span className="ml-auto bg-amber-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">{unreadAlerts}</span>}
-          </button>
+          <Link href="/profile" className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150
+              ${pathname === '/profile' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
+            <Settings size={18} className="flex-shrink-0" />
+            {!collapsed && <span className="text-sm font-medium">El meu perfil</span>}
+          </Link>
           
           <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all duration-150">
             <LogOut size={18} className="flex-shrink-0" />
@@ -250,7 +239,6 @@ export default function AppLayout({ children }: AppLayoutProps) {
   );
 }
 
-// Pequeño icono de escudo para el badge de Admin
 function Shield(props: any) {
   return (
     <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

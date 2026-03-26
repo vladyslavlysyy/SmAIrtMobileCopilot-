@@ -9,7 +9,8 @@ import AISuggestionsPanel from './components/AISuggestionsPanel';
 
 export default function OperationsDashboard() {
   return (
-    <AppLayout role="operations">
+    // Hemos quitado el role="operations" de aquí también:
+    <AppLayout>
       <div className="flex flex-col h-full min-h-screen bg-background">
         <OperationsHeader />
         <div className="flex-1 px-6 pb-6 space-y-5 max-w-screen-2xl mx-auto w-full">
