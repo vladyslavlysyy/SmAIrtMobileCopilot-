@@ -173,6 +173,9 @@ def get_metrics(
             for row in imprevisto_rows
         ]
     except Exception:
+        # If this optional query fails, clear the failed transaction so
+        # following queries (SLA, etc.) can still run.
+        db.rollback()
         retards = []
 
     sla_query = text(f"""
