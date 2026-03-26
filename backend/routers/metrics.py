@@ -46,7 +46,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from sqlalchemy import text, func
+from sqlalchemy import text
 
 from database import get_db
 from models import Visit, Technician, VisitStatus, VisitType
@@ -87,54 +87,50 @@ def get_metrics(
     Un sol endpoint que alimenta tot el dashboard de mètriques.
     Utilitza SQL queries per llegir directament de la BD.
     """
-    # Rang per defecte: mes actual
-    today     = datetime.utcnow().date()
-    from_dt   = datetime.combine(date_from or today.replace(day=1), datetime.min.time())
-    to_dt     = datetime.combine(date_to   or today,                datetime.max.time())
+    today = datetime.utcnow().date()
+    from_dt = datetime.combine(date_from or today.replace(day=1), datetime.min.time())
+    to_dt = datetime.combine(date_to or today, datetime.max.time())
 
-    # Construeix filter WHERE dinàmic
-    tech_filter = f"AND v.technician_id = {technician_id}" if technician_id else ""
+    tech_filter = "AND v.technician_id = :technician_id" if technician_id is not None else ""
+    params = {"from_dt": from_dt, "to_dt": to_dt}
+    if technician_id is not None:
+        params["technician_id"] = technician_id
 
-    # ── 1. Comptadors d'estat ──────────────────────────────────────────────
     count_query = text(f"""
-        SELECT 
-            COUNT(CASE WHEN v.status = 'completed' THEN 1 END) as completadas,
-            COUNT(CASE WHEN v.status = 'pending' THEN 1 END) as pendentes,
-            COUNT(CASE WHEN v.status = 'in_progress' THEN 1 END) as en_progreso
+        SELECT
+            COUNT(CASE WHEN LOWER(v.status) IN ('completed', 'completado', 'done') THEN 1 END) AS completadas,
+            COUNT(CASE WHEN LOWER(v.status) IN ('pending', 'scheduled', 'pendiente') THEN 1 END) AS pendientes,
+            COUNT(CASE WHEN LOWER(v.status) IN ('in_progress', 'in progress', 'en_progreso') THEN 1 END) AS en_progreso
         FROM visit v
         WHERE v.planned_date >= :from_dt
           AND v.planned_date <= :to_dt
           {tech_filter}
     """)
-    
-    count_row = db.execute(count_query, {"from_dt": from_dt, "to_dt": to_dt}).fetchone()
+    count_row = db.execute(count_query, params).fetchone()
     completades = count_row.completadas or 0
-    pendents = count_row.pendentes or 0
+    pendents = count_row.pendientes or 0
     en_progres = count_row.en_progreso or 0
 
-    # ── 2. Km per tècnic ──────────────────────────────────────────────────
     km_query = text(f"""
-        SELECT 
+        SELECT
             v.technician_id,
-            COALESCE(c.latitude, 0.0) as lat,
-            COALESCE(c.longitude, 0.0) as lon
+            COALESCE(c.latitude, 0.0) AS lat,
+            COALESCE(c.longitude, 0.0) AS lon
         FROM visit v
         LEFT JOIN assignable a ON v.assignable_id = a.id
         LEFT JOIN charger c ON a.charger_id = c.id
         WHERE v.planned_date >= :from_dt
           AND v.planned_date <= :to_dt
-          AND v.status = 'completed'
+          AND LOWER(v.status) IN ('completed', 'completado', 'done')
           {tech_filter}
         ORDER BY v.technician_id ASC, v.planned_date ASC
     """)
-    
-    km_rows = db.execute(km_query, {"from_dt": from_dt, "to_dt": to_dt}).fetchall()
-    
-    # Calcula km per tècnic agrupant per technician_id
-    km_per_tec_dict: dict[int, list] = {}
+    km_rows = db.execute(km_query, params).fetchall()
+
+    km_per_tec_dict: dict[int, list[tuple[float, float]]] = {}
     for row in km_rows:
-        km_per_tec_dict.setdefault(row.technician_id, []).append((row.lat, row.lon))
-    
+        km_per_tec_dict.setdefault(int(row.technician_id), []).append((float(row.lat), float(row.lon)))
+
     km_per_tec: list[KmPorTecnico] = []
     for tec_id, coords in km_per_tec_dict.items():
         total_km = 0.0
@@ -142,88 +138,69 @@ def get_metrics(
             lat1, lon1 = coords[i - 1]
             lat2, lon2 = coords[i]
             total_km += haversine_km(lat1, lon1, lat2, lon2)
-        
-        tech_name = f"Técnico {tec_id}"
-        km_per_tec.append(KmPorTecnico(
-            technician_id=tec_id,
-            technician_name=tech_name,
-            km_total=round(total_km, 2),
-        ))
+        km_per_tec.append(
+            KmPorTecnico(
+                technician_id=tec_id,
+                technician_name=f"Tecnico {tec_id}",
+                km_total=round(total_km, 2),
+            )
+        )
 
-    # ── 3. Hores efectives totals ──────────────────────────────────────────
     hours_query = text(f"""
-        SELECT 
-            SUM(COALESCE(v.estimated_duration, 45)) / 60.0 as total_horas
+        SELECT SUM(COALESCE(v.estimated_duration, 45)) / 60.0 AS total_horas
         FROM visit v
         WHERE v.planned_date >= :from_dt
           AND v.planned_date <= :to_dt
-          AND v.status = 'completed'
+          AND LOWER(v.status) IN ('completed', 'completado', 'done')
           {tech_filter}
     """)
-    
-    hours_row = db.execute(hours_query, {"from_dt": from_dt, "to_dt": to_dt}).fetchone()
-    hores_efectives = hours_row.total_horas or 0.0
+    hours_row = db.execute(hours_query, params).fetchone()
+    hores_efectives = float(hours_row.total_horas or 0.0)
 
-    # ── 4. Retards per causa (imprevistos)  ────────────────────────────────
-    # Nota: tabla imprevisto puede no existir aún en el esquema
     try:
         imprevisto_query = text(f"""
-            SELECT 
-                i.report_type as tipo,
-                COUNT(i.id) as total
-            FROM incidence i
-            JOIN visit v ON i.id = v.id
+            SELECT i.tipo, COUNT(i.id) AS total
+            FROM imprevisto i
+            JOIN visit v ON i.visit_id = v.id
             WHERE v.planned_date >= :from_dt
               AND v.planned_date <= :to_dt
               {tech_filter}
-            GROUP BY i.report_type
+            GROUP BY i.tipo
         """)
-        
-        imprevisto_rows = db.execute(imprevisto_query, {"from_dt": from_dt, "to_dt": to_dt}).fetchall()
-        retards: list[RetardoPorCausa] = [
-            RetardoPorCausa(causa=row.tipo or "Sin especificar", total=row.total)
+        imprevisto_rows = db.execute(imprevisto_query, params).fetchall()
+        retards = [
+            RetardoPorCausa(causa=str(row.tipo or "Sin especificar"), total=int(row.total))
             for row in imprevisto_rows
         ]
     except Exception:
-        # Si la tabla no existe o la query falla, retorna vacia
-        retards: list[RetardoPorCausa] = []
+        retards = []
 
-    # ── 5. SLA per tipus de visita ─────────────────────────────────────────
     sla_query = text(f"""
-        SELECT 
+        SELECT
             v.visit_type,
-            COUNT(v.id) as total,
-            COUNT(CASE WHEN v.status = 'completed' THEN 1 END) as completadas
+            COUNT(v.id) AS total,
+            COUNT(CASE WHEN LOWER(v.status) IN ('completed', 'completado', 'done') THEN 1 END) AS completadas
         FROM visit v
         WHERE v.planned_date >= :from_dt
           AND v.planned_date <= :to_dt
           {tech_filter}
         GROUP BY v.visit_type
     """)
-    
-    sla_rows = db.execute(sla_query, {"from_dt": from_dt, "to_dt": to_dt}).fetchall()
-    sla_per_tipus: list[SlaByType] = []
-    
-    for row in sla_rows:
-        vt = row.visit_type
-        marge_h = SLA_MARGES.get(vt, 24)
-        # Simplificado: asumimos que se completa dentro del SLA si completadas > 0
-        porcentaje_sla = round(
-            (row.completadas / row.completadas * 100) if row.completadas else 0,
-            1,
-        ) if row.completadas else 0
-        
-        sla_per_tipus.append(SlaByType(
-            visit_type=vt,
-            total=row.total,
-            completadas=row.completadas or 0,
-            porcentaje_sla=porcentaje_sla,
-        ))
+    sla_rows = db.execute(sla_query, params).fetchall()
+    sla_per_tipus = [
+        SlaByType(
+            visit_type=str(row.visit_type),
+            total=int(row.total),
+            completadas=int(row.completadas or 0),
+            porcentaje_sla=round(((row.completadas or 0) / row.total * 100) if row.total else 0, 1),
+        )
+        for row in sla_rows
+    ]
 
     return MetricsResponse(
-        completadas=completades,
-        pendentes=pendents,
-        en_progreso=en_progres,
+        completadas=int(completades),
+        pendientes=int(pendents),
+        en_progreso=int(en_progres),
         km_por_tecnico=km_per_tec,
         horas_efectivas_total=round(hores_efectives, 2),
         retardos_por_causa=retards,

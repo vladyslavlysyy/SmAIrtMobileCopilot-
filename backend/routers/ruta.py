@@ -6,9 +6,9 @@ from typing import Any, Union
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 
 from database import get_db
-from models import Visit
 from schemas import (
     CalcularRutaRequest,
     CalcularRutaResponse,
@@ -221,14 +221,50 @@ def validar_jornada_laboral(
     }
 
 
-def _visit_to_stop(v: Visit) -> dict:
-    if v.lat is None or v.lon is None:
-        raise HTTPException(status_code=422, detail=f"La visita {v.id} no té coordenades.")
+def _visit_to_stop(v: dict) -> dict:
+    if v["lat"] is None or v["lon"] is None:
+        raise HTTPException(status_code=422, detail=f"La visita {v['id']} no té coordenades.")
     return {
-        "id": v.id,
-        "coords": (float(v.lat), float(v.lon)),
-        "estancia": int(v.estimated_duration or 45),
-        "address": v.address,
+        "id": v["id"],
+        "coords": (float(v["lat"]), float(v["lon"])),
+        "estancia": int(v["estimated_duration"] or 45),
+        "address": v["address"],
+    }
+
+
+def _fetch_visits_with_coords(db: Session, visit_ids: list[int]) -> dict[int, dict]:
+    if not visit_ids:
+        return {}
+    rows = db.execute(
+        text(
+            """
+            SELECT
+                v.id,
+                v.technician_id,
+                v.estimated_duration,
+                v.planned_date,
+                NULL::varchar AS address,
+                c.latitude AS lat,
+                c.longitude AS lon
+            FROM visit v
+            LEFT JOIN assignable a ON v.assignable_id = a.id
+            LEFT JOIN charger c ON a.charger_id = c.id
+            WHERE v.id = ANY(:visit_ids)
+            """
+        ),
+        {"visit_ids": visit_ids},
+    ).fetchall()
+    return {
+        int(r.id): {
+            "id": int(r.id),
+            "technician_id": r.technician_id,
+            "estimated_duration": r.estimated_duration,
+            "planned_date": r.planned_date,
+            "address": r.address,
+            "lat": r.lat,
+            "lon": r.lon,
+        }
+        for r in rows
     }
 
 
@@ -240,8 +276,7 @@ def calcular_ruta(
     if not payload.visit_ids_ordered:
         raise HTTPException(status_code=422, detail="La llista de visites és buida.")
 
-    visits = db.query(Visit).filter(Visit.id.in_(payload.visit_ids_ordered)).all()
-    visit_map = {v.id: v for v in visits}
+    visit_map = _fetch_visits_with_coords(db, payload.visit_ids_ordered)
 
     for visit_id in payload.visit_ids_ordered:
         if visit_id not in visit_map:
@@ -266,13 +301,13 @@ def calcular_ruta(
 
     for stop in ordered_stops:
         visit = visit_map[stop["id"]]
-        leg = leg_by_to_id.get(visit.id, {"distance_km": 0.0, "travel_min": 0.0})
+        leg = leg_by_to_id.get(visit["id"], {"distance_km": 0.0, "travel_min": 0.0})
         hora_acum += timedelta(minutes=float(leg["travel_min"]))
 
         segmentos.append(
             SegmentoRuta(
-                visit_id=visit.id,
-                address=visit.address,
+                visit_id=visit["id"],
+                address=visit["address"],
                 coordenada=Coordenada(latitude=float(stop["coords"][0]), longitude=float(stop["coords"][1])),
                 distancia_km=float(leg["distance_km"]),
                 tiempo_viaje_min=float(leg["travel_min"]),
@@ -307,11 +342,11 @@ def asignar_incidencia(
     payload: AsignarIncidenciaRequest,
     db: Session = Depends(get_db),
 ) -> Union[AsignarOkResponse, AsignarErrorResponse]:
-    current_visits = db.query(Visit).filter(Visit.id.in_(payload.ruta_actual_ids)).all()
-    current_map = {v.id: v for v in current_visits}
+    current_map = _fetch_visits_with_coords(db, payload.ruta_actual_ids)
     ordered_current = [current_map[i] for i in payload.ruta_actual_ids if i in current_map]
 
-    new_visit = db.query(Visit).filter(Visit.id == payload.nueva_incidencia_id).first()
+    new_visit_map = _fetch_visits_with_coords(db, [payload.nueva_incidencia_id])
+    new_visit = new_visit_map.get(payload.nueva_incidencia_id)
     if not new_visit:
         return AsignarErrorResponse(
             codigo_error="INCIDENCIA_NO_ENCONTRADA",

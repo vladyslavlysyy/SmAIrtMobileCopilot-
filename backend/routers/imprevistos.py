@@ -34,9 +34,9 @@ Consumit per:
 from datetime import datetime, time, timedelta
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 
 from database import get_db
-from models import Visit, Imprevisto, VisitStatus
 from schemas import ImprevistoCreate, ImprevistoOut, ImprevistoResponse, VisitOut
 
 router = APIRouter(prefix="/api/v1/imprevistos", tags=["imprevistos"])
@@ -70,48 +70,109 @@ def create_imprevisto(
       5. Calcula el desplaçament temporal que provoca el temps perdut.
       6. Construeix un missatge de proposta llegible per a Operacions.
     """
-    # 1. Validar visita
-    visit = db.query(Visit).filter(Visit.id == payload.visit_id).first()
-    if not visit:
+    visit = db.execute(
+        text(
+            """
+            SELECT id, technician_id, planned_date
+            FROM visit
+            WHERE id = :visit_id
+            LIMIT 1
+            """
+        ),
+        {"visit_id": payload.visit_id},
+    ).fetchone()
+    if visit is None:
         raise HTTPException(status_code=404, detail=f"Visita {payload.visit_id} no trobada.")
 
     if visit.technician_id is None:
         raise HTTPException(status_code=422, detail="La visita no té tècnic assignat.")
 
-    # 2. Marcar visita com a bloquejada
-    visit.status = VisitStatus.blocked
-
-    # 3. Guardar imprevist
-    imprevisto = Imprevisto(
-        visit_id            = payload.visit_id,
-        tipo                = payload.tipo,
-        descripcion         = payload.descripcion,
-        temps_perdut_min    = payload.tiempo_perdido_min,
+    db.execute(
+        text("UPDATE visit SET status = :status WHERE id = :visit_id"),
+        {"status": "blocked", "visit_id": payload.visit_id},
     )
-    db.add(imprevisto)
+
+    new_id = db.execute(
+        text("SELECT COALESCE(MAX(id), 0) + 1 AS next_id FROM imprevisto")
+    ).fetchone().next_id
+
+    created_at = datetime.utcnow()
+    db.execute(
+        text(
+            """
+            INSERT INTO imprevisto (id, visit_id, tipo, descripcion, temps_perdut_min, created_at)
+            VALUES (:id, :visit_id, :tipo, :descripcion, :temps_perdut_min, :created_at)
+            """
+        ),
+        {
+            "id": int(new_id),
+            "visit_id": payload.visit_id,
+            "tipo": payload.tipo,
+            "descripcion": payload.descripcion,
+            "temps_perdut_min": payload.tiempo_perdido_min,
+            "created_at": created_at,
+        },
+    )
     db.commit()
-    db.refresh(imprevisto)
 
     # 4. Visites pendents restants del tècnic avui (route_order > visita afectada)
     avui_start = datetime.combine(visit.planned_date.date(), time.min)
-    avui_end   = datetime.combine(visit.planned_date.date(), time.max)
+    avui_end = datetime.combine(visit.planned_date.date(), time.max)
 
-    visites_restants = (
-        db.query(Visit)
-        .filter(
-            Visit.technician_id == visit.technician_id,
-            Visit.planned_date  >= avui_start,
-            Visit.planned_date  <= avui_end,
-            Visit.status        == VisitStatus.pending,
-            Visit.route_order   >  (visit.route_order or 0),
-        )
-        .order_by(Visit.route_order.asc().nulls_last())
-        .all()
-    )
+    rows = db.execute(
+        text(
+            """
+            SELECT
+                v.id,
+                v.assignable_id,
+                v.technician_id,
+                v.visit_type,
+                v.status,
+                v.planned_date,
+                v.estimated_duration,
+                v.score,
+                NULL::integer AS route_order,
+                COALESCE(c.latitude, 0.0) AS latitude,
+                COALESCE(c.longitude, 0.0) AS longitude,
+                COALESCE(c.postal_code, '') AS postal_code
+            FROM visit v
+            LEFT JOIN assignable a ON v.assignable_id = a.id
+            LEFT JOIN charger c ON a.charger_id = c.id
+            WHERE v.technician_id = :technician_id
+              AND v.planned_date >= :day_start
+              AND v.planned_date <= :day_end
+              AND v.planned_date > :current_visit_planned_date
+              AND LOWER(v.status) IN ('pending', 'scheduled', 'in_progress', 'in progress')
+            ORDER BY v.planned_date ASC
+            """
+        ),
+        {
+            "technician_id": visit.technician_id,
+            "day_start": avui_start,
+            "day_end": avui_end,
+            "current_visit_planned_date": visit.planned_date,
+        },
+    ).fetchall()
 
     # 5. Calcular impacte: desplaçar les visites restants pel temps perdut
     minuts_perduts = payload.tiempo_perdido_min or 30  # fallback: 30 min
-    nous_ids       = [v.id for v in visites_restants]
+    visites_restants = [
+        VisitOut(
+            id=row.id,
+            assignable_id=row.assignable_id,
+            technician_id=row.technician_id,
+            visit_type=row.visit_type,
+            status=row.status,
+            planned_date=row.planned_date,
+            estimated_duration=row.estimated_duration,
+            score=row.score,
+            route_order=row.route_order,
+            latitude=row.latitude,
+            longitude=row.longitude,
+            postal_code=row.postal_code,
+        )
+        for row in rows
+    ]
 
     # 6. Construir missatge llegible
     if not visites_restants:
@@ -128,8 +189,15 @@ def create_imprevisto(
         )
 
     return ImprevistoResponse(
-        imprevisto                  = ImprevistoOut.model_validate(imprevisto),
-        visitas_afectadas           = [VisitOut.model_validate(v) for v in visites_restants],
+        imprevisto=ImprevistoOut(
+            id=int(new_id),
+            visit_id=payload.visit_id,
+            tipo=payload.tipo,
+            descripcion=payload.descripcion,
+            created_at=created_at,
+            tiempo_perdido_min=payload.tiempo_perdido_min,
+        ),
+        visitas_afectadas=visites_restants,
         propuesta_replanificacion   = missatge,
     )
 
@@ -157,17 +225,33 @@ def get_imprevistos(
     day_start = datetime.combine(target, time.min)
     day_end   = datetime.combine(target, time.max)
 
-    # Join amb Visit per filtrar per tècnic i dia
-    imprevistos = (
-        db.query(Imprevisto)
-        .join(Visit, Imprevisto.visit_id == Visit.id)
-        .filter(
-            Visit.technician_id == technician_id,
-            Imprevisto.created_at >= day_start,
-            Imprevisto.created_at <= day_end,
-        )
-        .order_by(Imprevisto.created_at.desc())
-        .all()
-    )
+    rows = db.execute(
+        text(
+            """
+            SELECT i.id, i.visit_id, i.tipo, i.descripcion, i.temps_perdut_min, i.created_at
+            FROM imprevisto i
+            JOIN visit v ON i.visit_id = v.id
+            WHERE v.technician_id = :technician_id
+              AND i.created_at >= :day_start
+              AND i.created_at <= :day_end
+            ORDER BY i.created_at DESC
+            """
+        ),
+        {
+            "technician_id": technician_id,
+            "day_start": day_start,
+            "day_end": day_end,
+        },
+    ).fetchall()
 
-    return imprevistos
+    return [
+        ImprevistoOut(
+            id=row.id,
+            visit_id=row.visit_id,
+            tipo=row.tipo,
+            descripcion=row.descripcion,
+            created_at=row.created_at,
+            tiempo_perdido_min=row.temps_perdut_min,
+        )
+        for row in rows
+    ]

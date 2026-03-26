@@ -52,7 +52,7 @@ def get_visits(
             v.planned_date,
             v.estimated_duration,
             v.score,
-            v.route_order,
+            NULL::integer as route_order,
             COALESCE(c.latitude, 0.0) as latitude,
             COALESCE(c.longitude, 0.0) as longitude,
             COALESCE(c.postal_code, '') as postal_code
@@ -63,7 +63,6 @@ def get_visits(
           AND v.planned_date >= :day_start
           AND v.planned_date <= :day_end
         ORDER BY 
-            COALESCE(v.route_order, 999999) ASC,
             v.planned_date ASC
     """)
     

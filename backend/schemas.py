@@ -25,19 +25,21 @@ class TechnicianOut(BaseModel):
 # ─────────────────────────────────────────────────────────────────────────────
 class VisitOut(BaseModel):
     id:                   int
-    visit_type:           VisitType
-    status:               VisitStatus
+    assignable_id:        Optional[int] = None
+    visit_type:           str
+    status:               str
     planned_date:         datetime
-    address:              Optional[str]
-    postal_code:          Optional[str]
+    address:              Optional[str] = None
+    postal_code:          Optional[str] = None
     latitude:             float
     longitude:            float
     estimated_duration:   int
-    last_priority_score:  Optional[float]
-    route_order:          Optional[int]
-    technician_id:        Optional[int]
-    contract_id:          Optional[int]
-    incidence_id:         Optional[int]
+    score:                Optional[float] = None
+    last_priority_score:  Optional[float] = None
+    route_order:          Optional[int] = None
+    technician_id:        Optional[int] = None
+    contract_id:          Optional[int] = None
+    incidence_id:         Optional[int] = None
 
     model_config = {"from_attributes": True}
 
@@ -116,17 +118,17 @@ class AsignarErrorResponse(BaseModel):
 # ─────────────────────────────────────────────────────────────────────────────
 class ReportCreate(BaseModel):
     visit_id:     int
-    report_type:  ReportType
+    report_type:  str
     content_json: Optional[str] = None   # JSON serializado del checklist
 
 
 class ReportOut(BaseModel):
     id:           int
     visit_id:     int
-    report_type:  ReportType
+    report_type:  Optional[str] = None
     status:       str
     created_at:   datetime
-    content_json: Optional[str]
+    content_json: Optional[str] = None
 
     model_config = {"from_attributes": True}
 
@@ -136,7 +138,7 @@ class ReportOut(BaseModel):
 # ─────────────────────────────────────────────────────────────────────────────
 class ImprevistoCreate(BaseModel):
     visit_id:            int
-    tipo:                ImprevistoType
+    tipo:                str
     descripcion:         Optional[str] = None
     tiempo_perdido_min:  Optional[int] = None
 
@@ -144,7 +146,7 @@ class ImprevistoCreate(BaseModel):
 class ImprevistoOut(BaseModel):
     id:                  int
     visit_id:            int
-    tipo:                ImprevistoType
+    tipo:                str
     descripcion:         Optional[str]
     created_at:          datetime
     tiempo_perdido_min:  Optional[int]
@@ -173,7 +175,7 @@ class RetardoPorCausa(BaseModel):
 
 
 class SlaByType(BaseModel):
-    visit_type:        VisitType
+    visit_type:        str
     total:             int
     completadas:       int
     porcentaje_sla:    float
@@ -194,7 +196,8 @@ class MetricsResponse(BaseModel):
 # ─────────────────────────────────────────────────────────────────────────────
 class UserInfoCreate(BaseModel):
     name: str
-    telefono: str
+    username: Optional[str] = None
+    phone: str
     email: str
     passwd: str
     is_technician: bool = False
@@ -204,10 +207,11 @@ class UserInfoCreate(BaseModel):
 class UserInfoOut(BaseModel):
     id: int
     name: str
-    telefono: str
+    username: Optional[str] = None
+    phone: str
     email: str
-    is_technician: bool
-    technician_id: Optional[int]
+    is_technician: bool = False
+    technician_id: Optional[int] = None
     created_at: datetime
 
     model_config = {"from_attributes": True}
