@@ -67,9 +67,9 @@ export default function KpiCardsGrid({ dateFilter, refreshToken, technicianId }:
     },
     {
       id: 'progress',
-      title: 'En progrés',
-      value: metrics?.en_progreso ?? 0,
-      subtitle: 'actives',
+      title: 'Programades',
+      value: metrics?.programades ?? 0,
+      subtitle: 'visites',
       icon: <TrendingUp size={24} className="text-mobility-accent/60" />,
     },
     {

@@ -103,8 +103,9 @@ def get_metrics(
 
     count_query = text(f"""
         SELECT
-            COUNT(CASE WHEN LOWER(v.status) IN ('completed', 'completado', 'done') THEN 1 END) AS completadas,
-            COUNT(CASE WHEN LOWER(v.status) IN ('pending', 'scheduled', 'pendiente') THEN 1 END) AS pendientes,
+            COUNT(CASE WHEN LOWER(v.status) = 'completed' THEN 1 END) AS completadas,
+            COUNT(CASE WHEN LOWER(v.status) = 'pending' THEN 1 END) AS pendientes,
+            COUNT(CASE WHEN LOWER(v.status) IN ('schedule', 'scheduled') THEN 1 END) AS programadas,
             COUNT(CASE WHEN LOWER(v.status) IN ('in_progress', 'in progress', 'en_progreso') THEN 1 END) AS en_progreso
         FROM visit v
                 WHERE 1=1
@@ -114,6 +115,7 @@ def get_metrics(
     count_row = db.execute(count_query, params).fetchone()
     completades = count_row.completadas or 0
     pendents = count_row.pendientes or 0
+    programades = count_row.programadas or 0
     en_progres = count_row.en_progreso or 0
 
     km_query = text(f"""
@@ -208,6 +210,7 @@ def get_metrics(
     return MetricsResponse(
         completadas=int(completades),
         pendientes=int(pendents),
+        programadas=int(programades),
         en_progreso=int(en_progres),
         km_por_tecnico=km_per_tec,
         horas_efectivas_total=round(hores_efectives, 2),

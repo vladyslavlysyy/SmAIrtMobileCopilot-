@@ -207,6 +207,38 @@ export interface ManualAssignVisitRequest {
   hora_inici?: string;
 }
 
+export interface LoteRecommendRequest {
+  origen: Coordenada;
+  destino: Coordenada;
+  target_date?: string;
+  limite_horas?: number;
+}
+
+export interface LoteRecommendationResponse {
+  resumen: {
+    distancia_km: number;
+    tiempo_total_min: number;
+    horas_totales: number;
+    tareas_realizadas: number;
+  };
+  paradas_ordenadas: Array<{
+    visit_id: number;
+    assignable_id: number | null;
+    latitude: number;
+    longitude: number;
+    postal_code: string;
+    estimated_duration: number;
+    score_ia: number;
+  }>;
+  ruta_geojson: {
+    type: string;
+    geometry: {
+      type: string;
+      coordinates: number[][];
+    };
+  };
+}
+
 export interface ReportSubmitRequest {
   visit_id: number;
   report_type: ReportType;
@@ -233,6 +265,7 @@ export interface ImprevistoResponse {
 export interface MetricsResponse {
   completades: number;
   pendentes: number;
+  programades: number;
   en_progreso: number;
   km_por_tecnico: Array<{
     technician_id: number;
@@ -499,6 +532,19 @@ export const api = {
   },
 
   /**
+   * POST /api/v1/ruta/recomendar-lote
+   * Recommendation-only optimized route for admin planning.
+   */
+  recommendLote: async (request: LoteRecommendRequest): Promise<LoteRecommendationResponse> => {
+    const response = await fetch(`${BASE_URL}/api/v1/ruta/recomendar-lote`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(request),
+    });
+    return handleResponse(response);
+  },
+
+  /**
    * POST /api/v1/reports
    * Submit a report after visiting
    */
@@ -561,6 +607,7 @@ export const api = {
     return {
       completades: raw.completades ?? raw.completadas ?? 0,
       pendentes: raw.pendentes ?? raw.pendientes ?? 0,
+      programades: raw.programades ?? raw.programadas ?? 0,
       en_progreso: raw.en_progreso ?? 0,
       km_por_tecnico: raw.km_por_tecnico ?? [],
       horas_efectivas_total: raw.horas_efectivas_total ?? 0,

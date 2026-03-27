@@ -184,6 +184,7 @@ class SlaByType(BaseModel):
 class MetricsResponse(BaseModel):
     completadas:           int
     pendientes:            int
+    programadas:           int
     en_progreso:           int
     km_por_tecnico:        list[KmPorTecnico]
     horas_efectivas_total: float

@@ -32,6 +32,14 @@ MAP_PLACE = "Tarragona, Spain"
 class GenerarRutaAdminRequest(BaseModel):
     technician_id: int
     origen: Coordenada
+    destino: Coordenada | None = None
+    target_date: str | None = None  # YYYY-MM-DD
+    limite_horas: float = 8.0
+
+
+class RecomendarLoteRequest(BaseModel):
+    origen: Coordenada
+    destino: Coordenada
     target_date: str | None = None  # YYYY-MM-DD
     limite_horas: float = 8.0
 
@@ -457,6 +465,30 @@ def generar_ruta_admin(
         technician_id=payload.technician_id,
         origen_lat=payload.origen.latitude,
         origen_lon=payload.origen.longitude,
+        destino_lat=payload.destino.latitude if payload.destino else None,
+        destino_lon=payload.destino.longitude if payload.destino else None,
+        target_date=target,
+        limite_horas=payload.limite_horas,
+    )
+
+
+@router.post("/recomendar-lote")
+def recomendar_lote_admin(
+    payload: RecomendarLoteRequest,
+    db: Session = Depends(get_db),
+):
+    """
+    Recommendation-only flow: generates an optimized route proposal.
+    It does NOT assign visits to technicians.
+    """
+    target = datetime.strptime(payload.target_date, "%Y-%m-%d").date() if payload.target_date else None
+    return generar_ruta_ia(
+        db=db,
+        technician_id=0,
+        origen_lat=payload.origen.latitude,
+        origen_lon=payload.origen.longitude,
+        destino_lat=payload.destino.latitude,
+        destino_lon=payload.destino.longitude,
         target_date=target,
         limite_horas=payload.limite_horas,
     )

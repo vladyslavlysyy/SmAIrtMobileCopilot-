@@ -113,7 +113,7 @@ def _fetch_pending_tasks(
             FROM visit v
             LEFT JOIN assignable a ON v.assignable_id = a.id
             LEFT JOIN charger c ON a.charger_id = c.id
-            WHERE LOWER(v.status) IN ('pending', 'scheduled')
+                        WHERE LOWER(v.status) IN ('pending', 'schedule', 'scheduled')
               AND (v.technician_id IS NULL OR v.technician_id = :tech_id)
               {day_filter}
             ORDER BY v.planned_date ASC
@@ -159,6 +159,8 @@ def generar_ruta_ia(
     technician_id: int,
     origen_lat: float,
     origen_lon: float,
+    destino_lat: float | None = None,
+    destino_lon: float | None = None,
     target_date: date | None = None,
     limite_horas: float = 8.0,
 ) -> dict[str, Any]:
@@ -296,10 +298,18 @@ def generar_ruta_ia(
 
         remaining = [r for r in remaining if r["visit_id"] != win["visit_id"]]
 
-    # Return to origin.
+    target_lat = destino_lat if destino_lat is not None else origen_lat
+    target_lon = destino_lon if destino_lon is not None else origen_lon
+
+    # Return to destination (or origin when no destination is provided).
     if use_osm and nx is not None and G is not None and cur_node is not None and base_node is not None:
         try:
-            p_back = nx.shortest_path(G, cur_node, base_node, weight="travel_time")
+            if destino_lat is not None and destino_lon is not None and ox is not None:
+                destination_node = ox.nearest_nodes(G, target_lon, target_lat)
+            else:
+                destination_node = base_node
+
+            p_back = nx.shortest_path(G, cur_node, destination_node, weight="travel_time")
             dist_m += nx.path_weight(G, p_back, weight="length")
             t_used += nx.path_weight(G, p_back, weight="travel_time") / 60.0
             if route_nodes:
@@ -307,7 +317,7 @@ def generar_ruta_ia(
         except Exception:
             pass
     else:
-        km_back = calcular_haversine(cur_lat, cur_lon, origen_lat, origen_lon)
+        km_back = calcular_haversine(cur_lat, cur_lon, target_lat, target_lon)
         dist_m += km_back * 1000.0
         t_used += _travel_minutes_from_km(km_back)
 
@@ -323,7 +333,7 @@ def generar_ruta_ia(
             else:
                 coords.append([G.nodes[u]["x"], G.nodes[u]["y"]])
     else:
-        coords = [[origen_lon, origen_lat]] + [[s["longitude"], s["latitude"]] for s in selected] + [[origen_lon, origen_lat]]
+        coords = [[origen_lon, origen_lat]] + [[s["longitude"], s["latitude"]] for s in selected] + [[target_lon, target_lat]]
 
     return {
         "resumen": {
