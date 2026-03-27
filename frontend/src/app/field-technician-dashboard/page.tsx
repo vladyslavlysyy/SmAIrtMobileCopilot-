@@ -1,62 +1,33 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Smartphone } from 'lucide-react';
 import AppLayout from '@/components/ui/AppLayout';
-import TechnicianHeader from './components/TechnicianHeader';
-import RouteTimeline from './components/RouteTimeline';
-import BatteryAutonomyCard from './components/BatteryAutonomyCard';
-import ContingencyButton from './components/ContingencyButton';
-import WeeklyCalendarStrip from './components/WeeklyCalendarStrip';
-import { useAppStore } from '@/store/appStore';
 
 export default function FieldTechnicianDashboardPage() {
-  const { technicians, selectedTechnicianId, isLoading, loadTechnicians, setSelectedTechnician } =
-    useAppStore();
+  const router = useRouter();
 
   useEffect(() => {
-    loadTechnicians();
-  }, [loadTechnicians]);
+    const timer = setTimeout(() => {
+      router.replace('/operations-dashboard');
+    }, 1600);
 
-  useEffect(() => {
-    if (!selectedTechnicianId && technicians.length > 0) {
-      setSelectedTechnician(technicians[0].id);
-    }
-  }, [selectedTechnicianId, technicians, setSelectedTechnician]);
-
-  if (isLoading && technicians.length === 0) {
-    return (
-      <AppLayout>
-        <div className="flex h-[80vh] items-center justify-center">
-          <Loader2 className="animate-spin text-blue-500" size={32} />
-        </div>
-      </AppLayout>
-    );
-  }
+    return () => clearTimeout(timer);
+  }, [router]);
 
   return (
     <AppLayout>
-      <div className="flex flex-col min-h-[calc(100vh-theme(spacing.16))] pb-8 bg-background">
-        <TechnicianHeader
-          technicians={technicians}
-          selectedTechId={selectedTechnicianId}
-          onSelect={setSelectedTechnician}
-        />
-
-        <div
-          key={selectedTechnicianId ?? 'no-tech'}
-          className="flex-1 p-6 max-w-screen-2xl mx-auto w-full animate-fade-in"
-        >
-          <WeeklyCalendarStrip />
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mt-6">
-            <div className="xl:col-span-2 space-y-6">
-              <RouteTimeline />
-            </div>
-            <div className="xl:col-span-1 space-y-4">
-              <BatteryAutonomyCard />
-              <ContingencyButton />
-            </div>
+      <div className="min-h-[calc(100vh-theme(spacing.16))] flex items-center justify-center bg-mobility-background px-6">
+        <div className="max-w-xl w-full bg-mobility-surface border border-mobility-border rounded-xl p-6 text-center shadow-sm">
+          <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-mobility-background border border-mobility-border flex items-center justify-center">
+            <Smartphone className="text-mobility-accent" size={22} />
           </div>
+          <h1 className="text-lg font-semibold text-mobility-primary mb-2">Vista de Tecnic nomes a App Mobil</h1>
+          <p className="text-sm text-mobility-muted">
+            Aquest dashboard s'utilitza des de l'aplicacio mobil del tecnic. Al web d'admin nomes es treballa amb Operacions.
+          </p>
+          <p className="text-xs text-mobility-muted mt-4">Redirigint a Operacions...</p>
         </div>
       </div>
     </AppLayout>

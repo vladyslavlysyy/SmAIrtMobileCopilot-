@@ -13,6 +13,67 @@ Proyecto full-stack para operaciones de mantenimiento de cargadores electricos.
 - Flujo de imprevistos -> evaluar esquipa o buscar herramienta: operativo.
 - Suite de smoke test backend: verde (Failures: 0).
 
+### Actualizacion UI admin (27-03-2026)
+
+- Web centrada en Admin:
+  - El dashboard web activo es Operacions.
+  - El dashboard de Tecnic en web queda bloqueado y redirige a Operacions con aviso de que la vista de tecnico vive en la app movil separada.
+
+- Sidebar y acciones:
+  - `Operacions` ahora es efectivo tambien cuando ya estas dentro: hace refresh del dashboard y muestra confirmacion visual.
+  - `Canviar rol` vuelve al selector inicial de acceso.
+  - `Sortir` limpia sesion local y vuelve al selector.
+
+- Cua d'Intervencions:
+  - La columna de prioridad ya no muestra todo a 0 cuando falta `last_priority_score`: hay fallback por tipo de visita.
+  - El texto del tipo de visita se renderiza legible (`correctivo no critico`, etc.) sin guiones bajos.
+  - La localizacion usa `address`; si no hay, usa `postal_code`; y si no existe ningun dato, muestra `Sense adreça`.
+  - El selector de `Tecnic` usa todo el registro de tecnicos cargado desde backend (no solo los IDs presentes en las visitas cargadas en ese momento).
+
+- Imprevistos:
+  - Se deduplican tarjetas repetidas (misma visita + tipo + descripcion) para evitar ruido visual.
+  - Se limita la lista visible para evitar spam de la misma alerta.
+
+- Cabecera de Operacions:
+  - Filtro unificado (un solo apartado) para combinar alcance temporal + estado:
+    - `Avui · Totes`
+    - `Avui · Nomes pendents`
+    - `Historic · Totes`
+    - `Historic · Nomes pendents`
+  - El filtro aplica de forma real sobre cola y calendarios.
+  - Refresh automatico cada 30 segundos para mantener datos al dia.
+  - El boton `Actualitzar ara` fuerza una recarga inmediata manual.
+  - `Nou Tecnic` ya no usa prompts del navegador: abre formulario modal interno con validacion de campos y alta real en BD.
+
+- Navegacion lateral simplificada:
+  - Se elimina el boton redundante de `Operacions` del bloque inferior (ya existe en el menu principal).
+  - Se elimina `Canviar rol` del lateral para evitar accion duplicada e innecesaria en el flujo admin web.
+  - `Mètriques` vuelve a mostrarse con tilde en el menu.
+
+- Calendarios de operacion para Admin:
+  - Se añade un `Calendari comu` semanal donde se ven todas las tareas de todos los tecnicos por dia.
+  - Se añade un `Calendari per tecnic` semanal con selector de tecnico para revisar carga y asignaciones individuales.
+  - La vista permite escoger un unico modo visible (`comu` o `per tecnic`), no ambos a la vez.
+  - Usa datos reales de backend via `GET /api/v1/visits/all` con rango de fechas.
+  - Si ese endpoint no existe en la instancia backend activa, hace fallback compatible a llamadas diarias `GET /api/v1/visits?date=...` (sin inventar datos en frontend).
+
+- Gestion manual de tareas:
+  - Se añade panel `Gestio manual de tasques` para crear tareas sin depender de automatismos de IA.
+  - Alta manual soportada:
+    - desde contrato -> `POST /api/v1/visits/from-contract`
+    - desde incidencia -> `POST /api/v1/visits/from-incidence`
+  - Incluye validaciones basicas de IDs, tecnico opcional, fecha opcional y nivel de escalado opcional.
+  - Tras crear una tarea, se refrescan cola y calendarios para que la gestion sea comoda y visible al instante.
+
+- Backend routing (correccion de 404):
+  - Se registra el router de planning en FastAPI (`/api/v1/planning/assign` y `/api/v1/planning/confirm`).
+  - Evita el popup `Not Found` en Operacions al cargar paneles que usan sugerencias IA/assignaciones.
+
+- Alta de tecnico (admin):
+  - Formulario con validacion basica (nombre, email, telefono, zona).
+  - Inserta en backend via `POST /api/v1/users` con `is_technician=true`.
+  - Tras crear, refresca listado de tecnicos en frontend.
+
 ## Flujo funcional (resumen)
 
 ### Flujo 1: Planificacion manual por Admin

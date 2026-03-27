@@ -27,28 +27,31 @@ export default function InterventionsAreaChart() {
     return [
       { name: 'Completades', value: metrics.completades },
       { name: 'Pendents', value: metrics.pendentes },
-      { name: 'En progrés', value: metrics.en_progreso },
+      { name: 'En progr?s', value: metrics.en_progreso },
     ];
   }, [metrics]);
 
   return (
-    <div className="bg-card rounded-xl border border-border p-5">
+    <div className="bg-mobility-surface shadow-sm/90 rounded-xl border border-mobility-border p-5">
       <div className="mb-5">
-        <h3 className="font-semibold text-foreground text-base">Intervencions</h3>
-        <p className="text-muted-foreground text-xs mt-0.5">Distribució actual (API metrics)</p>
+        <h3 className="font-semibold text-mobility-primary text-base">Intervencions</h3>
+        <p className="text-mobility-muted text-xs mt-0.5">Distribuci? actual (API metrics)</p>
       </div>
       <ResponsiveContainer width="100%" height={280}>
         <AreaChart data={chartData}>
-          <CartesianGrid stroke="#e2e8f0" strokeDasharray="3 3" vertical={false} />
+          <CartesianGrid stroke="#1e3a5a" strokeDasharray="3 3" vertical={false} />
           <XAxis
             dataKey="name"
-            tick={{ fontSize: 11, fill: '#94a3b8' }}
+            tick={{ fontSize: 11, fill: '#8fa3bc' }}
             axisLine={false}
             tickLine={false}
           />
-          <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-          <Tooltip />
-          <Area type="monotone" dataKey="value" stroke="#2563eb" fill="#93c5fd" strokeWidth={2} />
+          <YAxis tick={{ fontSize: 11, fill: '#8fa3bc' }} axisLine={false} tickLine={false} />
+          <Tooltip 
+            contentStyle={{ backgroundColor: '#13233a', borderColor: '#1e3a5a', color: '#fff' }} 
+            itemStyle={{ color: '#00c851' }}
+          />
+          <Area type="monotone" dataKey="value" stroke="#00c851" fill="#00c851" fillOpacity={0.2} strokeWidth={2} />
         </AreaChart>
       </ResponsiveContainer>
     </div>

@@ -1,220 +1,145 @@
 'use client';
 
 import React, { useState } from 'react';
-import {
-  AlertTriangle,
-  X,
-  Car,
-  Package,
-  Clock,
-  MessageSquare,
-  Send,
-  ChevronDown,
-} from 'lucide-react';
+import { AlertTriangle, Clock, MapPin, Wrench, X } from 'lucide-react';
 import { toast } from 'sonner';
+import { api, type ImprevistoSubmitRequest } from '@/lib/api';
 
-const contingencyTypes = [
-  {
-    id: 'traffic',
-    label: 'Trànsit / Accident',
-    icon: Car,
-    color: 'text-red-600',
-    bg: 'bg-red-50',
-    border: 'border-red-200',
-  },
-  {
-    id: 'material',
-    label: 'Falta de material',
-    icon: Package,
-    color: 'text-amber-600',
-    bg: 'bg-amber-50',
-    border: 'border-amber-200',
-  },
-  {
-    id: 'delay',
-    label: 'Retard en visita',
-    icon: Clock,
-    color: 'text-blue-600',
-    bg: 'bg-blue-50',
-    border: 'border-blue-200',
-  },
-  {
-    id: 'other',
-    label: 'Altre imprevisto',
-    icon: MessageSquare,
-    color: 'text-slate-600',
-    bg: 'bg-slate-50',
-    border: 'border-slate-200',
-  },
-];
-
-export default function ContingencyButton() {
+export default function ContingencyButton({ technicianId }: { technicianId?: number }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedType, setSelectedType] = useState<string | null>(null);
-  const [description, setDescription] = useState('');
-  const [isSending, setIsSending] = useState(false);
-  const [delayMinutes, setDelayMinutes] = useState('30');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const [formData, setFormData] = useState<Partial<ImprevistoSubmitRequest>>({
+    tipo: 'incidencia_adicional',
+    descripcion: '',
+    tiempo_perdido_min: 30,
+    visit_id: 1 // Default or dynamically fetched
+  });
 
-  const handleSubmit = () => {
-    if (!selectedType) {
-      toast?.error("Selecciona el tipus d'imprevisto");
-      return;
-    }
-    setIsSending(true);
-    // Backend: POST /api/contingencies { technicianId, type: selectedType, description, delayMinutes }
-    setTimeout(() => {
-      setIsSending(false);
-      setIsOpen(false);
-      setSelectedType(null);
-      setDescription('');
-      toast?.success('Imprevisto reportat a Operacions', {
-        description: "El departament ha rebut l'avís i proposa alternatives.",
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      setIsSubmitting(true);
+      await api.submitImprevisto({
+        visit_id: formData.visit_id || 1,
+        tipo: formData.tipo || 'incidencia_adicional',
+        descripcion: formData.descripcion || '',
+        tiempo_perdido_min: formData.tiempo_perdido_min || 30
       });
-    }, 1500);
+      
+      toast.success('Imprevist notificat', {
+        description: 'La ruta s\'esta reajustant...'
+      });
+      setIsOpen(false);
+    } catch (error) {
+      toast.error('Error al notificar l\'imprevist');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <>
-      {/* Trigger button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="w-full flex items-center justify-center gap-2 px-4 py-3.5 bg-red-600 hover:bg-red-700 active:scale-95 text-white font-semibold rounded-xl transition-all duration-150 shadow-lg shadow-red-900/20"
+        className="fixed bottom-6 right-6 z-40 flex items-center justify-center p-4 bg-mobility-accent text-white hover:brightness-110 rounded-full shadow-[0_6px_20px_rgba(0,162,219,0.35)] transition-transform hover:scale-105 active:scale-95"
       >
-        <AlertTriangle size={18} />
-        Reportar Imprevisto
+        <AlertTriangle size={24} />
       </button>
-      {/* Modal */}
+
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-card rounded-2xl border border-border w-full max-w-md shadow-2xl animate-slide-up">
-            {/* Header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-red-100 rounded-lg">
-                  <AlertTriangle size={16} className="text-red-600" />
-                </div>
-                <h3 className="font-bold text-foreground">Reportar Imprevisto</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-mobility-primary/75 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-mobility-surface shadow-sm border border-mobility-border w-full max-w-md rounded-2xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between p-4 border-b border-mobility-border bg-mobility-background">
+              <div className="flex items-center gap-2 text-mobility-primary font-bold">
+                <AlertTriangle size={20} />
+                <h2>Notificar Imprevist</h2>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-all"
+                className="p-1 hover:bg-mobility-primary rounded-lg text-mobility-muted hover:text-mobility-primary transition-colors"
               >
-                <X size={16} />
+                <X size={20} />
               </button>
             </div>
 
-            <div className="p-5 space-y-4">
-              {/* Type selection */}
+            <form onSubmit={handleSubmit} className="p-5 space-y-5">
               <div>
-                <label className="block text-sm font-semibold text-foreground mb-2">
-                  Tipus d&apos;imprevisto <span className="text-red-500">*</span>
+                <label className="block text-xs font-medium text-mobility-muted mb-2">
+                  Tipus d'Imprevist
                 </label>
                 <div className="grid grid-cols-2 gap-2">
-                  {contingencyTypes?.map((type) => {
-                    const Icon = type?.icon;
-                    const isSelected = selectedType === type?.id;
+                  {[
+                    { id: 'trafico', icon: MapPin, label: 'Transit' },
+                    { id: 'material', icon: Wrench, label: 'Material' },
+                    { id: 'cliente', icon: AlertTriangle, label: 'Client' },
+                    { id: 'incidencia_adicional', icon: Clock, label: 'Altres' }
+                  ].map((type) => {
+                    const isSelected = formData.tipo === type.id;
                     return (
                       <button
-                        key={`ctype-${type?.id}`}
-                        onClick={() => setSelectedType(type?.id)}
-                        className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all duration-150 text-left
-                          ${
-                            isSelected
-                              ? `${type?.bg} ${type?.border} ${type?.color}`
-                              : 'bg-muted/40 border-border text-muted-foreground hover:border-border/80'
-                          }`}
+                        key={type.id}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, tipo: type.id as any })}
+                        className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${
+                          isSelected
+                            ? 'bg-mobility-accent/10 border-mobility-accent text-mobility-primary'
+                            : 'bg-mobility-background border-mobility-border text-mobility-muted hover:border-mobility-accent/40'
+                        }`}
                       >
-                        <Icon size={16} className={isSelected ? type?.color : ''} />
-                        <span className="text-xs font-medium">{type?.label}</span>
+                        <type.icon size={20} className="mb-1.5" />
+                        <span className="text-xs font-medium">{type.label}</span>
                       </button>
                     );
                   })}
                 </div>
               </div>
 
-              {/* Delay estimate */}
               <div>
-                <label className="block text-sm font-semibold text-foreground mb-1.5">
-                  Retard estimat
+                <label className="block text-xs font-medium text-mobility-muted mb-1.5">
+                  Temps addicional estimat (minuts)
                 </label>
-                <p className="text-xs text-muted-foreground mb-2">
-                  Quants minuts de retard preveus?
-                </p>
-                <div className="relative">
-                  <select
-                    value={delayMinutes}
-                    onChange={(e) => setDelayMinutes(e?.target?.value)}
-                    className="w-full appearance-none pl-3 pr-8 py-2.5 text-sm bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
-                  >
-                    <option value="15">15 minuts</option>
-                    <option value="30">30 minuts</option>
-                    <option value="45">45 minuts</option>
-                    <option value="60">1 hora</option>
-                    <option value="90">1h 30min</option>
-                    <option value="120">2 hores o més</option>
-                  </select>
-                  <ChevronDown
-                    size={14}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
-                  />
-                </div>
-              </div>
-
-              {/* Description */}
-              <div>
-                <label className="block text-sm font-semibold text-foreground mb-1.5">
-                  Descripció (opcional)
-                </label>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e?.target?.value)}
-                  placeholder="Descriu breument la situació per ajudar a operacions a replantejar..."
-                  rows={3}
-                  className="w-full px-3 py-2.5 text-sm bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+                <input
+                  type="number"
+                  min="5"
+                  step="5"
+                  value={formData.tiempo_perdido_min}
+                  onChange={(e) => setFormData({ ...formData, tiempo_perdido_min: parseInt(e.target.value) })}
+                  className="w-full bg-mobility-background border border-mobility-border rounded-xl px-4 py-2.5 text-mobility-primary placeholder-mobility-muted focus:outline-none focus:border-mobility-accent focus:ring-1 focus:ring-mobility-accent/30 transition-all font-medium"
                 />
               </div>
 
-              {/* Info banner */}
-              <div className="flex items-start gap-2.5 p-3 bg-blue-50 border border-blue-200 rounded-xl">
-                <AlertTriangle size={14} className="text-blue-600 flex-shrink-0 mt-0.5" />
-                <p className="text-xs text-blue-700">
-                  Operacions rebrà l&apos;avís immediatament i proposarà alternatives de
-                  replantejament per a les visites afectades.
-                </p>
+              <div>
+                <label className="block text-xs font-medium text-mobility-muted mb-1.5">
+                  Descripcio de la situacio
+                </label>
+                <textarea
+                  value={formData.descripcion}
+                  onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
+                  placeholder="Explica breument que ha passat..."
+                  rows={3}
+                  className="w-full bg-mobility-background border border-mobility-border rounded-xl px-4 py-3 text-mobility-primary placeholder-mobility-muted/70 focus:outline-none focus:border-mobility-accent focus:ring-1 focus:ring-mobility-accent/30 transition-all resize-none text-sm"
+                />
               </div>
-            </div>
 
-            {/* Footer */}
-            <div className="px-5 py-4 border-t border-border flex items-center gap-3">
-              <button
-                onClick={() => setIsOpen(false)}
-                className="flex-1 py-2.5 text-sm font-medium text-muted-foreground bg-muted border border-border rounded-xl hover:bg-muted/80 transition-all"
-              >
-                Cancel·lar
-              </button>
-              <button
-                onClick={handleSubmit}
-                disabled={isSending || !selectedType}
-                className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-white rounded-xl transition-all duration-150 active:scale-95
-                  ${
-                    isSending || !selectedType
-                      ? 'bg-red-400 cursor-not-allowed'
-                      : 'bg-red-600 hover:bg-red-700'
-                  }`}
-              >
-                {isSending ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Enviant...
-                  </>
-                ) : (
-                  <>
-                    <Send size={14} />
-                    Reportar a Operacions
-                  </>
-                )}
-              </button>
-            </div>
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full py-3 bg-mobility-accent text-white hover:brightness-110 active:brightness-95 font-bold rounded-xl transition-all shadow-[0_8px_20px_rgba(0,162,219,0.28)] flex items-center justify-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <span className="animate-pulse">Enviant...</span>
+                  ) : (
+                    <>
+                      <AlertTriangle size={18} />
+                      Notificar al Centre de Control
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

@@ -11,7 +11,7 @@ export default function MetricsDashboard() {
   return (
     // Hemos quitado el role="operations" de aquí:
     <AppLayout>
-      <div className="flex flex-col min-h-screen bg-background">
+      <div className="flex flex-col min-h-screen bg-mobility-background">
         <MetricsHeader />
         <div className="flex-1 px-6 pb-6 space-y-5 max-w-screen-2xl mx-auto w-full">
           <MetricsKpiGrid />
