@@ -70,6 +70,17 @@ def seed_database():
                 (i, i, tech_id, 'correctivo_no_critico', 'SCHEDULED', planned_date, 90, None)
             )
 
+        # 6.1 Pending visits en diferentes días y semanas (sin eliminar datos existentes)
+        pending_offsets_days = [2, 2, 2, 2, 2, 2, 31, 38, 45, 52]
+        for idx, offset_days in enumerate(pending_offsets_days, start=21):
+            tech_id = random.randint(1, 10)
+            assignable_id = random.randint(1, 20)
+            planned_date = datetime.now() + timedelta(days=offset_days)
+            cur.execute(
+                "INSERT INTO visit (id, assignable_id, visit_type, status, planned_date, estimated_duration, score) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                (idx, assignable_id, 'correctivo_no_critico', 'PENDING', planned_date, 90, None)
+            )
+
         # 7. Report 
         for i in range(1, 11):
             created_at = datetime.now()
