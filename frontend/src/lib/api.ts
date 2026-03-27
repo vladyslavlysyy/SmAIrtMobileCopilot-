@@ -271,6 +271,8 @@ export interface UserCreateRequest {
   passwd: string;
   is_technician: boolean;
   zone?: string;
+  start_work_day?: string;
+  end_work_day?: string;
 }
 
 export interface HealthResponse {

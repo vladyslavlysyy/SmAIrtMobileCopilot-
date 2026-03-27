@@ -60,6 +60,7 @@ def create_user(payload: UserInfoCreate, db: Session = Depends(get_db)) -> UserI
 
     technician_id = None
     if payload.is_technician:
+        print(f'payload.start_work_day')
         db.execute(
             text(
                 """
@@ -73,8 +74,8 @@ def create_user(payload: UserInfoCreate, db: Session = Depends(get_db)) -> UserI
                 "zone": payload.zone,
                 "vehicle": "N/A",
                 "status": "available",
-                "start_work_day": None,
-                "end_work_day": None,
+                "start_work_day": payload.start_work_day,
+                "end_work_day": payload.end_work_day,
             },
         )
         technician_id = new_id
@@ -146,7 +147,10 @@ def classify_user_as_technician(
             """
             INSERT INTO technician (id, zone, vehicle, status, start_work_day, end_work_day)
             VALUES (:id, :zone, :vehicle, :status, :start_work_day, :end_work_day)
-            ON CONFLICT (id) DO UPDATE SET zone = COALESCE(EXCLUDED.zone, technician.zone)
+            ON CONFLICT (id) DO UPDATE SET
+              zone = COALESCE(EXCLUDED.zone, technician.zone),
+              start_work_day = COALESCE(EXCLUDED.start_work_day, technician.start_work_day),
+              end_work_day = COALESCE(EXCLUDED.end_work_day, technician.end_work_day)
             """
         ),
         {
@@ -154,8 +158,8 @@ def classify_user_as_technician(
             "zone": payload.zone,
             "vehicle": "N/A",
             "status": "available",
-            "start_work_day": None,
-            "end_work_day": None,
+            "start_work_day": payload.start_work_day,
+            "end_work_day": payload.end_work_day,
         },
     )
     db.commit()

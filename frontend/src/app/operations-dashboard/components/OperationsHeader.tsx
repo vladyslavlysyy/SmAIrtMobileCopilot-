@@ -34,6 +34,8 @@ export default function OperationsHeader({
     email: '',
     phone: '',
     zone: 'General',
+    start_work_day: '08:00',
+    end_work_day: '17:00',
   });
 
   const validateTechnicianForm = () => {
@@ -41,6 +43,9 @@ export default function OperationsHeader({
     if (!/^\S+@\S+\.\S+$/.test(form.email.trim())) return 'Email no valid';
     if (!/^[0-9+()\-\s]{7,20}$/.test(form.phone.trim())) return 'Telefon no valid';
     if (!form.zone.trim()) return 'La zona es obligatoria';
+    if (!form.start_work_day) return 'L\'hora d\'inici es obligatoria';
+    if (!form.end_work_day) return 'L\'hora de fi es obligatoria';
+    if (form.start_work_day >= form.end_work_day) return 'L\'hora d\'inici ha de ser anterior a la de fi';
     return null;
   };
 
@@ -60,11 +65,20 @@ export default function OperationsHeader({
         passwd: 'change-me',
         is_technician: true,
         zone: form.zone.trim(),
+        start_work_day: form.start_work_day,
+        end_work_day: form.end_work_day,
       });
       toast.success(`Tecnic creat: ${created.name} (ID ${created.technician_id ?? created.id})`);
       await loadTechnicians();
       setShowTechModal(false);
-      setForm({ name: '', email: '', phone: '', zone: 'General' });
+      setForm({
+        name: '',
+        email: '',
+        phone: '',
+        zone: 'General',
+        start_work_day: '08:00',
+        end_work_day: '17:00',
+      });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'No s\'ha pogut crear el tecnic');
     } finally {
@@ -252,6 +266,26 @@ export default function OperationsHeader({
                   onChange={(e) => setForm((prev) => ({ ...prev, zone: e.target.value }))}
                   className="w-full rounded-lg border border-mobility-border bg-mobility-background px-3 py-2 text-sm text-mobility-primary"
                   placeholder="General"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs text-mobility-muted">Inici jornada</label>
+                <input
+                  type="time"
+                  value={form.start_work_day}
+                  onChange={(e) => setForm((prev) => ({ ...prev, start_work_day: e.target.value }))}
+                  className="w-full rounded-lg border border-mobility-border bg-mobility-background px-3 py-2 text-sm text-mobility-primary"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs text-mobility-muted">Fi jornada</label>
+                <input
+                  type="time"
+                  value={form.end_work_day}
+                  onChange={(e) => setForm((prev) => ({ ...prev, end_work_day: e.target.value }))}
+                  className="w-full rounded-lg border border-mobility-border bg-mobility-background px-3 py-2 text-sm text-mobility-primary"
                 />
               </div>
             </div>

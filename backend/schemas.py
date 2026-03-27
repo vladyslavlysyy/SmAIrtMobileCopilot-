@@ -202,6 +202,8 @@ class UserInfoCreate(BaseModel):
     passwd: str
     is_technician: bool = False
     zone: Optional[str] = None
+    start_work_day: Optional[str] = None
+    end_work_day: Optional[str] = None
 
 
 class UserInfoOut(BaseModel):
@@ -219,3 +221,5 @@ class UserInfoOut(BaseModel):
 
 class ClassifyTechnicianRequest(BaseModel):
     zone: Optional[str] = None
+    start_work_day: Optional[str] = None
+    end_work_day: Optional[str] = None
