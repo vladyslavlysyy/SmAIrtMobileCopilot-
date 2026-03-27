@@ -6,6 +6,9 @@ import OperationsHeader from './components/OperationsHeader';
 import KpiCardsGrid from './components/KpiCardsGrid';
 import ContingencyBanner from './components/ContingencyBanner';
 import LoteCreation from './components/LoteCreation';
+import BatchPlannerForm from './components/BatchPlannerForm';
+import InterventionQueue from './components/InterventionQueue';
+import MapPanel from './components/MapPanel';
 import { toast } from 'sonner';
 import { useAppStore } from '@/store/appStore';
 import type { VisitStatus } from '@/lib/api';
@@ -65,6 +68,17 @@ export default function OperationsDashboard() {
             technicianId={undefined}
           />
           <LoteCreation onAssigned={() => refreshVisits(false)} />
+
+          <BatchPlannerForm onAssigned={() => refreshVisits(false)} />
+
+          <div className="flex flex-col gap-4 sm:gap-6">
+            <InterventionQueue
+              forcedStatusFilter={statusFilter}
+              onDataChanged={() => refreshVisits(false)}
+              refreshToken={refreshNonce}
+            />
+            <MapPanel />
+          </div>
         </div>
       </div>
     </AppLayout>

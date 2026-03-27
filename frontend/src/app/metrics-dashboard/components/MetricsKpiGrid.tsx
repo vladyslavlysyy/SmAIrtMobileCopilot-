@@ -1,22 +1,15 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Target, Activity, Clock, Navigation } from 'lucide-react';
-import { api, type MetricsResponse } from '@/lib/api';
+import type { MetricsResponse } from '@/lib/api';
 
-export default function MetricsKpiGrid() {
-  const [metrics, setMetrics] = useState<MetricsResponse | null>(null);
+interface MetricsKpiGridProps {
+  metrics: MetricsResponse | null;
+  isLoading: boolean;
+}
 
-  useEffect(() => {
-    const fetchMetrics = async () => {
-      try {
-        const today = new Date().toISOString().split('T')[0];
-        const res = await api.getMetrics({ dateFrom: today, dateTo: today });
-        setMetrics(res);
-      } catch (err) {}
-    };
-    fetchMetrics();
-  }, []);
+export default function MetricsKpiGrid({ metrics, isLoading }: MetricsKpiGridProps) {
 
   const total = (metrics?.completades ?? 0) + (metrics?.pendentes ?? 0) + (metrics?.en_progreso ?? 0);
   const completions = metrics?.completades ?? 0;
@@ -26,32 +19,32 @@ export default function MetricsKpiGrid() {
 
   const cards = [
     {
-      title: 'Taxa de Finalitzaci?',
+      title: 'Taxa de finalització',
       value: `${completionRate.toFixed(1)}%`,
       subtitle: `${completions} de ${total} complertes`,
       icon: Target,
-      color: 'bg-mobility-accent text-white text-mobility-primary'
+      color: 'bg-mobility-accent text-white'
     },
     {
       title: 'Intervencions en Curs',
       value: `${metrics?.en_progreso ?? 0}`,
       subtitle: 'Visites actualment actives',
       icon: Activity,
-      color: 'bg-mobility-accent text-white text-mobility-primary'
+      color: 'bg-mobility-accent text-white'
     },
     {
       title: 'Hores Efectives',
       value: `${metrics?.horas_efectivas_total?.toFixed(1) ?? 0}h`,
       subtitle: 'Temps total treballat',
       icon: Clock,
-      color: 'bg-mobility-accent text-white text-mobility-primary'
+      color: 'bg-mobility-accent text-white'
     },
     {
       title: 'Quilometratge Total',
       value: `${totalKm.toFixed(1)} km`,
-      subtitle: 'Dist?ncia recorreguda avui',
+      subtitle: 'Distància recorreguda avui',
       icon: Navigation,
-      color: 'bg-mobility-accent text-white text-mobility-primary'
+      color: 'bg-mobility-accent text-white'
     }
   ];
 
@@ -65,9 +58,9 @@ export default function MetricsKpiGrid() {
             </div>
           </div>
           <div>
-            <h3 className="text-3xl font-black text-mobility-primary tracking-tight mb-1">{card.value}</h3>
+            <h3 className="text-3xl font-black text-mobility-primary tracking-tight mb-1">{isLoading ? '--' : card.value}</h3>
             <p className="text-sm font-semibold text-mobility-primary mb-0.5">{card.title}</p>
-            <p className="text-xs text-mobility-muted">{card.subtitle}</p>
+            <p className="text-xs text-mobility-muted">{isLoading ? 'Carregant dades...' : card.subtitle}</p>
           </div>
         </div>
       ))}

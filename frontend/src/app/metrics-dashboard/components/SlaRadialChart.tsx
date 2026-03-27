@@ -1,23 +1,40 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   RadialBar,
   RadialBarChart,
   ResponsiveContainer,
   PolarAngleAxis,
 } from 'recharts';
+import type { MetricsResponse } from '@/lib/api';
 
-export default function SlaRadialChart() {
-  const data = [
-    { name: 'SLA Complert', value: 85, fill: '#00c851' }
-  ];
+interface SlaRadialChartProps {
+  metrics: MetricsResponse | null;
+  isLoading: boolean;
+}
+
+export default function SlaRadialChart({ metrics, isLoading }: SlaRadialChartProps) {
+  const slaValue = useMemo(() => {
+    const rows = metrics?.sla_por_tipo ?? [];
+    if (rows.length === 0) return 0;
+    const totalVisits = rows.reduce((acc, row) => acc + row.total, 0);
+    if (totalVisits === 0) return 0;
+    const weighted = rows.reduce(
+      (acc, row) => acc + (row.porcentaje_sla * row.total) / totalVisits,
+      0
+    );
+    return Number(weighted.toFixed(1));
+  }, [metrics]);
+
+  const badgeText = slaValue >= 90 ? 'Excel·lent' : slaValue >= 75 ? 'Bo' : 'Millorable';
+  const data = [{ name: 'SLA Complert', value: slaValue, fill: '#00c851' }];
 
   return (
     <div className="bg-mobility-surface shadow-sm/90 rounded-xl border border-mobility-border p-5 flex flex-col items-center justify-center">
       <div className="w-full mb-2">
         <h3 className="font-semibold text-mobility-primary text-base">Compliment SLA</h3>
-        <p className="text-mobility-muted text-xs mt-0.5">?ltims 30 dies</p>
+        <p className="text-mobility-muted text-xs mt-0.5">Mitjana ponderada per tipus (API)</p>
       </div>
       
       <div className="relative w-full h-[220px]">
@@ -40,16 +57,16 @@ export default function SlaRadialChart() {
             />
             {/* Background circle simulating a track */}
             <RadialBar
-              background={{ fill: '#1e3a5a' }}
+              background={{ fill: 'hsl(var(--mobility-border))' }}
               dataKey="value"
               cornerRadius={10}
             />
           </RadialBarChart>
         </ResponsiveContainer>
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <span className="text-3xl font-bold text-mobility-primary">85%</span>
-          <span className="text-[10px] text-mobility-accent font-medium uppercase tracking-wider mt-1 border border-mobility-accent/30 bg-cyan-100/70 px-2 py-0.5 rounded-full">
-            ?ptim
+          <span className="text-3xl font-bold text-mobility-primary">{isLoading ? '--' : `${slaValue}%`}</span>
+          <span className="text-[10px] text-mobility-accent font-medium uppercase tracking-wider mt-1 border border-mobility-accent/30 bg-mobility-background px-2 py-0.5 rounded-full">
+            {isLoading ? 'Carregant' : badgeText}
           </span>
         </div>
       </div>

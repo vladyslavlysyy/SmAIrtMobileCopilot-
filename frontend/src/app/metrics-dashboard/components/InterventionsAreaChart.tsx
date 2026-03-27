@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import {
   Area,
   AreaChart,
@@ -10,24 +10,21 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { api, type MetricsResponse } from '@/lib/api';
+import type { MetricsResponse } from '@/lib/api';
 
-export default function InterventionsAreaChart() {
-  const [metrics, setMetrics] = useState<MetricsResponse | null>(null);
+interface InterventionsAreaChartProps {
+  metrics: MetricsResponse | null;
+  isLoading: boolean;
+}
 
-  useEffect(() => {
-    api
-      .getMetrics({})
-      .then(setMetrics)
-      .catch(() => setMetrics(null));
-  }, []);
+export default function InterventionsAreaChart({ metrics, isLoading }: InterventionsAreaChartProps) {
 
   const chartData = useMemo(() => {
     if (!metrics) return [];
     return [
       { name: 'Completades', value: metrics.completades },
       { name: 'Pendents', value: metrics.pendentes },
-      { name: 'En progr?s', value: metrics.en_progreso },
+      { name: 'En progrés', value: metrics.en_progreso },
     ];
   }, [metrics]);
 
@@ -35,23 +32,35 @@ export default function InterventionsAreaChart() {
     <div className="bg-mobility-surface shadow-sm/90 rounded-xl border border-mobility-border p-5">
       <div className="mb-5">
         <h3 className="font-semibold text-mobility-primary text-base">Intervencions</h3>
-        <p className="text-mobility-muted text-xs mt-0.5">Distribuci? actual (API metrics)</p>
+        <p className="text-mobility-muted text-xs mt-0.5">Distribució actual segons backend</p>
       </div>
+      {isLoading ? <p className="text-xs text-mobility-muted mb-2">Carregant dades...</p> : null}
       <ResponsiveContainer width="100%" height={280}>
         <AreaChart data={chartData}>
-          <CartesianGrid stroke="#1e3a5a" strokeDasharray="3 3" vertical={false} />
+          <CartesianGrid stroke="hsl(var(--mobility-border))" strokeDasharray="3 3" vertical={false} />
           <XAxis
             dataKey="name"
-            tick={{ fontSize: 11, fill: '#8fa3bc' }}
+            tick={{ fontSize: 11, fill: 'hsl(var(--mobility-muted))' }}
             axisLine={false}
             tickLine={false}
           />
-          <YAxis tick={{ fontSize: 11, fill: '#8fa3bc' }} axisLine={false} tickLine={false} />
+          <YAxis tick={{ fontSize: 11, fill: 'hsl(var(--mobility-muted))' }} axisLine={false} tickLine={false} />
           <Tooltip 
-            contentStyle={{ backgroundColor: '#13233a', borderColor: '#1e3a5a', color: '#fff' }} 
-            itemStyle={{ color: '#00c851' }}
+            contentStyle={{
+              backgroundColor: 'hsl(var(--mobility-surface))',
+              borderColor: 'hsl(var(--mobility-border))',
+              color: 'hsl(var(--mobility-text))',
+            }}
+            itemStyle={{ color: 'hsl(var(--mobility-accent))' }}
           />
-          <Area type="monotone" dataKey="value" stroke="#00c851" fill="#00c851" fillOpacity={0.2} strokeWidth={2} />
+          <Area
+            type="monotone"
+            dataKey="value"
+            stroke="hsl(var(--mobility-accent))"
+            fill="hsl(var(--mobility-accent))"
+            fillOpacity={0.2}
+            strokeWidth={2}
+          />
         </AreaChart>
       </ResponsiveContainer>
     </div>

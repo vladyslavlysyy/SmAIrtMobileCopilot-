@@ -1,0 +1,7202 @@
+[
+  {
+    "name": "OSM Charger 1781622312",
+    "latitude": 36.8416614,
+    "longitude": -2.4443424,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Punto de carga para vehículos eléctricos",
+    "latitude": 37.3821478,
+    "longitude": -5.9875921,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Edificio Valhondo",
+    "latitude": 39.4806776,
+    "longitude": -6.3674421,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Cúllar Supercharger",
+    "latitude": 37.5540668,
+    "longitude": -2.6138499,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Murcia Supercharger",
+    "latitude": 38.0382105,
+    "longitude": -1.1493338,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Centro Comercial Nueva Condomina",
+    "latitude": 38.0383869,
+    "longitude": -1.1492419,
+    "source": "osm_imported"
+  },
+  {
+    "name": "torreperojil",
+    "latitude": 38.0424539,
+    "longitude": -3.2783767,
+    "source": "osm_imported"
+  },
+  {
+    "name": "biotec family",
+    "latitude": 36.9453024,
+    "longitude": -2.1187407,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Bote basillos",
+    "latitude": 37.3824294,
+    "longitude": -5.9291209,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Grana genil",
+    "latitude": 37.1724236,
+    "longitude": -3.6749485,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Pizarra naranja, limones",
+    "latitude": 36.7361604,
+    "longitude": -4.6926993,
+    "source": "osm_imported"
+  },
+  {
+    "name": "MJ Fernández Aranda",
+    "latitude": 37.2986335,
+    "longitude": -4.8805628,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Petaca",
+    "latitude": 36.7356752,
+    "longitude": -3.5517626,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Casi,Almería",
+    "latitude": 36.8426795,
+    "longitude": -2.421964,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Casi aeropuerto",
+    "latitude": 36.852211,
+    "longitude": -2.3706625,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Casi san Isidro",
+    "latitude": 36.9042793,
+    "longitude": -2.1783819,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Perfumería De ruy",
+    "latitude": 37.0317612,
+    "longitude": -4.5335733,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Los granainos",
+    "latitude": 36.9490977,
+    "longitude": -4.0645983,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Hortoventas",
+    "latitude": 36.9586116,
+    "longitude": -4.1106885,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Fresh María",
+    "latitude": 36.9663919,
+    "longitude": -4.139227,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Lecar (Frutas y verduras)",
+    "latitude": 36.9593792,
+    "longitude": -4.1313897,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Seur Bailen",
+    "latitude": 38.1419614,
+    "longitude": -3.7154614,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Seur (Puerto de Santa Maria)",
+    "latitude": 36.6104855,
+    "longitude": -6.2092877,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ramoneda (RDA)",
+    "latitude": 39.4791762,
+    "longitude": -0.5596728,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Tradiscor",
+    "latitude": 37.900647,
+    "longitude": -4.7094659,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ramoneda (RMD)",
+    "latitude": 37.3674436,
+    "longitude": -5.8822662,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Aguas de Benahavís",
+    "latitude": 36.5191418,
+    "longitude": -5.0427173,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Biosol",
+    "latitude": 36.8179092,
+    "longitude": -2.1975702,
+    "source": "osm_imported"
+  },
+  {
+    "name": "bolos de sílice bibianos",
+    "latitude": 38.9466196,
+    "longitude": -2.3586214,
+    "source": "osm_imported"
+  },
+  {
+    "name": "cantera bibianos",
+    "latitude": 38.9440264,
+    "longitude": -2.3615913,
+    "source": "osm_imported"
+  },
+  {
+    "name": "GEN",
+    "latitude": 36.5260833,
+    "longitude": -6.1898575,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 4848137629",
+    "latitude": 36.6897311,
+    "longitude": -4.4428285,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Carrefour",
+    "latitude": 37.1545042,
+    "longitude": -3.6081554,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Decathlón",
+    "latitude": 37.2108748,
+    "longitude": -3.621307,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 4856014053",
+    "latitude": 37.1719815,
+    "longitude": -3.6032901,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Granada Supercharger",
+    "latitude": 37.1817442,
+    "longitude": -3.9285734,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 5223758374",
+    "latitude": 37.9921154,
+    "longitude": -0.6863993,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 5308349301",
+    "latitude": 37.7682165,
+    "longitude": -3.8022564,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Aguadulce Supercharger",
+    "latitude": 37.2568084,
+    "longitude": -4.9861152,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Mérida Supercharger",
+    "latitude": 38.9218157,
+    "longitude": -6.3751515,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Guarromán Supercharger",
+    "latitude": 38.1431321,
+    "longitude": -3.7229141,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 38.8820745,
+    "longitude": -6.9691427,
+    "source": "osm_imported"
+  },
+  {
+    "name": "aldenor",
+    "latitude": 36.765796,
+    "longitude": -2.7817162,
+    "source": "osm_imported"
+  },
+  {
+    "name": "agroponiente",
+    "latitude": 36.7830246,
+    "longitude": -2.7422284,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Nijar frucht",
+    "latitude": 36.89003,
+    "longitude": -2.1981439,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Atalaya del Cañavate Supercharger",
+    "latitude": 39.5387197,
+    "longitude": -2.2546069,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Frutas Escodia S.L",
+    "latitude": 36.7576641,
+    "longitude": -2.7491283,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Almaraz Supercharger",
+    "latitude": 39.7915987,
+    "longitude": -5.6955334,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Manzanares Supercharger",
+    "latitude": 39.0063427,
+    "longitude": -3.3832759,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Albacete Supercharger",
+    "latitude": 39.1346244,
+    "longitude": -2.0390684,
+    "source": "osm_imported"
+  },
+  {
+    "name": "jimbofresh(levante sur)",
+    "latitude": 37.7013993,
+    "longitude": -0.9219395,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Cano Natur",
+    "latitude": 37.7794699,
+    "longitude": -0.8904506,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 5699349981",
+    "latitude": 36.5233097,
+    "longitude": -5.045836,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Agro San Isidro",
+    "latitude": 36.9429506,
+    "longitude": -2.134571,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Tesla Supercharger",
+    "latitude": 39.9662309,
+    "longitude": -4.7964562,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6023583052",
+    "latitude": 36.8328387,
+    "longitude": -3.9764905,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6041731774",
+    "latitude": 36.7405479,
+    "longitude": -4.099211,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Jaime I",
+    "latitude": 37.9893995,
+    "longitude": -1.1315502,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6173630852",
+    "latitude": 36.5310997,
+    "longitude": -6.2915263,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Estación de Recarga (0421)",
+    "latitude": 38.1030417,
+    "longitude": -0.8497535,
+    "source": "osm_imported"
+  },
+  {
+    "name": "IBIL",
+    "latitude": 36.8312312,
+    "longitude": -2.4027101,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Tesla",
+    "latitude": 36.8187456,
+    "longitude": -2.0665295,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Tesla Vehicles",
+    "latitude": 36.7500591,
+    "longitude": -3.8707205,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Hilton Garden Inn Málaga",
+    "latitude": 36.6894005,
+    "longitude": -4.4597189,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ibis Budget Málaga Aeropuerto Avenida Velázquez",
+    "latitude": 36.6909869,
+    "longitude": -4.4604243,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 36.6869489,
+    "longitude": -4.4587026,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6531411721",
+    "latitude": 36.6750593,
+    "longitude": -4.486298,
+    "source": "osm_imported"
+  },
+  {
+    "name": "SMASSA",
+    "latitude": 36.7003858,
+    "longitude": -4.4389212,
+    "source": "osm_imported"
+  },
+  {
+    "name": "TESLA",
+    "latitude": 37.3718418,
+    "longitude": -6.0366539,
+    "source": "osm_imported"
+  },
+  {
+    "name": "TESLA",
+    "latitude": 37.3717972,
+    "longitude": -6.0366387,
+    "source": "osm_imported"
+  },
+  {
+    "name": "TESLA",
+    "latitude": 37.3717465,
+    "longitude": -6.0366281,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Blau Drive",
+    "latitude": 37.8888481,
+    "longitude": -6.5703571,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Blaudrive",
+    "latitude": 37.8888266,
+    "longitude": -6.5703834,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6789374139",
+    "latitude": 39.8623409,
+    "longitude": -4.0103544,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Praia Verde Boutique Hotel Tesla Destination Charger",
+    "latitude": 37.1801999,
+    "longitude": -7.4823573,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder - Hotel Acosta Vetonia - Almendralejo",
+    "latitude": 38.7099054,
+    "longitude": -6.400218,
+    "source": "osm_imported"
+  },
+  {
+    "name": "E.S. Villafranca de los Barros",
+    "latitude": 38.625898,
+    "longitude": -6.369553,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Campofrío",
+    "latitude": 37.7658087,
+    "longitude": -6.5768955,
+    "source": "osm_imported"
+  },
+  {
+    "name": "ACT-90001",
+    "latitude": 37.4690413,
+    "longitude": -7.4736938,
+    "source": "osm_imported"
+  },
+  {
+    "name": "VRS-90001",
+    "latitude": 37.1819554,
+    "longitude": -7.452098,
+    "source": "osm_imported"
+  },
+  {
+    "name": "CTM-90001",
+    "latitude": 37.2179062,
+    "longitude": -7.4447724,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.3804824,
+    "longitude": -6.0830009,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Paseo de Florencia",
+    "latitude": 37.9695926,
+    "longitude": -1.1287366,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Avda. Río Segura",
+    "latitude": 37.9815792,
+    "longitude": -1.1284865,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Plaza Circular",
+    "latitude": 37.9930465,
+    "longitude": -1.1305705,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Glorieta de España",
+    "latitude": 37.9830205,
+    "longitude": -1.1302574,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Restaurante La Zarzuela",
+    "latitude": 39.9127373,
+    "longitude": -5.2020509,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 39.9269271,
+    "longitude": -5.1853913,
+    "source": "osm_imported"
+  },
+  {
+    "name": "IONITY Puerto Lumbreras",
+    "latitude": 37.5758699,
+    "longitude": -1.8011955,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Hotel Leo",
+    "latitude": 38.0934729,
+    "longitude": -6.2762417,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ayuntamiento de Huelva",
+    "latitude": 37.2579964,
+    "longitude": -6.9352457,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ayuntamiento de Huelva",
+    "latitude": 37.2593104,
+    "longitude": -6.9485065,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Estación Premium de Monesterio",
+    "latitude": 38.0281253,
+    "longitude": -6.2201954,
+    "source": "osm_imported"
+  },
+  {
+    "name": "ELV-80001",
+    "latitude": 38.8773128,
+    "longitude": -7.1634937,
+    "source": "osm_imported"
+  },
+  {
+    "name": "MRV-90001",
+    "latitude": 39.383937,
+    "longitude": -7.3832269,
+    "source": "osm_imported"
+  },
+  {
+    "name": "PTG-90001",
+    "latitude": 39.2959538,
+    "longitude": -7.4298444,
+    "source": "osm_imported"
+  },
+  {
+    "name": "PTG-00003",
+    "latitude": 39.2894264,
+    "longitude": -7.4291456,
+    "source": "osm_imported"
+  },
+  {
+    "name": "PTG-00002",
+    "latitude": 39.2944883,
+    "longitude": -7.4285348,
+    "source": "osm_imported"
+  },
+  {
+    "name": "PTG-00004",
+    "latitude": 39.2691968,
+    "longitude": -7.420413,
+    "source": "osm_imported"
+  },
+  {
+    "name": "VRS-00010",
+    "latitude": 37.1926352,
+    "longitude": -7.4248722,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 7834616861",
+    "latitude": 37.2580034,
+    "longitude": -6.9527042,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder - GALP Dir. Madrid - Villargordo del Cabriel",
+    "latitude": 39.5289113,
+    "longitude": -1.4335089,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8051203451",
+    "latitude": 39.4690472,
+    "longitude": -6.3785901,
+    "source": "osm_imported"
+  },
+  {
+    "name": "ARR-80001",
+    "latitude": 39.1229316,
+    "longitude": -7.281417,
+    "source": "osm_imported"
+  },
+  {
+    "name": "CTB-90001",
+    "latitude": 39.8231073,
+    "longitude": -7.4921774,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Complejo Cultural San Francisco",
+    "latitude": 39.4675252,
+    "longitude": -6.3669821,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Complejo Cultural San Francisco",
+    "latitude": 39.467519,
+    "longitude": -6.3670141,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Complejo Cultural San Francisco",
+    "latitude": 39.4665539,
+    "longitude": -6.3677527,
+    "source": "osm_imported"
+  },
+  {
+    "name": "CTB-00004",
+    "latitude": 39.8244799,
+    "longitude": -7.4884406,
+    "source": "osm_imported"
+  },
+  {
+    "name": "CTB-00003",
+    "latitude": 39.8198763,
+    "longitude": -7.4876178,
+    "source": "osm_imported"
+  },
+  {
+    "name": "CTB-90002",
+    "latitude": 39.8191547,
+    "longitude": -7.4958166,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.1947834,
+    "longitude": -2.9841866,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ayuntamiento Utiel RÁPIDO",
+    "latitude": 39.5726146,
+    "longitude": -1.2108652,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Alentejo Marmoris Hotel and Spa Tesla Destination Charger",
+    "latitude": 38.7772126,
+    "longitude": -7.4201998,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Eco Hotel Rural Monte da Provenca Tesla Destination Charger",
+    "latitude": 38.9209033,
+    "longitude": -7.1718259,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Quinta da Saimeira Tesla Destination Charger",
+    "latitude": 39.4085208,
+    "longitude": -7.4043989,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Torre de Palma Wine Hotel Tesla Destination Charger",
+    "latitude": 39.0683071,
+    "longitude": -7.4891594,
+    "source": "osm_imported"
+  },
+  {
+    "name": "ELV-00018",
+    "latitude": 38.8753643,
+    "longitude": -7.1589828,
+    "source": "osm_imported"
+  },
+  {
+    "name": "VRS-80002",
+    "latitude": 37.1906083,
+    "longitude": -7.4177175,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Hotel Dunamar",
+    "latitude": 37.1788754,
+    "longitude": -7.4442552,
+    "source": "osm_imported"
+  },
+  {
+    "name": "BRC-90001",
+    "latitude": 38.1341986,
+    "longitude": -6.9800824,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Herdade dos Delgados",
+    "latitude": 38.3856128,
+    "longitude": -7.3576239,
+    "source": "osm_imported"
+  },
+  {
+    "name": "MOU-00001",
+    "latitude": 38.3829447,
+    "longitude": -7.3438299,
+    "source": "osm_imported"
+  },
+  {
+    "name": "BRB-90001",
+    "latitude": 38.8070514,
+    "longitude": -7.4535175,
+    "source": "osm_imported"
+  },
+  {
+    "name": "CMR-00001",
+    "latitude": 39.0150178,
+    "longitude": -7.0685032,
+    "source": "osm_imported"
+  },
+  {
+    "name": "MFT-90001",
+    "latitude": 39.0510571,
+    "longitude": -7.4372654,
+    "source": "osm_imported"
+  },
+  {
+    "name": "PTG-00006",
+    "latitude": 39.2696391,
+    "longitude": -7.4418184,
+    "source": "osm_imported"
+  },
+  {
+    "name": "CVD-00001",
+    "latitude": 39.410802,
+    "longitude": -7.4489189,
+    "source": "osm_imported"
+  },
+  {
+    "name": "IDN-00001",
+    "latitude": 39.9230237,
+    "longitude": -7.2417763,
+    "source": "osm_imported"
+  },
+  {
+    "name": "ADL-90001",
+    "latitude": 38.7023813,
+    "longitude": -7.4056153,
+    "source": "osm_imported"
+  },
+  {
+    "name": "VVC-00001",
+    "latitude": 38.7769454,
+    "longitude": -7.4176784,
+    "source": "osm_imported"
+  },
+  {
+    "name": "PTG-00031",
+    "latitude": 39.2808014,
+    "longitude": -7.4310554,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8321142231",
+    "latitude": 36.550879,
+    "longitude": -5.2727356,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 39.5386874,
+    "longitude": -2.2548892,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8358666745",
+    "latitude": 37.3254046,
+    "longitude": -6.8400648,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.9278906,
+    "longitude": -0.7360219,
+    "source": "osm_imported"
+  },
+  {
+    "name": "concesionario renault",
+    "latitude": 38.9889364,
+    "longitude": -3.9106664,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.9839559,
+    "longitude": -3.9144824,
+    "source": "osm_imported"
+  },
+  {
+    "name": "punto recarga cohes electricos",
+    "latitude": 38.9920866,
+    "longitude": -3.920089,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 38.9881647,
+    "longitude": -3.928182,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.9873496,
+    "longitude": -3.9140929,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.9744077,
+    "longitude": -3.9318301,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder - El Cruce - Manzanares",
+    "latitude": 39.0063653,
+    "longitude": -3.3836777,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8400892292",
+    "latitude": 38.4808078,
+    "longitude": -0.772094,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8400892293",
+    "latitude": 38.4782934,
+    "longitude": -0.78348,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Centro Comercial El Golf",
+    "latitude": 39.9662023,
+    "longitude": -4.796662,
+    "source": "osm_imported"
+  },
+  {
+    "name": "El Corte Inglés",
+    "latitude": 39.9622697,
+    "longitude": -4.8258049,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Carrefour",
+    "latitude": 39.9628391,
+    "longitude": -4.7955314,
+    "source": "osm_imported"
+  },
+  {
+    "name": "suministros electricos talavera",
+    "latitude": 39.9560901,
+    "longitude": -4.8472734,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ballenoil Talavera I",
+    "latitude": 39.9611696,
+    "longitude": -4.844007,
+    "source": "osm_imported"
+  },
+  {
+    "name": "MRA-00002",
+    "latitude": 38.1399405,
+    "longitude": -7.4593053,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.378286,
+    "longitude": -6.0825875,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8623252863",
+    "latitude": 39.0395236,
+    "longitude": -5.2348278,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Red Movem Talarrubias",
+    "latitude": 39.0351707,
+    "longitude": -5.235777,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8626845555",
+    "latitude": 37.2706861,
+    "longitude": -6.9252659,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola Pla de L'Arc",
+    "latitude": 39.6331792,
+    "longitude": -0.5922287,
+    "source": "osm_imported"
+  },
+  {
+    "name": "CTB-00016",
+    "latitude": 39.8197157,
+    "longitude": -7.4907992,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Adega de Borba",
+    "latitude": 38.8074317,
+    "longitude": -7.4635939,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.6319322,
+    "longitude": -0.7766502,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8895103875",
+    "latitude": 38.08892,
+    "longitude": -0.9383093,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8895103876",
+    "latitude": 38.079671,
+    "longitude": -0.9488322,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8895103877",
+    "latitude": 38.0944877,
+    "longitude": -0.9384421,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8918789288",
+    "latitude": 38.3828886,
+    "longitude": -0.5087134,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8918789289",
+    "latitude": 38.3811502,
+    "longitude": -0.5111187,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8918789290",
+    "latitude": 38.3846111,
+    "longitude": -0.5170422,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8918789291",
+    "latitude": 38.3843039,
+    "longitude": -0.5262813,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.9108242,
+    "longitude": -0.7404241,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8938128016",
+    "latitude": 36.7798563,
+    "longitude": -4.1047709,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 38.2825949,
+    "longitude": -0.7123342,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8986813752",
+    "latitude": 36.6585733,
+    "longitude": -4.4827214,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7087099,
+    "longitude": -4.44439,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9014221689",
+    "latitude": 37.2789279,
+    "longitude": -6.9436919,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9026786504",
+    "latitude": 39.9414399,
+    "longitude": -3.1685732,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9026786505",
+    "latitude": 39.9414627,
+    "longitude": -3.1685231,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9026786506",
+    "latitude": 39.9481139,
+    "longitude": -3.173408,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9082092379",
+    "latitude": 38.1953555,
+    "longitude": -0.5601402,
+    "source": "osm_imported"
+  },
+  {
+    "name": "ChargePoint",
+    "latitude": 36.754226,
+    "longitude": -3.8847183,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9134078040",
+    "latitude": 36.7428421,
+    "longitude": -3.883553,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.3933376,
+    "longitude": -3.0270139,
+    "source": "osm_imported"
+  },
+  {
+    "name": "enercoop",
+    "latitude": 38.2344323,
+    "longitude": -0.7903972,
+    "source": "osm_imported"
+  },
+  {
+    "name": "El Ejido Supercharger",
+    "latitude": 36.7524008,
+    "longitude": -2.8053653,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Fuengirola Supercharger",
+    "latitude": 36.5807237,
+    "longitude": -4.5956956,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Jerez Supercharger",
+    "latitude": 36.6923811,
+    "longitude": -6.1602492,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Sevilla Supercharger",
+    "latitude": 37.3928875,
+    "longitude": -6.0101893,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9157606719",
+    "latitude": 37.2609682,
+    "longitude": -2.4533968,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9179319187",
+    "latitude": 36.749518,
+    "longitude": -3.8783473,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Calle Navegante Juan Fernández",
+    "latitude": 37.997079,
+    "longitude": -1.1244813,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Avda. Primero de Mayo (El Palmar)",
+    "latitude": 37.9350856,
+    "longitude": -1.1638775,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Avda. Río Segura, 10",
+    "latitude": 37.981946,
+    "longitude": -1.1293099,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9261080957",
+    "latitude": 37.8555813,
+    "longitude": -1.5126263,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Estación de Tren",
+    "latitude": 39.4604907,
+    "longitude": -6.3853258,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Electrolinera El Gallo",
+    "latitude": 39.5569183,
+    "longitude": -6.4028381,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9420260728",
+    "latitude": 37.3981846,
+    "longitude": -1.9477812,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 36.1847376,
+    "longitude": -5.4299651,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Monte da Estrela",
+    "latitude": 38.2769167,
+    "longitude": -7.3511517,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Hotel Alcazar",
+    "latitude": 37.1815098,
+    "longitude": -7.4460402,
+    "source": "osm_imported"
+  },
+  {
+    "name": "PTG-00016",
+    "latitude": 39.2767967,
+    "longitude": -7.4324846,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ronda Sur",
+    "latitude": 37.9690714,
+    "longitude": -1.1274169,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Calle Mayor (El Palmar)",
+    "latitude": 37.9355155,
+    "longitude": -1.1632919,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Calle Pérgola",
+    "latitude": 37.9936931,
+    "longitude": -1.1422552,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Avenida de los Pinos",
+    "latitude": 37.9971016,
+    "longitude": -1.1383086,
+    "source": "osm_imported"
+  },
+  {
+    "name": "PCTEX - Sede Gamma",
+    "latitude": 39.4789096,
+    "longitude": -6.3449093,
+    "source": "osm_imported"
+  },
+  {
+    "name": "DIPBA Monesterio",
+    "latitude": 38.0839558,
+    "longitude": -6.257971,
+    "source": "osm_imported"
+  },
+  {
+    "name": "DIPBA Villafranca",
+    "latitude": 38.5647191,
+    "longitude": -6.3494272,
+    "source": "osm_imported"
+  },
+  {
+    "name": "VRS-00004",
+    "latitude": 37.1900424,
+    "longitude": -7.4360503,
+    "source": "osm_imported"
+  },
+  {
+    "name": "PTG-00012",
+    "latitude": 39.29742,
+    "longitude": -7.4280918,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa X",
+    "latitude": 38.3574722,
+    "longitude": -2.7986632,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9812264309",
+    "latitude": 36.6763461,
+    "longitude": -4.474755,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7231921,
+    "longitude": -4.3974886,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7437896,
+    "longitude": -4.4899624,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7279089,
+    "longitude": -4.4179003,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.6883271,
+    "longitude": -4.4788447,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7228373,
+    "longitude": -4.4252625,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7197435,
+    "longitude": -4.3629156,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7499868,
+    "longitude": -4.4236688,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7167721,
+    "longitude": -4.4614992,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.6655332,
+    "longitude": -4.5013125,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7224053,
+    "longitude": -4.4480194,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7364214,
+    "longitude": -4.5483333,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7213868,
+    "longitude": -4.436203,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7287662,
+    "longitude": -4.4271138,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7144491,
+    "longitude": -4.4229875,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.714761,
+    "longitude": -4.4421806,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.689232,
+    "longitude": -4.4436071,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7349687,
+    "longitude": -4.4246833,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7254374,
+    "longitude": -4.3816861,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7365895,
+    "longitude": -4.5528389,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7188542,
+    "longitude": -4.433322,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7494944,
+    "longitude": -4.4169644,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.726365,
+    "longitude": -4.4313454,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 36.7203636,
+    "longitude": -4.4146502,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola Clientes Charging Station",
+    "latitude": 37.3855573,
+    "longitude": -6.0028953,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9903855062",
+    "latitude": 36.7002826,
+    "longitude": -4.439208,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9903855063",
+    "latitude": 36.7002583,
+    "longitude": -4.4392264,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9903855064",
+    "latitude": 36.7003125,
+    "longitude": -4.4391875,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9903855065",
+    "latitude": 36.7003367,
+    "longitude": -4.4391691,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9903855066",
+    "latitude": 36.7003604,
+    "longitude": -4.4391503,
+    "source": "osm_imported"
+  },
+  {
+    "name": "SMASSA",
+    "latitude": 36.7004307,
+    "longitude": -4.4390268,
+    "source": "osm_imported"
+  },
+  {
+    "name": "SMASSA",
+    "latitude": 36.7004092,
+    "longitude": -4.4389758,
+    "source": "osm_imported"
+  },
+  {
+    "name": "PTG-00014",
+    "latitude": 39.2817999,
+    "longitude": -7.430425,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9905795682",
+    "latitude": 39.5431327,
+    "longitude": -0.5752316,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9915752746",
+    "latitude": 36.7253447,
+    "longitude": -4.255161,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9915752747",
+    "latitude": 36.7254027,
+    "longitude": -4.2552803,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ibedrola",
+    "latitude": 37.8247775,
+    "longitude": -0.8072645,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Lahita",
+    "latitude": 37.8236925,
+    "longitude": -0.8093656,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7144067,
+    "longitude": -4.4230337,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 36.7539824,
+    "longitude": -4.4258899,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder - La Gaviota - Motilla de Palancar",
+    "latitude": 39.55351,
+    "longitude": -1.9028778,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.3811424,
+    "longitude": -6.0823461,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 37.3780486,
+    "longitude": -6.0822443,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9951775491",
+    "latitude": 37.3816872,
+    "longitude": -6.068308,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 37.3837973,
+    "longitude": -6.050718,
+    "source": "osm_imported"
+  },
+  {
+    "name": "BP",
+    "latitude": 37.3842578,
+    "longitude": -6.0476499,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Eurotel",
+    "latitude": 37.1734423,
+    "longitude": -7.4968842,
+    "source": "osm_imported"
+  },
+  {
+    "name": "ACT-00004",
+    "latitude": 37.476927,
+    "longitude": -7.4709697,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Place to Plug",
+    "latitude": 39.6029885,
+    "longitude": -2.2798393,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Eurocharge",
+    "latitude": 36.7746813,
+    "longitude": -2.6104601,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 10023968551",
+    "latitude": 39.5588249,
+    "longitude": -0.5038288,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Acciona Energía",
+    "latitude": 38.9981877,
+    "longitude": -1.8473853,
+    "source": "osm_imported"
+  },
+  {
+    "name": "VVC-00007",
+    "latitude": 38.7854731,
+    "longitude": -7.4233006,
+    "source": "osm_imported"
+  },
+  {
+    "name": "MovilTIK",
+    "latitude": 38.7661744,
+    "longitude": -0.6099878,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Lidl",
+    "latitude": 37.8217785,
+    "longitude": -0.8131326,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Lidl",
+    "latitude": 37.8218099,
+    "longitude": -0.8130867,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 10269787205",
+    "latitude": 37.1780058,
+    "longitude": -3.6124308,
+    "source": "osm_imported"
+  },
+  {
+    "name": "edp",
+    "latitude": 37.2865375,
+    "longitude": -5.9385395,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 36.8095814,
+    "longitude": -2.5979016,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 36.8095426,
+    "longitude": -2.5978979,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 10282197795",
+    "latitude": 37.162589,
+    "longitude": -3.6080413,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.1762735,
+    "longitude": -3.6643451,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Tesla Supercharger Córdoba",
+    "latitude": 37.8898123,
+    "longitude": -4.7496663,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ionity Albacete",
+    "latitude": 38.9689077,
+    "longitude": -1.8236521,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 38.9140208,
+    "longitude": -6.3320298,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 10296798891",
+    "latitude": 38.9169557,
+    "longitude": -6.3393545,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 10298158678",
+    "latitude": 38.9196265,
+    "longitude": -6.3442059,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 10298158680",
+    "latitude": 38.9196015,
+    "longitude": -6.3442654,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ionity Trigueros Norte",
+    "latitude": 37.3341528,
+    "longitude": -6.7893983,
+    "source": "osm_imported"
+  },
+  {
+    "name": "IONITY Merida Ciudad",
+    "latitude": 38.9338611,
+    "longitude": -6.3431297,
+    "source": "osm_imported"
+  },
+  {
+    "name": "IONITY Casabermeja",
+    "latitude": 36.8982613,
+    "longitude": -4.4297408,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ionity Trigueros Sur",
+    "latitude": 37.3316887,
+    "longitude": -6.8021865,
+    "source": "osm_imported"
+  },
+  {
+    "name": "IONITY Sotogrande",
+    "latitude": 36.2867509,
+    "longitude": -5.312477,
+    "source": "osm_imported"
+  },
+  {
+    "name": "IONITY El Hidalgo",
+    "latitude": 38.8243968,
+    "longitude": -3.396992,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Carrefour",
+    "latitude": 37.3914631,
+    "longitude": -6.0308424,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 10570410205",
+    "latitude": 37.3506665,
+    "longitude": -5.9774259,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder -GALP - Estepona",
+    "latitude": 36.4343985,
+    "longitude": -5.1603707,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Algeciras Supercharger",
+    "latitude": 36.1351501,
+    "longitude": -5.4616463,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder - La Estrella - Castillejo",
+    "latitude": 39.5160884,
+    "longitude": -1.7538853,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder - La Gaviota - Tarazona de la Mancha",
+    "latitude": 39.2557517,
+    "longitude": -1.9121927,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder Galp Villargordo del Cabriel",
+    "latitude": 39.5259256,
+    "longitude": -1.4369813,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder - Exit - La Gineta",
+    "latitude": 39.1346518,
+    "longitude": -2.0392865,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder - Venta del Tizón - Manzanares",
+    "latitude": 39.0587489,
+    "longitude": -3.3723029,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder - ES La Gaviota - Albacete",
+    "latitude": 39.0294399,
+    "longitude": -1.8882962,
+    "source": "osm_imported"
+  },
+  {
+    "name": "EDP Kia ARM Motor, Maracena",
+    "latitude": 37.1971738,
+    "longitude": -3.6424848,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 10587057258",
+    "latitude": 38.0904762,
+    "longitude": -3.7829375,
+    "source": "osm_imported"
+  },
+  {
+    "name": "CVD-00003",
+    "latitude": 39.4159169,
+    "longitude": -7.4559182,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 10607691306",
+    "latitude": 39.5729067,
+    "longitude": -0.519335,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 10614147086",
+    "latitude": 36.7711227,
+    "longitude": -2.8267612,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 10623124429",
+    "latitude": 38.2950017,
+    "longitude": -0.6206256,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Estación de carga",
+    "latitude": 39.2023917,
+    "longitude": -2.148255,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 10651285405",
+    "latitude": 38.7799004,
+    "longitude": -0.5155288,
+    "source": "osm_imported"
+  },
+  {
+    "name": "San Pedro del Pinatar Supercharger",
+    "latitude": 37.8232262,
+    "longitude": -0.809719,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zenia Boulevard",
+    "latitude": 37.9288102,
+    "longitude": -0.7364342,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.9278841,
+    "longitude": -0.7360025,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.9330315,
+    "longitude": -0.726963,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 10673895580",
+    "latitude": 38.1911951,
+    "longitude": -0.564965,
+    "source": "osm_imported"
+  },
+  {
+    "name": "ELV-00006",
+    "latitude": 38.8835439,
+    "longitude": -7.049363,
+    "source": "osm_imported"
+  },
+  {
+    "name": "ELV-00005",
+    "latitude": 38.8830839,
+    "longitude": -7.0506204,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 10822281911",
+    "latitude": 36.7359451,
+    "longitude": -5.250314,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 10825091474",
+    "latitude": 37.0448216,
+    "longitude": -4.8616044,
+    "source": "osm_imported"
+  },
+  {
+    "name": "ELV-00008",
+    "latitude": 38.8775221,
+    "longitude": -7.1716902,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 10855553917",
+    "latitude": 36.1836883,
+    "longitude": -5.9355503,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 10971352987",
+    "latitude": 36.4211517,
+    "longitude": -6.1513814,
+    "source": "osm_imported"
+  },
+  {
+    "name": "CVD-00005",
+    "latitude": 39.405394,
+    "longitude": -7.4444763,
+    "source": "osm_imported"
+  },
+  {
+    "name": "BRB-00003",
+    "latitude": 38.809693,
+    "longitude": -7.450686,
+    "source": "osm_imported"
+  },
+  {
+    "name": "PTG-00021",
+    "latitude": 39.2992275,
+    "longitude": -7.4292659,
+    "source": "osm_imported"
+  },
+  {
+    "name": "San José de la Rinconada Supercharger",
+    "latitude": 37.440199,
+    "longitude": -5.8856492,
+    "source": "osm_imported"
+  },
+  {
+    "name": "ELV-00022",
+    "latitude": 38.8773178,
+    "longitude": -7.1708591,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11036030683",
+    "latitude": 38.0905711,
+    "longitude": -0.6532799,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11049111879",
+    "latitude": 38.1175928,
+    "longitude": -0.6571528,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11063576904",
+    "latitude": 37.9783104,
+    "longitude": -1.1334836,
+    "source": "osm_imported"
+  },
+  {
+    "name": "CTB-00028",
+    "latitude": 39.8205094,
+    "longitude": -7.4966501,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder Hotel Romero",
+    "latitude": 38.8596825,
+    "longitude": -6.3650856,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11157792584",
+    "latitude": 37.9630718,
+    "longitude": -0.7046622,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 36.7188686,
+    "longitude": -4.620977,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea On Wheels Uex",
+    "latitude": 39.4786831,
+    "longitude": -6.3414443,
+    "source": "osm_imported"
+  },
+  {
+    "name": "MRA-00005",
+    "latitude": 38.1401856,
+    "longitude": -7.4450548,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Acciona Energía Parque Mejostilla",
+    "latitude": 39.4902733,
+    "longitude": -6.3678896,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Acciona Energía Parque Mejostilla",
+    "latitude": 39.4902399,
+    "longitude": -6.3678468,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Acciona Energía Parque Mejostilla",
+    "latitude": 39.490213,
+    "longitude": -6.3677945,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Acciona Energía Parque Mejostilla",
+    "latitude": 39.4901885,
+    "longitude": -6.3677425,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Acciona Energía Parque Mejostilla",
+    "latitude": 39.4901627,
+    "longitude": -6.3676906,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ionity La Zenia",
+    "latitude": 37.9256922,
+    "longitude": -0.7362004,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Antequera Supercharger",
+    "latitude": 37.1133403,
+    "longitude": -4.566767,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola McDonald's Cáceres",
+    "latitude": 39.4891793,
+    "longitude": -6.3771575,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.5570975,
+    "longitude": -4.6265911,
+    "source": "osm_imported"
+  },
+  {
+    "name": "ALDI",
+    "latitude": 36.5567905,
+    "longitude": -4.6277828,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11237948086",
+    "latitude": 36.5490317,
+    "longitude": -4.6269223,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11237958245",
+    "latitude": 36.5483891,
+    "longitude": -4.6319733,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Mercadona",
+    "latitude": 36.5487131,
+    "longitude": -4.6362498,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Mercadona",
+    "latitude": 36.537334,
+    "longitude": -4.6439043,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11237958248",
+    "latitude": 36.5303347,
+    "longitude": -4.6323233,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11237958249",
+    "latitude": 36.5134342,
+    "longitude": -4.661119,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11237958250",
+    "latitude": 36.5094523,
+    "longitude": -4.6876764,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Mercadona",
+    "latitude": 36.4895958,
+    "longitude": -4.7193136,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11237987002",
+    "latitude": 36.5220888,
+    "longitude": -4.6299056,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11237988122",
+    "latitude": 36.5369755,
+    "longitude": -4.6266087,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11237988123",
+    "latitude": 36.5404615,
+    "longitude": -4.6343319,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11237992640",
+    "latitude": 36.5011289,
+    "longitude": -4.6824585,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11237992641",
+    "latitude": 36.492296,
+    "longitude": -4.7149454,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Mercadona",
+    "latitude": 36.5419836,
+    "longitude": -4.6248991,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Mercadona",
+    "latitude": 36.5469751,
+    "longitude": -4.6296214,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Mercadona",
+    "latitude": 36.54807,
+    "longitude": -4.6176066,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11238023752",
+    "latitude": 36.557348,
+    "longitude": -4.6120427,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11238023763",
+    "latitude": 36.5648737,
+    "longitude": -4.601105,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11238027154",
+    "latitude": 36.5697298,
+    "longitude": -4.593414,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11238027155",
+    "latitude": 36.5866657,
+    "longitude": -4.5909851,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11238051575",
+    "latitude": 36.5136694,
+    "longitude": -4.7120935,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11238056951",
+    "latitude": 36.5418271,
+    "longitude": -4.7223969,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11238056952",
+    "latitude": 36.5527729,
+    "longitude": -4.6665934,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11238056953",
+    "latitude": 36.5949337,
+    "longitude": -4.6354949,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Charging Station",
+    "latitude": 36.7670151,
+    "longitude": -2.6119547,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Charging Station",
+    "latitude": 36.7670491,
+    "longitude": -2.6119712,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Charging Station",
+    "latitude": 36.766861,
+    "longitude": -2.6118511,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Estación de carga",
+    "latitude": 39.921236,
+    "longitude": -2.8126764,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.5277726,
+    "longitude": -4.6319833,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Cargador EV Wenea",
+    "latitude": 38.4986413,
+    "longitude": -0.6025106,
+    "source": "osm_imported"
+  },
+  {
+    "name": "PTG-00017",
+    "latitude": 39.290025,
+    "longitude": -7.3944902,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa El Cañuelo",
+    "latitude": 37.4763289,
+    "longitude": -4.588872,
+    "source": "osm_imported"
+  },
+  {
+    "name": "TotalEnergies El Cañuelo",
+    "latitude": 37.4764034,
+    "longitude": -4.5890599,
+    "source": "osm_imported"
+  },
+  {
+    "name": "PTG-00019",
+    "latitude": 39.2765728,
+    "longitude": -7.429702,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.6770742,
+    "longitude": -1.6927206,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ionity Marmolejo",
+    "latitude": 38.0298239,
+    "longitude": -4.1641606,
+    "source": "osm_imported"
+  },
+  {
+    "name": "CTB-00034",
+    "latitude": 39.8214297,
+    "longitude": -7.4941708,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11412523437",
+    "latitude": 39.6561791,
+    "longitude": -0.8912623,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Red Movem Herrera del Duque",
+    "latitude": 39.1712336,
+    "longitude": -5.0532986,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11478426197",
+    "latitude": 36.7542461,
+    "longitude": -3.5225863,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11479015021",
+    "latitude": 36.7437776,
+    "longitude": -3.5174146,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11492573937",
+    "latitude": 36.1888505,
+    "longitude": -5.4324567,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11492780835",
+    "latitude": 38.1226531,
+    "longitude": -1.2943682,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11511810702",
+    "latitude": 36.4622801,
+    "longitude": -5.0124561,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11519494110",
+    "latitude": 36.4622707,
+    "longitude": -5.0124551,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11519494111",
+    "latitude": 36.4622383,
+    "longitude": -5.0124502,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11519494112",
+    "latitude": 36.462229,
+    "longitude": -5.0124488,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11519494113",
+    "latitude": 36.461728,
+    "longitude": -5.0110107,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11528940920",
+    "latitude": 37.1388455,
+    "longitude": -1.8398704,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11528940960",
+    "latitude": 37.1388348,
+    "longitude": -1.8398425,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11537193894",
+    "latitude": 36.6592582,
+    "longitude": -4.477374,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11537193895",
+    "latitude": 36.6592141,
+    "longitude": -4.477386,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Shell",
+    "latitude": 37.2158734,
+    "longitude": -3.6896054,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11560856699",
+    "latitude": 38.9762408,
+    "longitude": -5.2691201,
+    "source": "osm_imported"
+  },
+  {
+    "name": "PTG-00023",
+    "latitude": 39.2789331,
+    "longitude": -7.4318513,
+    "source": "osm_imported"
+  },
+  {
+    "name": "PTG-00024",
+    "latitude": 39.2801526,
+    "longitude": -7.4314323,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa X",
+    "latitude": 38.1546502,
+    "longitude": -0.882225,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.9767047,
+    "longitude": -1.2190516,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Atlante",
+    "latitude": 36.9402657,
+    "longitude": -2.1385925,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.153631,
+    "longitude": -3.6153275,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 36.7646522,
+    "longitude": -2.9855411,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Estación de Carga de Iberdrola",
+    "latitude": 37.508284,
+    "longitude": -2.7387007,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11772668472",
+    "latitude": 38.3366954,
+    "longitude": -0.5018555,
+    "source": "osm_imported"
+  },
+  {
+    "name": "CMR-00002",
+    "latitude": 39.0161601,
+    "longitude": -7.073782,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 39.3632563,
+    "longitude": -7.1390453,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11833092446",
+    "latitude": 39.7158274,
+    "longitude": -6.8819257,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11833092447",
+    "latitude": 39.7129097,
+    "longitude": -6.8842409,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola Oasis Center",
+    "latitude": 38.0519415,
+    "longitude": -0.6761683,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11874507970",
+    "latitude": 36.3990827,
+    "longitude": -6.1730378,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11882143918",
+    "latitude": 39.4670855,
+    "longitude": -6.397621,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11882143919",
+    "latitude": 39.4671003,
+    "longitude": -6.3975669,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11882143920",
+    "latitude": 39.4671152,
+    "longitude": -6.3975129,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11882143921",
+    "latitude": 39.46713,
+    "longitude": -6.3974588,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 37.1977467,
+    "longitude": -3.639235,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11895711069",
+    "latitude": 37.1971807,
+    "longitude": -3.6364088,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11895711070",
+    "latitude": 37.1969067,
+    "longitude": -3.636431,
+    "source": "osm_imported"
+  },
+  {
+    "name": "ionity",
+    "latitude": 39.9840649,
+    "longitude": -4.7318734,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.3098667,
+    "longitude": -0.6056246,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.3077414,
+    "longitude": -0.6055908,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 39.8735159,
+    "longitude": -5.5498451,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.9381851,
+    "longitude": -6.3608589,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11898295207",
+    "latitude": 39.8838084,
+    "longitude": -6.2753536,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 39.546574,
+    "longitude": -6.4116967,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder",
+    "latitude": 38.082632,
+    "longitude": -6.2583519,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 39.2872706,
+    "longitude": -6.32152,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 39.1639677,
+    "longitude": -6.2636336,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 38.9389242,
+    "longitude": -6.36551,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Cable Energía",
+    "latitude": 38.9054046,
+    "longitude": -6.3629123,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 39.4555573,
+    "longitude": -6.3673982,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 38.429933,
+    "longitude": -6.4130374,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.9041429,
+    "longitude": -6.2210551,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.9041952,
+    "longitude": -6.2211544,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Porsche",
+    "latitude": 37.4208472,
+    "longitude": -6.0304418,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 39.128889,
+    "longitude": -4.9395757,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 39.4749583,
+    "longitude": -5.8580875,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 39.4609678,
+    "longitude": -5.8696775,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 39.1432725,
+    "longitude": -5.9254373,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 39.142897,
+    "longitude": -5.9243047,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 39.0074634,
+    "longitude": -6.0061679,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 39.0279073,
+    "longitude": -5.7621132,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11898830549",
+    "latitude": 38.96966,
+    "longitude": -5.8098,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 38.963239,
+    "longitude": -5.842444,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 38.9657802,
+    "longitude": -5.8558093,
+    "source": "osm_imported"
+  },
+  {
+    "name": "BP",
+    "latitude": 36.6114784,
+    "longitude": -6.1963172,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ocaña Supercharger",
+    "latitude": 39.9341084,
+    "longitude": -3.4897862,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11916829733",
+    "latitude": 38.8246007,
+    "longitude": -3.3967548,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11916829734",
+    "latitude": 38.7765995,
+    "longitude": -3.3903017,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.9033826,
+    "longitude": -4.7239965,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Porsche",
+    "latitude": 36.4955093,
+    "longitude": -4.9502242,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Marbella Supercharger",
+    "latitude": 36.5049453,
+    "longitude": -4.9251071,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Málaga Supercharger",
+    "latitude": 36.6548143,
+    "longitude": -4.4801554,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 36.6608383,
+    "longitude": -4.473497,
+    "source": "osm_imported"
+  },
+  {
+    "name": "EDP",
+    "latitude": 36.7060457,
+    "longitude": -4.4679852,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Jaén Supercharger",
+    "latitude": 37.789999,
+    "longitude": -3.7761582,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder",
+    "latitude": 38.3303965,
+    "longitude": -3.5431902,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 38.6871561,
+    "longitude": -3.4378631,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 39.2766701,
+    "longitude": -2.5920539,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 38.9006864,
+    "longitude": -1.5199444,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Hellín Supercharger",
+    "latitude": 38.4963739,
+    "longitude": -1.63671,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Porsche",
+    "latitude": 38.0235345,
+    "longitude": -1.1632538,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.0310785,
+    "longitude": -1.1492147,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Porsche",
+    "latitude": 38.3461333,
+    "longitude": -0.5235352,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.771682,
+    "longitude": -6.3563769,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7706584,
+    "longitude": -6.3463421,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Powerdot",
+    "latitude": 36.6720379,
+    "longitude": -6.1525896,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder",
+    "latitude": 36.6919477,
+    "longitude": -6.1593889,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 36.6944555,
+    "longitude": -6.1580631,
+    "source": "osm_imported"
+  },
+  {
+    "name": "BP",
+    "latitude": 36.6198556,
+    "longitude": -6.2068875,
+    "source": "osm_imported"
+  },
+  {
+    "name": "BP",
+    "latitude": 36.5040805,
+    "longitude": -6.276046,
+    "source": "osm_imported"
+  },
+  {
+    "name": "BP",
+    "latitude": 36.5013185,
+    "longitude": -6.2704895,
+    "source": "osm_imported"
+  },
+  {
+    "name": "BP",
+    "latitude": 36.3940906,
+    "longitude": -6.1464369,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 36.1748047,
+    "longitude": -5.3610128,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Porsche",
+    "latitude": 36.4859975,
+    "longitude": -4.9543831,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 38.8628974,
+    "longitude": -6.1002525,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Shell",
+    "latitude": 38.8628024,
+    "longitude": -6.0996264,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.7038254,
+    "longitude": -4.1000423,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920115395",
+    "latitude": 38.7029944,
+    "longitude": -4.1004393,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920115396",
+    "latitude": 38.6909942,
+    "longitude": -4.1095134,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920115397",
+    "latitude": 38.3855545,
+    "longitude": -4.8525439,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920115398",
+    "latitude": 38.3812998,
+    "longitude": -4.8476896,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920115399",
+    "latitude": 38.4900942,
+    "longitude": -4.956944,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920115400",
+    "latitude": 38.4795985,
+    "longitude": -4.9496962,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920115401",
+    "latitude": 38.4942291,
+    "longitude": -5.1417432,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 38.5743381,
+    "longitude": -5.1643927,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920115403",
+    "latitude": 38.7170457,
+    "longitude": -5.2303695,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920115404",
+    "latitude": 38.8617094,
+    "longitude": -5.6209254,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920115405",
+    "latitude": 38.5032647,
+    "longitude": -5.8307619,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920115406",
+    "latitude": 38.5556898,
+    "longitude": -6.0740002,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920115407",
+    "latitude": 38.4070973,
+    "longitude": -4.4986477,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920126257",
+    "latitude": 38.2426548,
+    "longitude": -6.0145514,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.2597239,
+    "longitude": -5.7028969,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 38.2614603,
+    "longitude": -5.6849151,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920126260",
+    "latitude": 38.2628934,
+    "longitude": -5.675998,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 38.1258919,
+    "longitude": -4.9007816,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920126263",
+    "latitude": 38.4118845,
+    "longitude": -4.902074,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920126264",
+    "latitude": 38.3237997,
+    "longitude": -4.6288037,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Shell",
+    "latitude": 37.4807683,
+    "longitude": -5.6501574,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.4637363,
+    "longitude": -5.6517693,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.4606474,
+    "longitude": -5.656737,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.5230118,
+    "longitude": -5.1573168,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920194011",
+    "latitude": 37.5326549,
+    "longitude": -5.0819,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.6650219,
+    "longitude": -4.9420002,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.6661116,
+    "longitude": -4.9404335,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.6633387,
+    "longitude": -4.9313176,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920194015",
+    "latitude": 37.6358163,
+    "longitude": -4.8654206,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920194016",
+    "latitude": 37.5584248,
+    "longitude": -4.8421546,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920194017",
+    "latitude": 37.5882752,
+    "longitude": -4.751046,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.5250509,
+    "longitude": -4.6541633,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.5734809,
+    "longitude": -4.650069,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.6671093,
+    "longitude": -4.7281205,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.6734352,
+    "longitude": -4.5588713,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.6751895,
+    "longitude": -4.5553642,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.5466909,
+    "longitude": -4.3514412,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920194024",
+    "latitude": 37.5103126,
+    "longitude": -4.1438322,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920194025",
+    "latitude": 37.4403294,
+    "longitude": -4.2186927,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920194026",
+    "latitude": 37.4429717,
+    "longitude": -4.2082368,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920194034",
+    "latitude": 37.4396773,
+    "longitude": -4.1935217,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920194035",
+    "latitude": 37.4523648,
+    "longitude": -3.9353544,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920194036",
+    "latitude": 37.4499629,
+    "longitude": -3.9194456,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920194037",
+    "latitude": 37.3307788,
+    "longitude": -3.8319516,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 37.2856096,
+    "longitude": -3.6755332,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Acciona",
+    "latitude": 39.9467869,
+    "longitude": -2.8949832,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 39.9192406,
+    "longitude": -2.8068802,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 39.4481319,
+    "longitude": -5.3189237,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Tesla Supercharger",
+    "latitude": 39.8632863,
+    "longitude": -3.974132,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920274378",
+    "latitude": 39.8723775,
+    "longitude": -4.0400596,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 39.9052328,
+    "longitude": -4.0173768,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920274380",
+    "latitude": 39.9167336,
+    "longitude": -4.006651,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 39.8623333,
+    "longitude": -3.9752581,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 39.864713,
+    "longitude": -3.9697107,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920274383",
+    "latitude": 39.832495,
+    "longitude": -3.9698975,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 39.3540185,
+    "longitude": -3.4872722,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 39.2505008,
+    "longitude": -3.4303853,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 39.9788084,
+    "longitude": -4.2680639,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920308179",
+    "latitude": 39.0224299,
+    "longitude": -3.7575207,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 39.1640617,
+    "longitude": -3.8594405,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.9743737,
+    "longitude": -3.9172648,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.9897621,
+    "longitude": -3.9085692,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 38.9899237,
+    "longitude": -3.9069384,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Circutor",
+    "latitude": 39.4880457,
+    "longitude": -2.7497872,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 39.3940133,
+    "longitude": -2.9440157,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 39.3663486,
+    "longitude": -3.216814,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920313254",
+    "latitude": 39.3948118,
+    "longitude": -3.2267238,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 39.3994175,
+    "longitude": -3.2185661,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 39.2740503,
+    "longitude": -2.3253686,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 39.2041476,
+    "longitude": -2.160754,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7548719,
+    "longitude": -5.8213826,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7487233,
+    "longitude": -5.8224178,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 36.5696763,
+    "longitude": -6.0243534,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 36.6987428,
+    "longitude": -6.1065884,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 36.7056071,
+    "longitude": -6.1163391,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.6991181,
+    "longitude": -6.1250326,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 36.6898018,
+    "longitude": -6.1274793,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920576225",
+    "latitude": 36.6838158,
+    "longitude": -6.1147563,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 36.6713957,
+    "longitude": -6.1218885,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.6939997,
+    "longitude": -6.1539929,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.6291598,
+    "longitude": -1.0034282,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.6287009,
+    "longitude": -1.0032536,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 37.617023,
+    "longitude": -0.9558578,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.6059947,
+    "longitude": -0.9906546,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 37.6200843,
+    "longitude": -0.9882993,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.6170334,
+    "longitude": -0.9837644,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 37.6163896,
+    "longitude": -0.9841654,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.6151414,
+    "longitude": -1.0057359,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 37.7378048,
+    "longitude": -0.9152688,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 37.6736318,
+    "longitude": -0.7308515,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.6276111,
+    "longitude": -0.7101451,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920600515",
+    "latitude": 37.4282436,
+    "longitude": -5.9709628,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.429438,
+    "longitude": -5.968731,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.4335952,
+    "longitude": -5.9697941,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.8973921,
+    "longitude": -4.7853948,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.9022968,
+    "longitude": -4.7892027,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 37.8931985,
+    "longitude": -4.8097059,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.86785,
+    "longitude": -4.7817172,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 37.8771334,
+    "longitude": -4.7660024,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.8989835,
+    "longitude": -4.7268128,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 39.6867182,
+    "longitude": -3.5043617,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 38.5155302,
+    "longitude": -3.4947372,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 36.9763973,
+    "longitude": -5.9487743,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.3817658,
+    "longitude": -5.7330527,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.3992437,
+    "longitude": -4.7644927,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.3775605,
+    "longitude": -4.7939265,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.2498936,
+    "longitude": -1.8740128,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 39.1549103,
+    "longitude": -0.5296542,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11920670709",
+    "latitude": 38.3903672,
+    "longitude": -0.751582,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.5928227,
+    "longitude": -2.4655288,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Eranovum",
+    "latitude": 37.1751732,
+    "longitude": -5.7727726,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 39.0686854,
+    "longitude": -3.6258306,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 39.0687615,
+    "longitude": -3.6259211,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 39.0763632,
+    "longitude": -3.5960622,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 39.0768633,
+    "longitude": -3.5956976,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Eranovum",
+    "latitude": 38.9436074,
+    "longitude": -3.2332247,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 38.7367376,
+    "longitude": -3.0192978,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 38.7406509,
+    "longitude": -3.0065724,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.615673,
+    "longitude": -1.1034744,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.6151777,
+    "longitude": -1.0929649,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 38.6158014,
+    "longitude": -1.0840713,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 39.4531235,
+    "longitude": -0.734758,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11921770214",
+    "latitude": 39.4694947,
+    "longitude": -0.7079192,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11921770215",
+    "latitude": 39.469591,
+    "longitude": -0.7074078,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 39.3925679,
+    "longitude": -0.7091227,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 38.1108293,
+    "longitude": -1.8655182,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.1026173,
+    "longitude": -1.86674,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.0977949,
+    "longitude": -1.8664296,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11921770220",
+    "latitude": 38.0900482,
+    "longitude": -1.8685427,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 38.1034827,
+    "longitude": -1.8212274,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Eranovum",
+    "latitude": 38.0442722,
+    "longitude": -1.6663063,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.0528346,
+    "longitude": -1.6608165,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 38.9981865,
+    "longitude": -0.5269481,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.9956976,
+    "longitude": -0.5202655,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 38.9157114,
+    "longitude": -0.5570967,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.3602936,
+    "longitude": -6.5428412,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Eranovum",
+    "latitude": 37.3328878,
+    "longitude": -6.5398253,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.2331496,
+    "longitude": -6.5120948,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 37.3484805,
+    "longitude": -6.4228316,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 37.3470568,
+    "longitude": -6.4230717,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.2474721,
+    "longitude": -7.1984504,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.2888657,
+    "longitude": -7.1505266,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11921955364",
+    "latitude": 36.3140451,
+    "longitude": -6.1492798,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.283848,
+    "longitude": -6.0830484,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Eranovum",
+    "latitude": 38.0388158,
+    "longitude": -4.0408168,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 38.0362916,
+    "longitude": -4.0384468,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 38.0219289,
+    "longitude": -4.0535752,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 37.2556108,
+    "longitude": -5.5644435,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.2471402,
+    "longitude": -5.5529503,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.6323114,
+    "longitude": -6.3678127,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 36.6322681,
+    "longitude": -6.3669125,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 38.0104912,
+    "longitude": -4.3766434,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.4088013,
+    "longitude": -4.4857367,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11921977671",
+    "latitude": 37.4049449,
+    "longitude": -4.4962266,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.3692923,
+    "longitude": -4.4900184,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.1320212,
+    "longitude": -4.693924,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.0514026,
+    "longitude": -4.6573641,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.0928384,
+    "longitude": -4.3963718,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.3180142,
+    "longitude": -3.3241729,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 37.3226051,
+    "longitude": -3.2661481,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 37.2980893,
+    "longitude": -3.1292293,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 37.015854,
+    "longitude": -2.446486,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11921977683",
+    "latitude": 36.9965653,
+    "longitude": -1.8951711,
+    "source": "osm_imported"
+  },
+  {
+    "name": "electromaps",
+    "latitude": 36.997909,
+    "longitude": -1.8916893,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Electromaps",
+    "latitude": 37.0016842,
+    "longitude": -1.8907119,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.4100013,
+    "longitude": -1.5648512,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Powerdot",
+    "latitude": 37.5721683,
+    "longitude": -1.2702423,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11921977688",
+    "latitude": 37.7201832,
+    "longitude": -1.1701732,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Eranovum",
+    "latitude": 37.7200089,
+    "longitude": -1.170184,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.7673159,
+    "longitude": -1.0703439,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 37.7624878,
+    "longitude": -1.0370416,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder",
+    "latitude": 37.7343937,
+    "longitude": -0.9523439,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 37.8235837,
+    "longitude": -1.0031787,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Atlante",
+    "latitude": 38.1858899,
+    "longitude": -1.1292571,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Atlante",
+    "latitude": 38.178526,
+    "longitude": -1.1256016,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Atlante",
+    "latitude": 38.1787517,
+    "longitude": -1.1239608,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Atlante",
+    "latitude": 38.151018,
+    "longitude": -1.1243205,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Eranovum",
+    "latitude": 38.5943473,
+    "longitude": -0.6687533,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.5965164,
+    "longitude": -0.6675926,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 38.6008443,
+    "longitude": -0.6695344,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.6190039,
+    "longitude": -0.5851036,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.6189578,
+    "longitude": -0.5849662,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 38.8746552,
+    "longitude": -1.1000849,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 38.8682376,
+    "longitude": -1.1238112,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11922026127",
+    "latitude": 39.6127697,
+    "longitude": -3.355403,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11922026133",
+    "latitude": 38.2675445,
+    "longitude": -3.611969,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 38.26963,
+    "longitude": -3.6105014,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 38.2724108,
+    "longitude": -3.609785,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Eranovum",
+    "latitude": 38.2778338,
+    "longitude": -3.6081327,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 38.1801161,
+    "longitude": -3.43307,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.0196171,
+    "longitude": -3.3713382,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 38.0219234,
+    "longitude": -3.368272,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.0254189,
+    "longitude": -3.3666595,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 38.0260987,
+    "longitude": -3.3693399,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 38.0603652,
+    "longitude": -3.3200301,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11922026145",
+    "latitude": 38.000703,
+    "longitude": -3.4499876,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.9204019,
+    "longitude": -3.0188975,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.8051971,
+    "longitude": -2.5434116,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 37.528032,
+    "longitude": -3.6377741,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 39.9638136,
+    "longitude": -4.8111162,
+    "source": "osm_imported"
+  },
+  {
+    "name": "PTG-00025",
+    "latitude": 39.2413136,
+    "longitude": -7.3594964,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11990093244",
+    "latitude": 36.7295223,
+    "longitude": -2.8871993,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 11990093245",
+    "latitude": 36.7294904,
+    "longitude": -2.8871906,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.1535761,
+    "longitude": -3.6153956,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.1535417,
+    "longitude": -3.6154381,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12006319883",
+    "latitude": 38.975572,
+    "longitude": -5.2683015,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12040240034",
+    "latitude": 36.5091566,
+    "longitude": -4.9092455,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12040240035",
+    "latitude": 36.5091586,
+    "longitude": -4.9092371,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12040240036",
+    "latitude": 36.509164,
+    "longitude": -4.9092156,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Valdepeñas Supercharger",
+    "latitude": 38.7797079,
+    "longitude": -3.3887808,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 39.5362741,
+    "longitude": -1.4385473,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 39.5960669,
+    "longitude": -2.2800585,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12059580773",
+    "latitude": 37.1846632,
+    "longitude": -1.8255837,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 38.0902569,
+    "longitude": -3.6260331,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 38.0138454,
+    "longitude": -3.3835697,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 38.1837486,
+    "longitude": -3.3215933,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.3517761,
+    "longitude": -5.8598531,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Acciona - Hotel Ébora",
+    "latitude": 39.9622175,
+    "longitude": -4.8176254,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Acciona - Rest. Jardín 1900 y Pico",
+    "latitude": 39.9774763,
+    "longitude": -4.8390284,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Acciona - Hostal Alfil",
+    "latitude": 39.976644,
+    "longitude": -4.7427749,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12098661314",
+    "latitude": 36.1756877,
+    "longitude": -5.3756044,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 36.4181591,
+    "longitude": -6.139548,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Eranovum",
+    "latitude": 37.2885647,
+    "longitude": -5.5051868,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Eranovum",
+    "latitude": 37.4555314,
+    "longitude": -6.0554033,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Eranovum",
+    "latitude": 37.410508,
+    "longitude": -5.9997855,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.360163,
+    "longitude": -6.1997323,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.6296621,
+    "longitude": -0.8661531,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12133735460",
+    "latitude": 38.6398149,
+    "longitude": -0.8710944,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.6376013,
+    "longitude": -0.8842535,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.6314625,
+    "longitude": -0.8461974,
+    "source": "osm_imported"
+  },
+  {
+    "name": "El Cuartillo",
+    "latitude": 39.4772734,
+    "longitude": -6.333301,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 38.5571805,
+    "longitude": -6.3595417,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 39.4819253,
+    "longitude": -6.3623733,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder Parque Maltravieso",
+    "latitude": 39.4568169,
+    "longitude": -6.3697547,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder Parque Maltravieso",
+    "latitude": 39.4568241,
+    "longitude": -6.3697089,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 39.4620053,
+    "longitude": -6.3836282,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.2108834,
+    "longitude": -7.0520086,
+    "source": "osm_imported"
+  },
+  {
+    "name": "ELV-00017",
+    "latitude": 38.8777938,
+    "longitude": -7.1712147,
+    "source": "osm_imported"
+  },
+  {
+    "name": "CTB-00057",
+    "latitude": 39.8206482,
+    "longitude": -7.4862477,
+    "source": "osm_imported"
+  },
+  {
+    "name": "acciona",
+    "latitude": 38.6638422,
+    "longitude": -2.4913985,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12312389520",
+    "latitude": 36.2938595,
+    "longitude": -5.2983753,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12361576042",
+    "latitude": 37.4001146,
+    "longitude": -5.9527802,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ayuntamiento de Cantoria",
+    "latitude": 37.3479414,
+    "longitude": -2.137948,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Lidl",
+    "latitude": 37.3737912,
+    "longitude": -2.127292,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Concesionario Jiménez y García",
+    "latitude": 37.3812997,
+    "longitude": -2.1371142,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Tesla Supercharger Totana",
+    "latitude": 37.7760645,
+    "longitude": -1.4545074,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.9269737,
+    "longitude": -0.7358032,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa X",
+    "latitude": 37.8226318,
+    "longitude": -0.8124052,
+    "source": "osm_imported"
+  },
+  {
+    "name": "EDP",
+    "latitude": 37.2360021,
+    "longitude": -7.4697188,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12421063809",
+    "latitude": 36.1810675,
+    "longitude": -5.4415478,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Powerdot",
+    "latitude": 37.5722199,
+    "longitude": -1.2704184,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Powerdot",
+    "latitude": 37.5721498,
+    "longitude": -1.2701878,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.5743011,
+    "longitude": -1.2091033,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Powerdot",
+    "latitude": 37.5722056,
+    "longitude": -1.2703608,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Powerdot",
+    "latitude": 37.572187,
+    "longitude": -1.2702995,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa X",
+    "latitude": 37.5727198,
+    "longitude": -1.2688286,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12424575788",
+    "latitude": 37.4178744,
+    "longitude": -1.559901,
+    "source": "osm_imported"
+  },
+  {
+    "name": "TotalEnergies",
+    "latitude": 37.2199344,
+    "longitude": -1.8090341,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.4100221,
+    "longitude": -1.564891,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12424617330",
+    "latitude": 37.3607392,
+    "longitude": -1.6638906,
+    "source": "osm_imported"
+  },
+  {
+    "name": "TotalEnergies",
+    "latitude": 37.2198981,
+    "longitude": -1.8090373,
+    "source": "osm_imported"
+  },
+  {
+    "name": "BP",
+    "latitude": 37.0575399,
+    "longitude": -2.3872088,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12431138669",
+    "latitude": 36.8093599,
+    "longitude": -2.5926186,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12431160526",
+    "latitude": 36.8132309,
+    "longitude": -2.57567,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 36.8048576,
+    "longitude": -2.6205114,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 36.7710246,
+    "longitude": -2.8264047,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7414681,
+    "longitude": -3.5302994,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Shell",
+    "latitude": 36.7418572,
+    "longitude": -3.5274362,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7415099,
+    "longitude": -3.5302909,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7417623,
+    "longitude": -3.5302392,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7414284,
+    "longitude": -3.5303075,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7415895,
+    "longitude": -3.5302746,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7418018,
+    "longitude": -3.5302311,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Shell",
+    "latitude": 36.7418593,
+    "longitude": -3.5273786,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7415504,
+    "longitude": -3.5302826,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7418435,
+    "longitude": -3.5302226,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Shell",
+    "latitude": 36.7418635,
+    "longitude": -3.5272628,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7419522,
+    "longitude": -3.5302004,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Shell",
+    "latitude": 36.7418614,
+    "longitude": -3.5273203,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Inerdrola Porsche",
+    "latitude": 37.9715104,
+    "longitude": -4.4583975,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.6681435,
+    "longitude": -4.4684828,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.6681811,
+    "longitude": -4.4684542,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.6681462,
+    "longitude": -4.4684917,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.6681854,
+    "longitude": -4.4684602,
+    "source": "osm_imported"
+  },
+  {
+    "name": "EDP",
+    "latitude": 36.6686283,
+    "longitude": -4.470066,
+    "source": "osm_imported"
+  },
+  {
+    "name": "EDP",
+    "latitude": 36.6685882,
+    "longitude": -4.4702187,
+    "source": "osm_imported"
+  },
+  {
+    "name": "EDP",
+    "latitude": 36.6685647,
+    "longitude": -4.4702825,
+    "source": "osm_imported"
+  },
+  {
+    "name": "ALDI",
+    "latitude": 36.6683083,
+    "longitude": -4.4722185,
+    "source": "osm_imported"
+  },
+  {
+    "name": "EDP",
+    "latitude": 36.6686097,
+    "longitude": -4.4701344,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Powerdot",
+    "latitude": 36.6598841,
+    "longitude": -4.4760924,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Powerdot",
+    "latitude": 36.659908,
+    "longitude": -4.4761371,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Powerdot",
+    "latitude": 36.6598554,
+    "longitude": -4.4760312,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Powerdot",
+    "latitude": 36.6598964,
+    "longitude": -4.4761229,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Shell",
+    "latitude": 36.6594087,
+    "longitude": -4.4742226,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Shell",
+    "latitude": 36.6593139,
+    "longitude": -4.4743092,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Lidl",
+    "latitude": 36.5349764,
+    "longitude": -4.634119,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Lidl",
+    "latitude": 36.5349818,
+    "longitude": -4.6340499,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.5277698,
+    "longitude": -4.6319386,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.5277883,
+    "longitude": -4.6320317,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 36.5003572,
+    "longitude": -4.7990792,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12452917875",
+    "latitude": 36.4623165,
+    "longitude": -5.042132,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12452924876",
+    "latitude": 36.4623392,
+    "longitude": -5.0420452,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.4294993,
+    "longitude": -5.1295326,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12453245999",
+    "latitude": 36.3935689,
+    "longitude": -5.2016098,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Granada Supercharger",
+    "latitude": 37.1437671,
+    "longitude": -3.6055982,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12456196009",
+    "latitude": 36.1900085,
+    "longitude": -5.431483,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12456197349",
+    "latitude": 36.2105245,
+    "longitude": -5.3979986,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.1778624,
+    "longitude": -5.4903229,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Lidl",
+    "latitude": 36.0203405,
+    "longitude": -5.6002525,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Lidl",
+    "latitude": 36.0203217,
+    "longitude": -5.6001821,
+    "source": "osm_imported"
+  },
+  {
+    "name": "tarifa oil",
+    "latitude": 36.0197443,
+    "longitude": -5.5996794,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Puente Mayorga",
+    "latitude": 36.1816616,
+    "longitude": -5.3819998,
+    "source": "osm_imported"
+  },
+  {
+    "name": "ELV-00016",
+    "latitude": 38.8760704,
+    "longitude": -7.1544606,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12475733968",
+    "latitude": 36.011049,
+    "longitude": -5.6020426,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 38.8432255,
+    "longitude": -3.3924641,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12487119708",
+    "latitude": 37.4003777,
+    "longitude": -5.9492692,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12498375000",
+    "latitude": 36.7523398,
+    "longitude": -5.8216894,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7548591,
+    "longitude": -5.8213578,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12498402899",
+    "latitude": 36.7523398,
+    "longitude": -5.821643,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 36.9850183,
+    "longitude": -5.9357961,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.0018547,
+    "longitude": -5.9378228,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12504551037",
+    "latitude": 37.2826981,
+    "longitude": -5.9395009,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.2902405,
+    "longitude": -5.9438039,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.2902688,
+    "longitude": -5.943875,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12507005721",
+    "latitude": 37.3849481,
+    "longitude": -6.1923721,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12507020043",
+    "latitude": 37.3849864,
+    "longitude": -6.192373,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12509224019",
+    "latitude": 37.3969982,
+    "longitude": -6.4758463,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.3898129,
+    "longitude": -6.5406454,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.3628091,
+    "longitude": -6.6783435,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12512139873",
+    "latitude": 37.3143532,
+    "longitude": -6.8342252,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12514081250",
+    "latitude": 37.266455,
+    "longitude": -6.9613571,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12514102483",
+    "latitude": 37.2747645,
+    "longitude": -6.9907288,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12529314947",
+    "latitude": 37.3681482,
+    "longitude": -6.0353914,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Carrefour",
+    "latitude": 37.3683639,
+    "longitude": -6.0355884,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Arroyo 109",
+    "latitude": 37.3985109,
+    "longitude": -5.9738911,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 37.2636923,
+    "longitude": -6.5236278,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12543766142",
+    "latitude": 37.3152808,
+    "longitude": -6.8446597,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12543833550",
+    "latitude": 37.3150422,
+    "longitude": -6.8386776,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Saelices Supercharger",
+    "latitude": 39.9169937,
+    "longitude": -2.7984545,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12549038087",
+    "latitude": 37.2514872,
+    "longitude": -7.1984656,
+    "source": "osm_imported"
+  },
+  {
+    "name": "MRV-00002",
+    "latitude": 39.3817954,
+    "longitude": -7.3834214,
+    "source": "osm_imported"
+  },
+  {
+    "name": "CTB-00049",
+    "latitude": 39.91534,
+    "longitude": -7.4716015,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12601023801",
+    "latitude": 38.2594173,
+    "longitude": -1.4334262,
+    "source": "osm_imported"
+  },
+  {
+    "name": "CTB-00060",
+    "latitude": 39.917665,
+    "longitude": -7.4704188,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Carrefour",
+    "latitude": 39.4677402,
+    "longitude": -6.3954816,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Mercadona",
+    "latitude": 37.4115016,
+    "longitude": -1.5659488,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Águilas Plaza",
+    "latitude": 37.4103708,
+    "longitude": -1.5647053,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Decathlon",
+    "latitude": 37.4178081,
+    "longitude": -1.5601887,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Camperpark Cabo de Cata",
+    "latitude": 36.8163509,
+    "longitude": -2.1489541,
+    "source": "osm_imported"
+  },
+  {
+    "name": "PTG-00029",
+    "latitude": 39.268946,
+    "longitude": -7.4199977,
+    "source": "osm_imported"
+  },
+  {
+    "name": "EDP",
+    "latitude": 38.8084991,
+    "longitude": -7.4586185,
+    "source": "osm_imported"
+  },
+  {
+    "name": "CCS Acciona CF Villacañas",
+    "latitude": 39.6166935,
+    "longitude": -3.34759,
+    "source": "osm_imported"
+  },
+  {
+    "name": "E. S. Repsol Villacañas",
+    "latitude": 39.6160933,
+    "longitude": -3.3444142,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ahorramás",
+    "latitude": 39.6247506,
+    "longitude": -3.3311856,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12843563201",
+    "latitude": 37.288972,
+    "longitude": -5.9433997,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12877134445",
+    "latitude": 38.9144966,
+    "longitude": -5.4108542,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Lidl Puente Mayorga",
+    "latitude": 36.1817737,
+    "longitude": -5.3814976,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Marmolejo Supercharger",
+    "latitude": 38.0279625,
+    "longitude": -4.1659773,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12912109345",
+    "latitude": 36.176609,
+    "longitude": -5.3470672,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 12943321270",
+    "latitude": 37.9094765,
+    "longitude": -0.7440216,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 36.8685305,
+    "longitude": -2.2301671,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.2629234,
+    "longitude": -4.9588531,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.2628284,
+    "longitude": -4.9587908,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Électricité de France",
+    "latitude": 37.2628904,
+    "longitude": -4.9588327,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Électricité de France",
+    "latitude": 37.2628656,
+    "longitude": -4.9588131,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Plenergy",
+    "latitude": 36.5379682,
+    "longitude": -4.6401703,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.9743986,
+    "longitude": -3.9317725,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 38.9816517,
+    "longitude": -3.9092207,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola - Ayto. Aspe",
+    "latitude": 38.3384766,
+    "longitude": -0.776776,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Autofex",
+    "latitude": 37.3550283,
+    "longitude": -2.0968206,
+    "source": "osm_imported"
+  },
+  {
+    "name": "ChargePoint",
+    "latitude": 38.3474779,
+    "longitude": -0.7690656,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.680475,
+    "longitude": -1.6874822,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.6718091,
+    "longitude": -1.69674,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.6663072,
+    "longitude": -1.7038786,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.673877,
+    "longitude": -1.6889869,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.6636393,
+    "longitude": -1.6952096,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.6629577,
+    "longitude": -1.7068584,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.6580677,
+    "longitude": -1.707698,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.6550926,
+    "longitude": -1.7115097,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.6583523,
+    "longitude": -1.7050775,
+    "source": "osm_imported"
+  },
+  {
+    "name": "CTB-00063",
+    "latitude": 39.9157618,
+    "longitude": -7.4651417,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13110864701",
+    "latitude": 37.8969105,
+    "longitude": -0.7532642,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13119258197",
+    "latitude": 36.7216704,
+    "longitude": -4.3802679,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.6070092,
+    "longitude": -0.9806065,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 37.2735186,
+    "longitude": -4.4923278,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13141335557",
+    "latitude": 38.2369462,
+    "longitude": -1.4201763,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13143162340",
+    "latitude": 36.900428,
+    "longitude": -5.16802,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Antas Tesla Supercharger",
+    "latitude": 37.2136783,
+    "longitude": -1.8983703,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 37.214042,
+    "longitude": -1.8987007,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13144365644",
+    "latitude": 37.6113432,
+    "longitude": -0.9800647,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.8969697,
+    "longitude": -0.6914138,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13158668489",
+    "latitude": 37.6273941,
+    "longitude": -0.9846508,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Atlante ALDI Estacion de Cártama",
+    "latitude": 36.7210476,
+    "longitude": -4.6164434,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13235308238",
+    "latitude": 36.7578509,
+    "longitude": -3.8685978,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 38.1948288,
+    "longitude": -3.6717592,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13253783897",
+    "latitude": 38.1930405,
+    "longitude": -3.6724857,
+    "source": "osm_imported"
+  },
+  {
+    "name": "ingeteam",
+    "latitude": 37.6171309,
+    "longitude": -0.9851516,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Continente Bom Dia Alcains",
+    "latitude": 39.9141971,
+    "longitude": -7.4721574,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 39.9636974,
+    "longitude": -4.8009021,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 37.3879878,
+    "longitude": -6.0065891,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13295341448",
+    "latitude": 36.2837263,
+    "longitude": -6.0971583,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13297161675",
+    "latitude": 36.7521706,
+    "longitude": -5.1655227,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Eranovum",
+    "latitude": 37.4065696,
+    "longitude": -6.0042314,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Eranovum",
+    "latitude": 37.4088542,
+    "longitude": -6.003612,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Eranovum",
+    "latitude": 37.4088426,
+    "longitude": -6.0060041,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa X",
+    "latitude": 37.4068181,
+    "longitude": -6.0065389,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Eranovum",
+    "latitude": 37.4067386,
+    "longitude": -6.0065589,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Eranovum",
+    "latitude": 37.4049615,
+    "longitude": -6.0070349,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa X",
+    "latitude": 37.403094,
+    "longitude": -6.0071424,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Veiasa",
+    "latitude": 37.4031938,
+    "longitude": -6.0065524,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Veiasa",
+    "latitude": 37.4032023,
+    "longitude": -6.0066127,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa X",
+    "latitude": 37.4030563,
+    "longitude": -6.007634,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Eranovum",
+    "latitude": 37.4030058,
+    "longitude": -6.0074165,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 37.9686506,
+    "longitude": -0.7433349,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Galp",
+    "latitude": 37.9298343,
+    "longitude": -0.7370138,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Tesla Supercharger",
+    "latitude": 38.8592582,
+    "longitude": -6.3642704,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder Mérida - Hotel Romero",
+    "latitude": 38.8599505,
+    "longitude": -6.3640289,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13369087940",
+    "latitude": 37.8947224,
+    "longitude": -4.8083721,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7416308,
+    "longitude": -3.5302661,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7416707,
+    "longitude": -3.530258,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7419317,
+    "longitude": -3.5302046,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13387428698",
+    "latitude": 38.3575048,
+    "longitude": -2.7993143,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13387428699",
+    "latitude": 38.357588,
+    "longitude": -2.7981299,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13392046232",
+    "latitude": 36.709975,
+    "longitude": -6.1231805,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13392046233",
+    "latitude": 36.7099726,
+    "longitude": -6.123111,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13398353825",
+    "latitude": 37.4179236,
+    "longitude": -1.5598697,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13398362699",
+    "latitude": 37.4179041,
+    "longitude": -1.5599155,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13410282974",
+    "latitude": 37.3992261,
+    "longitude": -5.9769459,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13414067002",
+    "latitude": 39.2228057,
+    "longitude": -6.1471499,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13415906172",
+    "latitude": 36.8478314,
+    "longitude": -4.2481388,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13416694170",
+    "latitude": 37.6326192,
+    "longitude": -3.5313116,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13426569711",
+    "latitude": 36.1362069,
+    "longitude": -5.4615096,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Junta de Andalucía",
+    "latitude": 37.9442719,
+    "longitude": -5.7611189,
+    "source": "osm_imported"
+  },
+  {
+    "name": "FRS",
+    "latitude": 36.0252498,
+    "longitude": -5.6108616,
+    "source": "osm_imported"
+  },
+  {
+    "name": "FRS",
+    "latitude": 36.0253058,
+    "longitude": -5.6108692,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13439900349",
+    "latitude": 36.0109128,
+    "longitude": -5.6045215,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 36.7548888,
+    "longitude": -5.8214103,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder Obramat Alcalá de Guadaira",
+    "latitude": 37.3507856,
+    "longitude": -5.8592065,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13456488048",
+    "latitude": 36.0110015,
+    "longitude": -5.6037,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13457465942",
+    "latitude": 36.9180153,
+    "longitude": -3.4801756,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 36.0177042,
+    "longitude": -5.6107908,
+    "source": "osm_imported"
+  },
+  {
+    "name": "ALDI Antequera",
+    "latitude": 37.0237716,
+    "longitude": -4.5606613,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13468853488",
+    "latitude": 36.1263127,
+    "longitude": -5.4429934,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13468881126",
+    "latitude": 36.1251628,
+    "longitude": -5.4429258,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13468883010",
+    "latitude": 36.1235174,
+    "longitude": -5.4425448,
+    "source": "osm_imported"
+  },
+  {
+    "name": "BP",
+    "latitude": 36.8111415,
+    "longitude": -2.5852818,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Lidl",
+    "latitude": 36.4017382,
+    "longitude": -6.1669065,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Aldiana Andalusien",
+    "latitude": 36.3431225,
+    "longitude": -6.1631912,
+    "source": "osm_imported"
+  },
+  {
+    "name": "BP",
+    "latitude": 37.5731098,
+    "longitude": -1.2691111,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13500823683",
+    "latitude": 37.5722444,
+    "longitude": -1.2680954,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13504757544",
+    "latitude": 37.9288129,
+    "longitude": -0.7367344,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13504849927",
+    "latitude": 37.9287883,
+    "longitude": -0.736689,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13504873673",
+    "latitude": 37.9286067,
+    "longitude": -0.736823,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13504880455",
+    "latitude": 37.9288606,
+    "longitude": -0.7366303,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13504880456",
+    "latitude": 37.928727,
+    "longitude": -0.7367347,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13504882096",
+    "latitude": 37.9285759,
+    "longitude": -0.7369365,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13504888589",
+    "latitude": 37.9288816,
+    "longitude": -0.7366775,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13504903740",
+    "latitude": 37.9286151,
+    "longitude": -0.7368379,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13504910236",
+    "latitude": 37.928567,
+    "longitude": -0.7369178,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13504910237",
+    "latitude": 37.9287555,
+    "longitude": -0.7367838,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13504916115",
+    "latitude": 37.9286391,
+    "longitude": -0.7368788,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13504916116",
+    "latitude": 37.9286922,
+    "longitude": -0.7368346,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13504918833",
+    "latitude": 37.9285447,
+    "longitude": -0.7368757,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13504919504",
+    "latitude": 37.9286646,
+    "longitude": -0.7367839,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Punto de carga Endesa X Way",
+    "latitude": 36.3354558,
+    "longitude": -6.1576755,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13510052651",
+    "latitude": 39.5682727,
+    "longitude": -0.5251707,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13510554663",
+    "latitude": 36.7589595,
+    "longitude": -5.3645733,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13520448202",
+    "latitude": 36.3972805,
+    "longitude": -6.1682203,
+    "source": "osm_imported"
+  },
+  {
+    "name": "VVC-00008",
+    "latitude": 38.745987,
+    "longitude": -7.450138,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 37.6427685,
+    "longitude": -4.7373178,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Tesla Supercharger",
+    "latitude": 39.4201158,
+    "longitude": -0.5026942,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Tesla Supercharger",
+    "latitude": 38.898371,
+    "longitude": -1.5034332,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ayuntamiento de Arboleas",
+    "latitude": 37.3521253,
+    "longitude": -2.0879358,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 13677443045",
+    "latitude": 37.4513814,
+    "longitude": -5.9771096,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Temper",
+    "latitude": 40.4553197,
+    "longitude": -3.8739787,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 1599119763",
+    "latitude": 40.523373,
+    "longitude": -3.8845311,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Carga vehículo eléctrico The Gallery",
+    "latitude": 41.6090342,
+    "longitude": -0.8873898,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ibil",
+    "latitude": 41.6231739,
+    "longitude": -0.9392027,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 2868971564",
+    "latitude": 41.6439808,
+    "longitude": -0.9024153,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 2868971565",
+    "latitude": 41.6451103,
+    "longitude": -0.885165,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 2868971567",
+    "latitude": 41.6524719,
+    "longitude": -0.8838023,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 2868971568",
+    "latitude": 41.6559205,
+    "longitude": -0.8779476,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 2868971569",
+    "latitude": 41.6596581,
+    "longitude": -0.9209766,
+    "source": "osm_imported"
+  },
+  {
+    "name": "CIRCE",
+    "latitude": 41.6847989,
+    "longitude": -0.8854218,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Parkmusa",
+    "latitude": 42.3387528,
+    "longitude": -3.6973149,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Parkmusa",
+    "latitude": 42.3387709,
+    "longitude": -3.6972203,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ibil",
+    "latitude": 40.4192082,
+    "longitude": -3.6888851,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 3257914969",
+    "latitude": 42.341348,
+    "longitude": -3.7001251,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 3257914970",
+    "latitude": 42.3413469,
+    "longitude": -3.7001016,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ionity Campo de las Naciones",
+    "latitude": 40.4584994,
+    "longitude": -3.6166489,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Electric car charge",
+    "latitude": 40.6409106,
+    "longitude": -3.7319296,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 40.4074003,
+    "longitude": -3.7201692,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Burgos Supercharger",
+    "latitude": 42.3123327,
+    "longitude": -3.7041789,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 4323503055",
+    "latitude": 41.660392,
+    "longitude": -0.9250966,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ibil",
+    "latitude": 40.4351966,
+    "longitude": -3.7092182,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ionity Jarama",
+    "latitude": 40.6160452,
+    "longitude": -3.5852253,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ariza Supercharger",
+    "latitude": 41.3132067,
+    "longitude": -2.0022304,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 4549730923",
+    "latitude": 40.4205639,
+    "longitude": -3.5556877,
+    "source": "osm_imported"
+  },
+  {
+    "name": "IBIL",
+    "latitude": 42.035547,
+    "longitude": -1.588545,
+    "source": "osm_imported"
+  },
+  {
+    "name": "IBIL",
+    "latitude": 40.5794788,
+    "longitude": -3.2358032,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 4563456552",
+    "latitude": 41.7648394,
+    "longitude": -2.4736605,
+    "source": "osm_imported"
+  },
+  {
+    "name": "GIC",
+    "latitude": 40.4057011,
+    "longitude": -3.6997728,
+    "source": "osm_imported"
+  },
+  {
+    "name": "IBIL",
+    "latitude": 40.4292455,
+    "longitude": -3.683721,
+    "source": "osm_imported"
+  },
+  {
+    "name": "GIC",
+    "latitude": 40.4381069,
+    "longitude": -3.7002386,
+    "source": "osm_imported"
+  },
+  {
+    "name": "GIC",
+    "latitude": 40.453639,
+    "longitude": -3.6560371,
+    "source": "osm_imported"
+  },
+  {
+    "name": "GIC",
+    "latitude": 40.4319567,
+    "longitude": -3.689157,
+    "source": "osm_imported"
+  },
+  {
+    "name": "IBIL",
+    "latitude": 40.4354833,
+    "longitude": -3.6879729,
+    "source": "osm_imported"
+  },
+  {
+    "name": "IBIL",
+    "latitude": 40.4454625,
+    "longitude": -3.6907904,
+    "source": "osm_imported"
+  },
+  {
+    "name": "IBIL",
+    "latitude": 40.4583709,
+    "longitude": -3.689582,
+    "source": "osm_imported"
+  },
+  {
+    "name": "GIC",
+    "latitude": 40.4782078,
+    "longitude": -3.686397,
+    "source": "osm_imported"
+  },
+  {
+    "name": "GIC",
+    "latitude": 40.4350772,
+    "longitude": -3.6807422,
+    "source": "osm_imported"
+  },
+  {
+    "name": "GIC",
+    "latitude": 40.3998816,
+    "longitude": -3.6751787,
+    "source": "osm_imported"
+  },
+  {
+    "name": "IBIL",
+    "latitude": 40.429555,
+    "longitude": -3.7024739,
+    "source": "osm_imported"
+  },
+  {
+    "name": "GIC",
+    "latitude": 40.4259414,
+    "longitude": -3.6925629,
+    "source": "osm_imported"
+  },
+  {
+    "name": "GIC",
+    "latitude": 40.4249657,
+    "longitude": -3.6810768,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ibil",
+    "latitude": 40.4246541,
+    "longitude": -3.6712666,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 40.4184868,
+    "longitude": -3.6783557,
+    "source": "osm_imported"
+  },
+  {
+    "name": "GIC",
+    "latitude": 40.430516,
+    "longitude": -3.699163,
+    "source": "osm_imported"
+  },
+  {
+    "name": "GIC",
+    "latitude": 40.4672571,
+    "longitude": -3.6698656,
+    "source": "osm_imported"
+  },
+  {
+    "name": "GIC",
+    "latitude": 40.4162039,
+    "longitude": -3.6922243,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 40.4224735,
+    "longitude": -3.7076404,
+    "source": "osm_imported"
+  },
+  {
+    "name": "IBIL",
+    "latitude": 40.4322458,
+    "longitude": -3.7047573,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Tesla Destination Charger",
+    "latitude": 40.4968532,
+    "longitude": -3.6608874,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Serrano Park I",
+    "latitude": 40.43294,
+    "longitude": -3.685803,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Serrano Park I",
+    "latitude": 40.4357084,
+    "longitude": -3.6869859,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Serrano Park II",
+    "latitude": 40.4304848,
+    "longitude": -3.6878445,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Serrano Park III",
+    "latitude": 40.4243351,
+    "longitude": -3.6893834,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 5275504463",
+    "latitude": 40.4218595,
+    "longitude": -3.6965009,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 5275524357",
+    "latitude": 40.4170475,
+    "longitude": -3.712886,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 5275539774",
+    "latitude": 40.4201625,
+    "longitude": -3.6956919,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Indigo",
+    "latitude": 40.4577804,
+    "longitude": -3.6943349,
+    "source": "osm_imported"
+  },
+  {
+    "name": "EMT",
+    "latitude": 40.472288,
+    "longitude": -3.6790375,
+    "source": "osm_imported"
+  },
+  {
+    "name": "EMT",
+    "latitude": 40.4302766,
+    "longitude": -3.67936,
+    "source": "osm_imported"
+  },
+  {
+    "name": "EMT",
+    "latitude": 40.415417,
+    "longitude": -3.7273573,
+    "source": "osm_imported"
+  },
+  {
+    "name": "EMT",
+    "latitude": 40.4148314,
+    "longitude": -3.7033983,
+    "source": "osm_imported"
+  },
+  {
+    "name": "IBIL",
+    "latitude": 40.429402,
+    "longitude": -3.7084165,
+    "source": "osm_imported"
+  },
+  {
+    "name": "GIC",
+    "latitude": 40.4648873,
+    "longitude": -3.6361033,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Serrano Park III",
+    "latitude": 40.4203142,
+    "longitude": -3.6877202,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Autourbion",
+    "latitude": 42.4612879,
+    "longitude": -2.4720931,
+    "source": "osm_imported"
+  },
+  {
+    "name": "ACCIONA Recarga",
+    "latitude": 41.6077126,
+    "longitude": -0.8914099,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ibil",
+    "latitude": 42.3412466,
+    "longitude": -3.6124232,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Renault Autovican",
+    "latitude": 42.3610313,
+    "longitude": -3.6518276,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Uremovil",
+    "latitude": 42.3466954,
+    "longitude": -3.6598179,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Silken",
+    "latitude": 42.3410488,
+    "longitude": -3.6972276,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Getafe Supercharger",
+    "latitude": 40.2903505,
+    "longitude": -3.6963214,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zaragoza Supercharger",
+    "latitude": 41.6260114,
+    "longitude": -1.0095024,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 5640022514",
+    "latitude": 40.4081457,
+    "longitude": -3.9025404,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 5640022515",
+    "latitude": 40.4090936,
+    "longitude": -3.8969733,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 5640022516",
+    "latitude": 40.4075435,
+    "longitude": -3.8774706,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 5640022517",
+    "latitude": 40.401335,
+    "longitude": -3.8798467,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Feníe Energía",
+    "latitude": 42.464047,
+    "longitude": -2.4467462,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Punto recarga Mercadona Valdespartera",
+    "latitude": 41.6225085,
+    "longitude": -0.9367856,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 41.6601072,
+    "longitude": -0.8807593,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Renault Autojesa",
+    "latitude": 41.6848273,
+    "longitude": -3.6853444,
+    "source": "osm_imported"
+  },
+  {
+    "name": "El Cantizal",
+    "latitude": 40.5192164,
+    "longitude": -3.9341234,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ibil",
+    "latitude": 41.6473248,
+    "longitude": -0.8723047,
+    "source": "osm_imported"
+  },
+  {
+    "name": "MercaCorreas s.l",
+    "latitude": 41.6867355,
+    "longitude": -0.8516963,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ibil",
+    "latitude": 41.6545918,
+    "longitude": -0.8908627,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 41.6518468,
+    "longitude": -0.8866776,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 41.6511384,
+    "longitude": -0.8896334,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 5876490800",
+    "latitude": 41.5731678,
+    "longitude": -3.7046,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Mercadona",
+    "latitude": 41.6641857,
+    "longitude": -0.8626255,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6015809171",
+    "latitude": 41.7621357,
+    "longitude": -0.8319823,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6018055995",
+    "latitude": 40.4305944,
+    "longitude": -3.8122775,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6018069290",
+    "latitude": 40.4305893,
+    "longitude": -3.8125244,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6049534386",
+    "latitude": 41.7578984,
+    "longitude": -0.8328696,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Emag",
+    "latitude": 42.5260271,
+    "longitude": -0.3609352,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Acciona Energía",
+    "latitude": 41.3112538,
+    "longitude": -2.0020326,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6243730362",
+    "latitude": 40.5927979,
+    "longitude": -3.7073943,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Mercadona",
+    "latitude": 42.3690958,
+    "longitude": -3.6560622,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6334092750",
+    "latitude": 40.4792476,
+    "longitude": -3.3997688,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6386678903",
+    "latitude": 42.3500661,
+    "longitude": -3.6599473,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Castillo de Izán",
+    "latitude": 41.7538408,
+    "longitude": -3.6846419,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Fenienergia",
+    "latitude": 42.3876594,
+    "longitude": -1.7940897,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ibermotor",
+    "latitude": 42.3611585,
+    "longitude": -3.6524107,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6466865847",
+    "latitude": 40.3492434,
+    "longitude": -3.5265625,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6474199804",
+    "latitude": 40.5705625,
+    "longitude": -3.9238373,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6474199805",
+    "latitude": 40.5706798,
+    "longitude": -3.9238348,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Parking Invitados Indra",
+    "latitude": 40.4553454,
+    "longitude": -3.4741661,
+    "source": "osm_imported"
+  },
+  {
+    "name": "EDP VE",
+    "latitude": 40.4581792,
+    "longitude": -3.4669461,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6567895610",
+    "latitude": 40.4582222,
+    "longitude": -3.4678345,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Moves",
+    "latitude": 42.3581578,
+    "longitude": -3.6536482,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6655841278",
+    "latitude": 40.457769,
+    "longitude": -3.4700256,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6735155323",
+    "latitude": 40.4088645,
+    "longitude": -3.9046487,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6735180894",
+    "latitude": 40.4086835,
+    "longitude": -3.9038171,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6841878905",
+    "latitude": 40.3235076,
+    "longitude": -3.5126119,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 40.3722008,
+    "longitude": -3.6389927,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6877112296",
+    "latitude": 40.3838413,
+    "longitude": -3.6319503,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6877112297",
+    "latitude": 40.3840216,
+    "longitude": -3.6319325,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Rivas Vaciamadrid - Electromaps",
+    "latitude": 40.3566239,
+    "longitude": -3.5464461,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6910162011",
+    "latitude": 41.1758999,
+    "longitude": -0.4541471,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 6922980737",
+    "latitude": 40.4056718,
+    "longitude": -3.8780857,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Simon",
+    "latitude": 40.4529617,
+    "longitude": -3.8694772,
+    "source": "osm_imported"
+  },
+  {
+    "name": "wallbox",
+    "latitude": 40.3983509,
+    "longitude": -3.7838573,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zaragoza Sostenible",
+    "latitude": 41.6521676,
+    "longitude": -0.876896,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 7159088456",
+    "latitude": 40.4446152,
+    "longitude": -3.4627268,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Circutor",
+    "latitude": 40.4177637,
+    "longitude": -3.7986044,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola Charging Station",
+    "latitude": 40.4645565,
+    "longitude": -3.61895,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 41.1892416,
+    "longitude": -2.4015724,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Valcarce",
+    "latitude": 42.2754538,
+    "longitude": -3.8970023,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Mercadona",
+    "latitude": 42.3347417,
+    "longitude": -3.7117907,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 7519797699",
+    "latitude": 40.5065853,
+    "longitude": -3.5311912,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ayuntamiento Paracuellos de Jarama",
+    "latitude": 40.5065781,
+    "longitude": -3.5312261,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Fenienergia",
+    "latitude": 42.5398348,
+    "longitude": -2.7785109,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 41.6705884,
+    "longitude": -3.7073666,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 42.3585006,
+    "longitude": -3.6939871,
+    "source": "osm_imported"
+  },
+  {
+    "name": "EMT",
+    "latitude": 40.4337067,
+    "longitude": -3.5998759,
+    "source": "osm_imported"
+  },
+  {
+    "name": "IONITY Ariza Norte",
+    "latitude": 41.3128996,
+    "longitude": -2.0016134,
+    "source": "osm_imported"
+  },
+  {
+    "name": "IONITY Ariza Sur",
+    "latitude": 41.3112823,
+    "longitude": -2.0030573,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 7701545695",
+    "latitude": 40.375969,
+    "longitude": -3.6390802,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder - Hotel Area Tudanca - Aranda de Duero",
+    "latitude": 41.6234182,
+    "longitude": -3.6875267,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 7733632245",
+    "latitude": 42.5466276,
+    "longitude": -0.5280445,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ayuntamiento de Rivas",
+    "latitude": 40.341414,
+    "longitude": -3.5228338,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Aranda de Duero Supercharger",
+    "latitude": 41.6231878,
+    "longitude": -3.6877277,
+    "source": "osm_imported"
+  },
+  {
+    "name": "CARGACOCHES - El Azafrán",
+    "latitude": 40.8375043,
+    "longitude": -1.308252,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Cargacoches",
+    "latitude": 41.5160565,
+    "longitude": -1.2895089,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Cargacoches",
+    "latitude": 41.3076404,
+    "longitude": -2.1225377,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Cargacoches",
+    "latitude": 41.3130705,
+    "longitude": -2.0029924,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Cargacoches",
+    "latitude": 41.1935129,
+    "longitude": -3.5829554,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Camping La Estepa",
+    "latitude": 41.5617704,
+    "longitude": -0.1319064,
+    "source": "osm_imported"
+  },
+  {
+    "name": "EDP VE",
+    "latitude": 40.4597419,
+    "longitude": -3.4603745,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder GALP II Dir. Madrid - Sarracín",
+    "latitude": 42.2462314,
+    "longitude": -3.7034282,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Nissan Arvesa",
+    "latitude": 41.6699787,
+    "longitude": -0.8603346,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Saltoki",
+    "latitude": 41.6685401,
+    "longitude": -0.8592725,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Bricomart",
+    "latitude": 41.6682756,
+    "longitude": -0.8607316,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ayuntamiento_de_Colmenar_Viejo",
+    "latitude": 40.6474574,
+    "longitude": -3.7763559,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ayuntamiento de Colmenar Viejo",
+    "latitude": 40.6608613,
+    "longitude": -3.7618443,
+    "source": "osm_imported"
+  },
+  {
+    "name": "ALDI",
+    "latitude": 40.6578523,
+    "longitude": -3.7586707,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ayuntamiento de Colmenar Viejo",
+    "latitude": 40.6651794,
+    "longitude": -3.773867,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Punto de recarga Emovili - Ayuntamiento de Alcobendas",
+    "latitude": 40.5158682,
+    "longitude": -3.6515181,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8500300751",
+    "latitude": 40.4675926,
+    "longitude": -3.8140723,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8724671433",
+    "latitude": 40.5971144,
+    "longitude": -3.5079476,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8724671452",
+    "latitude": 40.5971255,
+    "longitude": -3.5073599,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 40.3553698,
+    "longitude": 0.3014238,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Spelsberg BCS E-Bike Ladestation",
+    "latitude": 40.3947524,
+    "longitude": -3.7298527,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 41.7174102,
+    "longitude": -3.3670672,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Porsche City Charging Madrid Atocha",
+    "latitude": 40.4038395,
+    "longitude": -3.6855529,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Spelsberg BCS E-Bike Ladestation",
+    "latitude": 41.571796,
+    "longitude": -0.8245,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Spelsberg BCS E-Bike Ladestation",
+    "latitude": 42.5124629,
+    "longitude": 0.4925563,
+    "source": "osm_imported"
+  },
+  {
+    "name": "SELBA EdRSR 1",
+    "latitude": 40.5960241,
+    "longitude": 0.4494253,
+    "source": "osm_imported"
+  },
+  {
+    "name": "SELBA EdRSR 1",
+    "latitude": 40.7176088,
+    "longitude": 0.4921699,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8869785113",
+    "latitude": 40.956693,
+    "longitude": 0.3155425,
+    "source": "osm_imported"
+  },
+  {
+    "name": "SELBA EdRSR 1",
+    "latitude": 40.9096335,
+    "longitude": 0.4893707,
+    "source": "osm_imported"
+  },
+  {
+    "name": "SELBA EdRSR 1",
+    "latitude": 41.0404924,
+    "longitude": 0.2510163,
+    "source": "osm_imported"
+  },
+  {
+    "name": "SELBA EdRSR 1",
+    "latitude": 40.9216474,
+    "longitude": 0.4010743,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Cargador de Sotopalacios",
+    "latitude": 42.4344728,
+    "longitude": -3.6818831,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8954875848",
+    "latitude": 42.0588297,
+    "longitude": -3.5221753,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8962613706",
+    "latitude": 40.3600929,
+    "longitude": -3.6615887,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 40.3683611,
+    "longitude": -3.7656128,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea Rest Los Maños",
+    "latitude": 40.114088,
+    "longitude": -0.7390527,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8997149406",
+    "latitude": 42.442075,
+    "longitude": -2.9534141,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 8997149407",
+    "latitude": 42.4420887,
+    "longitude": -2.9534695,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Tesla Destination Charger (11kW)",
+    "latitude": 40.412148,
+    "longitude": 0.4280489,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Sendaviva Park",
+    "latitude": 42.1901564,
+    "longitude": -1.5831473,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9056575781",
+    "latitude": 40.3396638,
+    "longitude": -3.5263141,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ionity Milagros",
+    "latitude": 41.5939126,
+    "longitude": -3.6982278,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9083582517",
+    "latitude": 40.8743824,
+    "longitude": 0.1541019,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9176784574",
+    "latitude": 42.228368,
+    "longitude": -3.5845014,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9188349963",
+    "latitude": 41.8232184,
+    "longitude": -3.4857578,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9188349964",
+    "latitude": 41.8231549,
+    "longitude": -3.4857642,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9195812909",
+    "latitude": 42.2277186,
+    "longitude": -3.59869,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 41.199929,
+    "longitude": -2.8680941,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9307310730",
+    "latitude": 42.3514376,
+    "longitude": -3.6475319,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Barbastro Supercharger",
+    "latitude": 42.0332436,
+    "longitude": 0.104235,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Vallibona",
+    "latitude": 40.6037712,
+    "longitude": 0.0464465,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Vallibona",
+    "latitude": 40.6034138,
+    "longitude": 0.0462815,
+    "source": "osm_imported"
+  },
+  {
+    "name": "La Salzadella",
+    "latitude": 40.4159977,
+    "longitude": 0.1726826,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Lucena del Cid",
+    "latitude": 40.1355409,
+    "longitude": -0.2801125,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Benassal",
+    "latitude": 40.3778442,
+    "longitude": -0.1401863,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Alcalá de Xivert",
+    "latitude": 40.3059141,
+    "longitude": 0.2251996,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Cabanes",
+    "latitude": 40.1539882,
+    "longitude": 0.0395807,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Peñíscola",
+    "latitude": 40.3586203,
+    "longitude": 0.4032688,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 40.4491628,
+    "longitude": -3.8603797,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 40.4486332,
+    "longitude": -3.8607213,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9379955714",
+    "latitude": 42.1678468,
+    "longitude": -3.6115255,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9385807512",
+    "latitude": 40.4703695,
+    "longitude": -3.4459467,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9412353751",
+    "latitude": 40.3944832,
+    "longitude": -3.7981092,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Electrolinera Ciudad de la Imagen",
+    "latitude": 40.3974249,
+    "longitude": -3.7845124,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 40.3694573,
+    "longitude": -3.6318056,
+    "source": "osm_imported"
+  },
+  {
+    "name": "BMW",
+    "latitude": 42.3182682,
+    "longitude": -3.7031611,
+    "source": "osm_imported"
+  },
+  {
+    "name": "BMW",
+    "latitude": 42.3182204,
+    "longitude": -3.7031796,
+    "source": "osm_imported"
+  },
+  {
+    "name": "BMW",
+    "latitude": 42.318176,
+    "longitude": -3.7032027,
+    "source": "osm_imported"
+  },
+  {
+    "name": "BMW",
+    "latitude": 42.318258,
+    "longitude": -3.7031164,
+    "source": "osm_imported"
+  },
+  {
+    "name": "BMW",
+    "latitude": 42.3182113,
+    "longitude": -3.7031349,
+    "source": "osm_imported"
+  },
+  {
+    "name": "BMW",
+    "latitude": 42.3181634,
+    "longitude": -3.703158,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9472476860",
+    "latitude": 41.9626094,
+    "longitude": -3.4224021,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9472476861",
+    "latitude": 41.9626518,
+    "longitude": -3.4223955,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9525440125",
+    "latitude": 42.3469831,
+    "longitude": -3.6863355,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9534345218",
+    "latitude": 40.3930592,
+    "longitude": -3.6988796,
+    "source": "osm_imported"
+  },
+  {
+    "name": "La Dehesa 1",
+    "latitude": 40.5041072,
+    "longitude": -3.3305356,
+    "source": "osm_imported"
+  },
+  {
+    "name": "La Dehesa 2",
+    "latitude": 40.5041488,
+    "longitude": -3.3305801,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9646110568",
+    "latitude": 42.341477,
+    "longitude": -3.7151109,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9659050123",
+    "latitude": 41.522775,
+    "longitude": 0.3442298,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Estación de carga Almazan fenieergia",
+    "latitude": 41.48932,
+    "longitude": -2.5387799,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Kepler Ingeniería y Ecogestión S.L.",
+    "latitude": 42.3006889,
+    "longitude": -3.6986626,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 42.3486422,
+    "longitude": -3.6779976,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Mercadona",
+    "latitude": 42.5217118,
+    "longitude": -0.360777,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 40.3328707,
+    "longitude": -3.8246379,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder",
+    "latitude": 42.3423781,
+    "longitude": -3.7303841,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ayuntamiento de Jaca",
+    "latitude": 42.5745381,
+    "longitude": -0.5524594,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder",
+    "latitude": 42.3450117,
+    "longitude": -3.6984543,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder",
+    "latitude": 42.3440837,
+    "longitude": -3.6958526,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Repsol",
+    "latitude": 40.4663329,
+    "longitude": -3.6855645,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder",
+    "latitude": 42.340099,
+    "longitude": -3.6953745,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder",
+    "latitude": 42.3401328,
+    "longitude": -3.6953928,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Ayuntamiento de Jaca",
+    "latitude": 42.5694834,
+    "longitude": -0.5511006,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder",
+    "latitude": 42.3367814,
+    "longitude": -3.7052858,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9947793569",
+    "latitude": 42.0231961,
+    "longitude": -3.2900766,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Iberdrola",
+    "latitude": 42.024429,
+    "longitude": -3.7523813,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea",
+    "latitude": 41.2803795,
+    "longitude": -3.6012831,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa X - Benabarre",
+    "latitude": 42.1015252,
+    "longitude": 0.4856454,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Mercadona",
+    "latitude": 42.5218899,
+    "longitude": -0.3611103,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 42.5644478,
+    "longitude": -0.5675298,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa",
+    "latitude": 42.5644286,
+    "longitude": -0.5675239,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa X - Ajuntament de Riba Roja d'Ébre",
+    "latitude": 41.2497954,
+    "longitude": 0.4893239,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Endesa X - Corbera d'Ebre",
+    "latitude": 41.0778862,
+    "longitude": 0.4783918,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Wenea - Restaurant Les Moles",
+    "latitude": 40.6038335,
+    "longitude": 0.4208019,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9978491728",
+    "latitude": 42.3197296,
+    "longitude": -3.7041915,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder",
+    "latitude": 42.3473686,
+    "longitude": -3.6960774,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Bridgestone",
+    "latitude": 42.3561237,
+    "longitude": -3.6588878,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Bridgestone",
+    "latitude": 42.3561151,
+    "longitude": -3.6589462,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9986759597",
+    "latitude": 42.0603247,
+    "longitude": -2.9927744,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9986885622",
+    "latitude": 41.9812653,
+    "longitude": -3.0405392,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9987031317",
+    "latitude": 40.5446213,
+    "longitude": -3.6104574,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 9987031318",
+    "latitude": 40.5452252,
+    "longitude": -3.6119267,
+    "source": "osm_imported"
+  },
+  {
+    "name": "Zunder",
+    "latitude": 42.3505242,
+    "longitude": -3.6689992,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 10018166565",
+    "latitude": 42.585599,
+    "longitude": -0.9838661,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 10045744092",
+    "latitude": 42.353574,
+    "longitude": -3.6745542,
+    "source": "osm_imported"
+  },
+  {
+    "name": "OSM Charger 10061560894",
+    "latitude": 40.4555359,
+    "longitude": -3.8119963,
+    "source": "osm_imported"
+  }
+]

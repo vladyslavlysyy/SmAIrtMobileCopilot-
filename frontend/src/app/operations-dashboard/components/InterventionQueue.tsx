@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { Play, AlertTriangle } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAppStore } from '@/store/appStore';
 import { api, type Visit } from '@/lib/api';
@@ -10,6 +10,7 @@ import { getStatusLabelCa, getVisitTypeLabelCa } from '@/lib/labels';
 interface InterventionQueueProps {
   forcedStatusFilter?: Visit['status'] | 'scheduled' | 'all';
   onDataChanged?: () => Promise<void> | void;
+  refreshToken?: number;
 }
 
 function getPriorityColor(priority: number) {
@@ -89,8 +90,8 @@ function getStatusBadge(status: Visit['status']) {
   }
 }
 
-export default function InterventionQueue({ forcedStatusFilter = 'all', onDataChanged }: InterventionQueueProps) {
-  const { visits, technicians, loadVisits, loadTechnicians, isLoading } = useAppStore();
+export default function InterventionQueue({ forcedStatusFilter = 'all', onDataChanged, refreshToken = 0 }: InterventionQueueProps) {
+  const { visits, technicians, loadVisits, loadTechnicians } = useAppStore();
 
   const [selectedVisitId, setSelectedVisitId] = useState<number | null>(null);
   const [techFilter, setTechFilter] = useState<number | 'all'>('all');
@@ -100,6 +101,10 @@ export default function InterventionQueue({ forcedStatusFilter = 'all', onDataCh
   useEffect(() => {
     loadTechnicians();
   }, [loadTechnicians]);
+
+  useEffect(() => {
+    setSelectedVisitId(null);
+  }, [refreshToken]);
 
   const techs = useMemo(() => technicians.map((t) => t.id), [technicians]);
 
@@ -116,41 +121,6 @@ export default function InterventionQueue({ forcedStatusFilter = 'all', onDataCh
         return pB - pA;
       });
   }, [visits, techFilter, forcedStatusFilter]);
-
-  const handleRunOptimizer = async () => {
-    try {
-      const byTech = new Map<number, number[]>();
-      visits.forEach((v) => {
-        if (v.technician_id === null) return;
-        const list = byTech.get(v.technician_id) ?? [];
-        list.push(v.id);
-        byTech.set(v.technician_id, list);
-      });
-
-      if (byTech.size === 0) {
-        toast.error('No hi ha tecnics amb visites assignades');
-        return;
-      }
-
-      const origin = { latitude: 41.1189, longitude: 1.2445 };
-      const routes = await Promise.all(
-        Array.from(byTech.entries()).map(([technicianId, visitIds]) =>
-          api.calculateRoute({
-            technician_id: technicianId,
-            visit_ids_ordered: visitIds,
-            origen: origin,
-          })
-        )
-      );
-
-      const distance = routes.reduce((acc, r) => acc + r.distancia_total_km, 0);
-      const minutes = routes.reduce((acc, r) => acc + r.tiempo_total_min, 0);
-
-      toast.success(`Optimització completada: ${distance.toFixed(1)} km · ${Math.round(minutes)} min`);
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : 'No s\'ha pogut optimitzar la ruta');
-    }
-  };
 
   const handleAssignTech = async (visitId: number) => {
     try {
@@ -302,15 +272,6 @@ export default function InterventionQueue({ forcedStatusFilter = 'all', onDataCh
               <option key={t.id} value={t.id}>{`${t.name} (T${t.id})`}</option>
             ))}
           </select>
-
-          <button
-            onClick={handleRunOptimizer}
-            disabled={isLoading}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-mobility-accent text-white hover:brightness-110 text-xs font-bold rounded-lg transition-all shadow-[0_0_10px_rgba(0,162,219,0.2)]"
-          >
-            <Play size={14} className={isLoading ? 'animate-pulse' : ''} />
-            Optimitzar
-          </button>
         </div>
       </div>
 

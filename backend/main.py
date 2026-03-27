@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
 
 # Importar todos los routers
-from routers import visits, reports, ruta, imprevistos, metrics, users, planning
+from routers import visits, reports, ruta, imprevistos, metrics, users, planning, chargers
 
 # Crear tablas en BD al arrancar (en producción usaríamos Alembic)
 Base.metadata.create_all(bind=engine)
@@ -42,6 +42,7 @@ app.include_router(imprevistos.router)
 app.include_router(metrics.router)
 app.include_router(users.router)
 app.include_router(planning.router)
+app.include_router(chargers.router)
 
 
 @app.get("/health")

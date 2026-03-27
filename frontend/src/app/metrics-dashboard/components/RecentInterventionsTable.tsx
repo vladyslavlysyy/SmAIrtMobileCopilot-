@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { useAppStore } from '@/store/appStore';
+import React, { useEffect, useMemo, useState } from 'react';
 import { getStatusLabelCa, getVisitTypeLabelCa } from '@/lib/labels';
+import { api, type Visit } from '@/lib/api';
 
 function getStatusBadge(status: string) {
   switch (status) {
@@ -31,21 +31,59 @@ function getVisitTypeBadge(type: string) {
   }
 }
 
-export default function RecentInterventionsTable() {
-  const { visits, loadVisits, isLoading } = useAppStore();
+interface RecentInterventionsTableProps {
+  dateFrom: string;
+  dateTo: string;
+  technicianId?: number;
+}
+
+export default function RecentInterventionsTable({
+  dateFrom,
+  dateTo,
+  technicianId,
+}: RecentInterventionsTableProps) {
+  const [visits, setVisits] = useState<Visit[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (visits.length === 0) loadVisits();
-  }, [visits.length, loadVisits]);
+    let cancelled = false;
 
-  const recent = [...visits].sort((a, b) => b.id - a.id).slice(0, 5);
+    async function loadVisits() {
+      setIsLoading(true);
+      try {
+        const data = await api.getAllVisits({
+          dateFrom,
+          dateTo,
+          technicianId,
+        });
+        if (!cancelled) {
+          setVisits(data);
+        }
+      } catch {
+        if (!cancelled) {
+          setVisits([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    loadVisits();
+    return () => {
+      cancelled = true;
+    };
+  }, [dateFrom, dateTo, technicianId]);
+
+  const recent = useMemo(() => [...visits].sort((a, b) => b.id - a.id).slice(0, 5), [visits]);
 
   return (
     <div className="bg-mobility-surface shadow-sm border border-mobility-border rounded-xl flex flex-col h-full overflow-hidden">
-      <div className="p-4 border-b border-mobility-border bg-mobility-surface border-b border-mobility-border shadow-sm">
+      <div className="p-4 border-b border-mobility-border bg-mobility-surface shadow-sm">
         <h3 className="font-bold text-mobility-primary tracking-tight flex items-center gap-2">
           Darreres Intervencions
-          <span className="bg-mobility-accent text-white text-mobility-primary text-[10px] px-1.5 py-0.5 rounded-full">
+          <span className="bg-mobility-accent text-white text-[10px] px-1.5 py-0.5 rounded-full">
             Top 5
           </span>
         </h3>
@@ -57,7 +95,7 @@ export default function RecentInterventionsTable() {
             <tr className="text-mobility-muted text-xs font-semibold">
               <th className="px-4 py-3">ID</th>
               <th className="px-4 py-3">Tipus</th>
-              <th className="px-4 py-3">Tecnic</th>
+              <th className="px-4 py-3">Tècnic</th>
               <th className="px-4 py-3">Estat</th>
             </tr>
           </thead>

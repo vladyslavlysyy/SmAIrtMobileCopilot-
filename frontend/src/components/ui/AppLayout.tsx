@@ -10,6 +10,7 @@ import {
   ChevronRight,
   LayoutDashboard,
   LogOut,
+  Map,
   Moon,
   Sun,
 } from 'lucide-react';
@@ -22,6 +23,7 @@ interface AppLayoutProps {
 
 const navItems = [
   { id: 'operations', label: 'Operacions', icon: LayoutDashboard, href: '/operations-dashboard' },
+  { id: 'realtime-map', label: 'Mapa temps real', icon: Map, href: '/real-time-map-dashboard' },
   { id: 'planning', label: 'Planificació', icon: CalendarDays, href: '/planning-dashboard' },
   { id: 'metrics', label: 'Mètriques', icon: BarChart3, href: '/metrics-dashboard' },
 ];

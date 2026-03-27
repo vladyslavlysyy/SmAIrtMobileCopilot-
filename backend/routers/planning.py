@@ -57,6 +57,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import ProgrammingError, SQLAlchemyError
+from sqlalchemy import text
 from pydantic import BaseModel
 
 from database import get_db
@@ -119,6 +120,12 @@ class ConfirmResponse(BaseModel):
     technician_id:      int
     assigned_date:      str
     cancelled_visit_id: Optional[int]
+
+
+class TechnicianLiteOut(BaseModel):
+    id: int
+    name: str
+    zone: str
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -258,6 +265,61 @@ def get_day_visits(db: Session, technician_id: int, target: date) -> list[Visit]
 
 def get_technicians(db: Session) -> list[Technician]:
     return db.query(Technician).all()
+
+
+@router.get("/technicians", response_model=list[TechnicianLiteOut])
+def list_technicians(db: Session = Depends(get_db)) -> list[TechnicianLiteOut]:
+    """Return technicians for frontend selectors and realtime map.
+
+    Uses a conservative query compatible with current schema, and derives
+    display name from user_info when available.
+    """
+    has_user_info = bool(
+        db.execute(
+            text(
+                """
+                SELECT EXISTS(
+                  SELECT 1
+                  FROM information_schema.tables
+                  WHERE table_schema = 'public' AND table_name = 'user_info'
+                )
+                """
+            )
+        ).scalar()
+    )
+
+    if has_user_info:
+        rows = db.execute(
+            text(
+                """
+                SELECT
+                  t.id,
+                  COALESCE(u.name, CONCAT('Tecnico ', t.id::text)) AS name,
+                  COALESCE(t.zone, 'General') AS zone
+                FROM technician t
+                LEFT JOIN user_info u ON u.id = t.id
+                ORDER BY t.id ASC
+                """
+            )
+        ).fetchall()
+    else:
+        rows = db.execute(
+            text(
+                """
+                SELECT
+                  t.id,
+                  CONCAT('Tecnico ', t.id::text) AS name,
+                  COALESCE(t.zone, 'General') AS zone
+                FROM technician t
+                ORDER BY t.id ASC
+                """
+            )
+        ).fetchall()
+
+    return [
+        TechnicianLiteOut(id=int(r.id), name=str(r.name), zone=str(r.zone))
+        for r in rows
+    ]
 
 
 # ─────────────────────────────────────────────────────────────────────────────

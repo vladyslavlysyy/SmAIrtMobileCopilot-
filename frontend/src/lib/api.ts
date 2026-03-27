@@ -3,7 +3,8 @@
  * Conecta toda la aplicación a FastAPI backend en http://localhost:8000
  */
 
-export const BASE_URL = 'http://localhost:8000';
+const ENV_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
+export const BASE_URL = (ENV_BASE_URL && ENV_BASE_URL.length > 0 ? ENV_BASE_URL : 'http://localhost:8000').replace(/\/$/, '');
 
 // ═══════════════════════════════════════════════
 // TIPOS EXPORTADOS (mapeo del backend)
@@ -82,6 +83,8 @@ export interface Charger {
   longitude: number | null;
   postal_code: string | null;
   zone: string | null;
+  name?: string | null;
+  source?: 'dgt_imported' | 'osm_imported' | 'internal';
 }
 
 export interface Contract {
@@ -668,6 +671,24 @@ export const api = {
    */
   getUsers: async (): Promise<UserInfo[]> => {
     const response = await fetch(`${BASE_URL}/api/v1/users`);
+    return handleResponse(response);
+  },
+
+  /**
+   * GET /api/v1/planning/technicians
+   */
+  getTechnicians: async (): Promise<Technician[]> => {
+    const response = await fetch(`${BASE_URL}/api/v1/planning/technicians`);
+    return handleResponse(response);
+  },
+
+  /**
+   * GET /api/v1/chargers
+   */
+  getChargers: async (): Promise<Charger[]> => {
+    const response = await fetch(`${BASE_URL}/api/v1/chargers`, {
+      cache: 'no-store',
+    });
     return handleResponse(response);
   },
 
