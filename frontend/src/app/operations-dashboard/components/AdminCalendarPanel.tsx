@@ -8,7 +8,7 @@ import { useAppStore } from '@/store/appStore';
 
 interface AdminCalendarPanelProps {
   refreshNonce: number;
-  onlyPending: boolean;
+  focusDateIso?: string | null;
 }
 
 function startOfWeek(date: Date): Date {
@@ -21,7 +21,10 @@ function startOfWeek(date: Date): Date {
 }
 
 function formatDateKey(date: Date): string {
-  return date.toISOString().split('T')[0];
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
 }
 
 function parseDate(iso: string): Date {
@@ -36,9 +39,73 @@ function getVisitTypeLabel(type: Visit['visit_type']): string {
   return type.replace(/_/g, ' ');
 }
 
-export default function AdminCalendarPanel({ refreshNonce, onlyPending }: AdminCalendarPanelProps) {
+function getVisitTone(visit: Visit, theme: 'light' | 'dark'): { container: string; badge: string } {
+  const isDark = theme === 'dark';
+
+  if (visit.status === 'completed') {
+    return {
+      container: isDark
+        ? 'bg-emerald-500/15 border-emerald-400/30 border-l-emerald-400'
+        : 'bg-emerald-200/80 border-emerald-400 border-l-emerald-700',
+      badge: isDark
+        ? 'bg-emerald-500/20 text-emerald-100 border border-emerald-400/30'
+        : 'bg-emerald-300 text-slate-950 border border-emerald-500',
+    };
+  }
+  if (visit.visit_type === 'correctivo_critico') {
+    return {
+      container: isDark
+        ? 'bg-rose-500/15 border-rose-400/30 border-l-rose-400'
+        : 'bg-rose-200/80 border-rose-400 border-l-rose-700',
+      badge: isDark
+        ? 'bg-rose-500/20 text-rose-100 border border-rose-400/30'
+        : 'bg-rose-300 text-slate-950 border border-rose-500',
+    };
+  }
+  if (visit.visit_type === 'correctivo_no_critico' || visit.status === 'pending') {
+    return {
+      container: isDark
+        ? 'bg-amber-500/15 border-amber-400/30 border-l-amber-400'
+        : 'bg-amber-200/80 border-amber-400 border-l-amber-700',
+      badge: isDark
+        ? 'bg-amber-500/20 text-amber-100 border border-amber-400/30'
+        : 'bg-amber-300 text-slate-950 border border-amber-500',
+    };
+  }
+  if (visit.visit_type === 'diagnosi') {
+    return {
+      container: isDark
+        ? 'bg-violet-500/15 border-violet-400/30 border-l-violet-400'
+        : 'bg-violet-200/80 border-violet-400 border-l-violet-700',
+      badge: isDark
+        ? 'bg-violet-500/20 text-violet-100 border border-violet-400/30'
+        : 'bg-violet-300 text-slate-950 border border-violet-500',
+    };
+  }
+
+  return {
+    container: isDark
+      ? 'bg-cyan-500/15 border-cyan-400/30 border-l-cyan-400'
+      : 'bg-cyan-200/80 border-cyan-400 border-l-cyan-700',
+    badge: isDark
+      ? 'bg-cyan-500/20 text-cyan-100 border border-cyan-400/30'
+      : 'bg-cyan-300 text-slate-950 border border-cyan-500',
+  };
+}
+
+export default function AdminCalendarPanel({ refreshNonce, focusDateIso }: AdminCalendarPanelProps) {
   const { technicians, loadTechnicians } = useAppStore();
+  const detectTheme = () =>
+    typeof document !== 'undefined' &&
+    (document.documentElement.classList.contains('dark') ||
+      document.documentElement.classList.contains('theme-dark'))
+      ? 'dark'
+      : 'light';
+  const [theme, setTheme] = useState<'light' | 'dark'>(() =>
+    detectTheme()
+  );
   const [weekStart, setWeekStart] = useState<Date>(() => startOfWeek(new Date()));
+  const [scope, setScope] = useState<'week' | 'pending'>('week');
   const [calendarMode, setCalendarMode] = useState<'common' | 'technician'>('common');
   const [selectedTechnician, setSelectedTechnician] = useState<number | 'all'>('all');
   const [isLoading, setIsLoading] = useState(false);
@@ -58,9 +125,33 @@ export default function AdminCalendarPanel({ refreshNonce, onlyPending }: AdminC
     return { from, to };
   }, [weekDays]);
 
+  const onlyPending = useMemo(() => scope === 'pending', [scope]);
+
   useEffect(() => {
     loadTechnicians();
   }, [loadTechnicians]);
+
+  useEffect(() => {
+    const html = document.documentElement;
+    const syncTheme = () => {
+      setTheme(
+        html.classList.contains('dark') || html.classList.contains('theme-dark') ? 'dark' : 'light'
+      );
+    };
+
+    syncTheme();
+    const observer = new MutationObserver(syncTheme);
+    observer.observe(html, { attributes: true, attributeFilter: ['class'] });
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!focusDateIso) return;
+    const target = new Date(focusDateIso);
+    if (Number.isNaN(target.getTime())) return;
+    setWeekStart(startOfWeek(target));
+  }, [focusDateIso]);
 
   useEffect(() => {
     const load = async () => {
@@ -154,6 +245,17 @@ export default function AdminCalendarPanel({ refreshNonce, onlyPending }: AdminC
     return found ? `${found.name} (T${found.id})` : `Tècnic ${selectedTechnician}`;
   }, [selectedTechnician, technicians]);
 
+  const activeCalendarByDay = useMemo(
+    () => (calendarMode === 'common' ? allCalendarByDay : technicianCalendarByDay),
+    [allCalendarByDay, calendarMode, technicianCalendarByDay]
+  );
+
+  const calendarTitle = calendarMode === 'common' ? 'Calendari comú' : 'Calendari per tècnic';
+  const calendarSubtitle =
+    calendarMode === 'common'
+      ? 'Vista global de totes les visites'
+      : `Vista de: ${selectedTechnicianName}`;
+
   const goPrevWeek = () => {
     const next = new Date(weekStart);
     next.setDate(weekStart.getDate() - 7);
@@ -180,6 +282,14 @@ export default function AdminCalendarPanel({ refreshNonce, onlyPending }: AdminC
         </div>
 
         <div className="flex items-center gap-2">
+          <select
+            value={scope}
+            onChange={(e) => setScope(e.target.value as 'week' | 'pending')}
+            className="px-2.5 py-1.5 text-xs rounded-lg border border-mobility-border bg-mobility-background text-mobility-primary"
+          >
+            <option value="week">Setmana completa</option>
+            <option value="pending">Només pendents</option>
+          </select>
           <button
             onClick={goPrevWeek}
             className="px-2.5 py-1.5 text-xs rounded-lg border border-mobility-border bg-mobility-background text-mobility-primary hover:bg-mobility-surface"
@@ -218,32 +328,70 @@ export default function AdminCalendarPanel({ refreshNonce, onlyPending }: AdminC
         </button>
       </div>
 
-      {calendarMode === 'common' ? (
-        <div className="rounded-lg border border-mobility-border bg-mobility-background p-3">
-          <h4 className="text-sm font-semibold text-mobility-primary mb-3">Calendari comú (tots)</h4>
-          <div className="grid grid-cols-1 md:grid-cols-7 gap-2">
+      <div className="rounded-xl border border-mobility-border bg-mobility-surface shadow-sm overflow-hidden">
+        <div className="px-3 sm:px-4 py-3 border-b border-mobility-border/70 bg-mobility-background/50">
+          <div className="flex items-center justify-between gap-3 mb-1.5">
+            <h4 className="text-sm font-semibold text-mobility-primary">{calendarTitle}</h4>
+            {calendarMode === 'technician' && (
+              <select
+                value={String(selectedTechnician)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setSelectedTechnician(value === 'all' ? 'all' : Number(value));
+                }}
+                className="px-2.5 py-1.5 text-xs rounded-lg border border-mobility-border bg-mobility-surface text-mobility-primary"
+              >
+                <option value="all">Tots els tècnics</option>
+                {technicians.map((t) => (
+                  <option key={t.id} value={t.id}>{`${t.name} (T${t.id})`}</option>
+                ))}
+              </select>
+            )}
+          </div>
+          <p className="text-xs text-mobility-muted">{calendarSubtitle}</p>
+        </div>
+
+        <div className="overflow-x-auto scrollbar-thin">
+          <div className="grid grid-cols-7 min-w-[980px] bg-mobility-background/35">
             {weekDays.map((day) => {
               const key = formatDateKey(day);
-              const visits = allCalendarByDay.get(key) ?? [];
+              const visits = activeCalendarByDay.get(key) ?? [];
+              const isToday = key === formatDateKey(new Date());
+
               return (
-                <div key={key} className="min-h-[170px] rounded-lg border border-mobility-border/70 bg-mobility-surface p-2">
-                  <div className="text-[11px] font-semibold text-mobility-primary mb-2">
-                    {day.toLocaleDateString('ca-ES', { weekday: 'short', day: '2-digit' })}
+                <div key={`${calendarMode}-${key}`} className="min-h-[320px] border-r border-mobility-border/70 last:border-r-0 bg-mobility-surface">
+                  <div className={`px-3 py-2.5 border-b border-mobility-border/70 ${isToday ? 'bg-cyan-50 dark:bg-cyan-500/15' : 'bg-mobility-background/50'}`}>
+                    <p className="text-[10px] uppercase tracking-wide text-mobility-muted font-semibold">
+                      {day.toLocaleDateString('ca-ES', { weekday: 'short' })}
+                    </p>
+                    <div className="mt-1 flex items-center justify-between">
+                      <span className={`text-sm font-semibold ${isToday ? 'text-cyan-700 dark:text-cyan-200' : 'text-mobility-primary'}`}>
+                        {day.toLocaleDateString('ca-ES', { day: '2-digit', month: '2-digit' })}
+                      </span>
+                      <span className="text-[10px] text-mobility-muted">{visits.length}</span>
+                    </div>
                   </div>
-                  <div className="space-y-1.5">
+
+                  <div className="p-2 space-y-2">
                     {visits.length === 0 ? (
-                      <p className="text-[11px] text-mobility-muted">Sense tasques</p>
+                      <p className="text-[11px] text-mobility-muted px-1 py-2">Sense tasques</p>
                     ) : (
-                      visits.map((visit) => (
-                        <div key={visit.id} className="rounded-md border border-mobility-border bg-mobility-background px-2 py-1">
-                          <p className="text-[11px] font-semibold text-mobility-primary">
-                            #{visit.id} · {formatTime(visit.planned_date)}
-                          </p>
-                          <p className="text-[10px] text-mobility-muted">
-                            T{visit.technician_id ?? '-'} · {getVisitTypeLabel(visit.visit_type)}
-                          </p>
-                        </div>
-                      ))
+                      visits.map((visit) => {
+                        const tone = getVisitTone(visit, theme);
+                        return (
+                          <div key={visit.id} className={`rounded-lg border border-l-4 px-2.5 py-2 ${tone.container}`}>
+                            <p className="text-[11px] font-semibold text-mobility-primary leading-tight">
+                              {formatTime(visit.planned_date)} · #{visit.id}
+                            </p>
+                            <div className="mt-1 flex items-center gap-1.5 flex-wrap">
+                              <span className={`text-[11px] px-1.5 py-0.5 rounded-full font-semibold tracking-tight ${tone.badge}`}>
+                                {getVisitTypeLabel(visit.visit_type)}
+                              </span>
+                              <span className="text-[10px] text-mobility-muted">T{visit.technician_id ?? '-'}</span>
+                            </div>
+                          </div>
+                        );
+                      })
                     )}
                   </div>
                 </div>
@@ -251,56 +399,7 @@ export default function AdminCalendarPanel({ refreshNonce, onlyPending }: AdminC
             })}
           </div>
         </div>
-      ) : (
-        <div className="rounded-lg border border-mobility-border bg-mobility-background p-3">
-          <div className="flex items-center justify-between gap-3 mb-3">
-            <h4 className="text-sm font-semibold text-mobility-primary">Calendari per tècnic</h4>
-            <select
-              value={String(selectedTechnician)}
-              onChange={(e) => {
-                const value = e.target.value;
-                setSelectedTechnician(value === 'all' ? 'all' : Number(value));
-              }}
-              className="px-2.5 py-1.5 text-xs rounded-lg border border-mobility-border bg-mobility-surface text-mobility-primary"
-            >
-              <option value="all">Tots els tècnics</option>
-              {technicians.map((t) => (
-                <option key={t.id} value={t.id}>{`${t.name} (T${t.id})`}</option>
-              ))}
-            </select>
-          </div>
-
-          <p className="text-xs text-mobility-muted mb-2">Vista de: {selectedTechnicianName}</p>
-
-          <div className="grid grid-cols-1 md:grid-cols-7 gap-2">
-            {weekDays.map((day) => {
-              const key = formatDateKey(day);
-              const visits = technicianCalendarByDay.get(key) ?? [];
-              return (
-                <div key={`${key}-tech`} className="min-h-[170px] rounded-lg border border-mobility-border/70 bg-mobility-surface p-2">
-                  <div className="text-[11px] font-semibold text-mobility-primary mb-2">
-                    {day.toLocaleDateString('ca-ES', { weekday: 'short', day: '2-digit' })}
-                  </div>
-                  <div className="space-y-1.5">
-                    {visits.length === 0 ? (
-                      <p className="text-[11px] text-mobility-muted">Sense tasques</p>
-                    ) : (
-                      visits.map((visit) => (
-                        <div key={visit.id} className="rounded-md border border-mobility-border bg-mobility-background px-2 py-1">
-                          <p className="text-[11px] font-semibold text-mobility-primary">
-                            #{visit.id} · {formatTime(visit.planned_date)}
-                          </p>
-                          <p className="text-[10px] text-mobility-muted">{getVisitTypeLabel(visit.visit_type)}</p>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
+      </div>
 
       {isLoading && <p className="text-xs text-mobility-muted">Carregant calendari...</p>}
     </div>

@@ -1,30 +1,33 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Download, RefreshCw, UserPlus } from 'lucide-react';
+import { Download, Filter, UserPlus } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAppStore } from '@/store/appStore';
-import { api } from '@/lib/api';
+import { api, type VisitStatus } from '@/lib/api';
+
+type DashboardStatusFilter = VisitStatus | 'scheduled' | 'all';
 
 interface OperationsHeaderProps {
-  filterMode: 'today_all' | 'today_pending' | 'all_all' | 'all_pending';
+  dateFilter: 'today' | 'all';
+  statusFilter: DashboardStatusFilter;
   visibleCount: number;
   totalCount: number;
-  isLoadingData: boolean;
-  onFilterModeChange: (value: 'today_all' | 'today_pending' | 'all_all' | 'all_pending') => Promise<void>;
-  onRefresh: () => Promise<void>;
+  onDateFilterChange: (value: 'today' | 'all') => void;
+  onStatusFilterChange: (value: DashboardStatusFilter) => void;
 }
 
 export default function OperationsHeader({
-  filterMode,
+  dateFilter,
+  statusFilter,
   visibleCount,
   totalCount,
-  isLoadingData,
-  onFilterModeChange,
-  onRefresh,
+  onDateFilterChange,
+  onStatusFilterChange,
 }: OperationsHeaderProps) {
   const { visits, loadTechnicians } = useAppStore();
   const [showTechModal, setShowTechModal] = useState(false);
+  const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [form, setForm] = useState({
     name: '',
@@ -70,8 +73,20 @@ export default function OperationsHeader({
   };
 
   const handleExport = () => {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const filtered = visits.filter((v) => {
+      if (dateFilter === 'today' && !v.planned_date.startsWith(todayStr)) return false;
+      if (statusFilter !== 'all' && String(v.status).toLowerCase() !== statusFilter) return false;
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      toast.error('No hi ha dades per exportar amb els filtres actuals');
+      return;
+    }
+
     const headers = ['id', 'visit_type', 'status', 'planned_date', 'technician_id', 'address'];
-    const rows = visits.map((v) => [
+    const rows = filtered.map((v) => [
       v.id,
       v.visit_type,
       v.status,
@@ -93,47 +108,93 @@ export default function OperationsHeader({
 
   return (
     <>
-      <div className="bg-mobility-surface border-b border-mobility-border px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-mobility-surface border-b border-mobility-border px-3 sm:px-4 lg:px-6 py-3 sm:py-4 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
       <div>
-        <h1 className="text-xl font-bold text-mobility-primary tracking-tight">
+        <h1 className="text-lg sm:text-xl font-bold text-mobility-primary tracking-tight">
           Centre de Control Operatiu
         </h1>
-        <p className="text-mobility-muted text-sm">
+        <p className="text-mobility-muted text-xs sm:text-sm">
           {visibleCount} visites visibles (de {totalCount} carregades des del backend)
         </p>
       </div>
 
-      <div className="flex items-center gap-2 flex-wrap">
-        <select
-          value={filterMode}
-          onChange={(e) => {
-            const value = e.target.value as
-              | 'today_all'
-              | 'today_pending'
-              | 'all_all'
-              | 'all_pending';
-            void onFilterModeChange(value);
-          }}
-          className="px-3 py-2 text-sm bg-mobility-background border border-mobility-border rounded-lg text-mobility-primary"
-        >
-          <option value="today_all">Filtre: Avui · Totes</option>
-          <option value="today_pending">Filtre: Avui · Nomes pendents</option>
-          <option value="all_all">Filtre: Historic · Totes</option>
-          <option value="all_pending">Filtre: Historic · Nomes pendents</option>
-        </select>
+      <div className="flex w-full sm:w-auto items-center gap-2 flex-wrap sm:justify-end">
+        <div className="relative">
+          <button
+            onClick={() => setShowFilterPanel((v) => !v)}
+            className="flex items-center gap-2 px-3 py-2 text-xs sm:text-sm font-medium text-mobility-muted bg-mobility-background border border-mobility-border rounded-lg hover:bg-mobility-surface"
+          >
+            <Filter size={14} />
+            Filtrar
+          </button>
 
-        <button
-          onClick={() => void onRefresh()}
-          disabled={isLoadingData}
-          className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-mobility-muted bg-mobility-background border border-mobility-border rounded-lg hover:bg-mobility-surface disabled:opacity-50"
-        >
-          <RefreshCw size={14} className={isLoadingData ? 'animate-spin' : ''} />
-          Actualitzar ara
-        </button>
+          {showFilterPanel && (
+            <div className="absolute right-0 mt-2 z-30 w-[min(92vw,360px)] rounded-xl border border-mobility-border bg-mobility-surface shadow-xl p-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-[11px] uppercase tracking-wide text-mobility-muted mb-2">Dia</p>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={() => onDateFilterChange('today')}
+                      className={`px-2.5 py-1.5 rounded-lg text-xs border ${
+                        dateFilter === 'today'
+                          ? 'bg-cyan-500 text-slate-950 border-cyan-300 font-semibold'
+                          : 'bg-mobility-background text-mobility-primary border-mobility-border'
+                      }`}
+                    >
+                      Avui
+                    </button>
+                    <button
+                      onClick={() => onDateFilterChange('all')}
+                      className={`px-2.5 py-1.5 rounded-lg text-xs border ${
+                        dateFilter === 'all'
+                          ? 'bg-cyan-500 text-slate-950 border-cyan-300 font-semibold'
+                          : 'bg-mobility-background text-mobility-primary border-mobility-border'
+                      }`}
+                    >
+                      Historic
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-[11px] uppercase tracking-wide text-mobility-muted mb-2">Estat</p>
+                  <div className="flex flex-wrap gap-2">
+                    {(
+                      ['all', 'pending', 'in_progress', 'completed', 'blocked', 'cancelled', 'scheduled'] as Array<DashboardStatusFilter>
+                    ).map((status) => {
+                      const label =
+                        status === 'all' ? 'Tots' :
+                        status === 'pending' ? 'Pendents' :
+                        status === 'in_progress' ? 'En curs' :
+                        status === 'completed' ? 'Completades' :
+                        status === 'blocked' ? 'Bloquejades' :
+                        status === 'cancelled' ? 'Cancelades' : 'Programat';
+
+                      return (
+                        <button
+                          key={status}
+                          onClick={() => onStatusFilterChange(status)}
+                          className={`px-2.5 py-1.5 rounded-lg text-xs border ${
+                            statusFilter === status
+                              ? 'bg-cyan-500 text-slate-950 border-cyan-300 font-semibold'
+                              : 'bg-mobility-background text-mobility-primary border-mobility-border'
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
 
         <button
           onClick={handleExport}
-          className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-mobility-muted bg-mobility-background border border-mobility-border rounded-lg hover:bg-mobility-surface"
+          className="flex items-center gap-2 px-3 py-2 text-xs sm:text-sm font-medium text-mobility-muted bg-mobility-background border border-mobility-border rounded-lg hover:bg-mobility-surface"
         >
           <Download size={14} />
           Exportar CSV
@@ -141,7 +202,7 @@ export default function OperationsHeader({
 
         <button
           onClick={() => setShowTechModal(true)}
-          className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-white bg-mobility-accent rounded-lg hover:brightness-110"
+          className="flex items-center gap-2 px-3 py-2 text-xs sm:text-sm font-medium text-white bg-mobility-accent rounded-lg hover:brightness-110"
         >
           <UserPlus size={14} />
           Nou Tecnic

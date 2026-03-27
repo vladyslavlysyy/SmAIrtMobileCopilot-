@@ -4,16 +4,65 @@
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
 
+:root {
+  --mobility-primary: 214 57% 18%;
+  --mobility-accent: 176 83% 38%;
+  --mobility-background: 212 42% 96%;
+  --mobility-surface: 0 0% 100%;
+  --mobility-border: 213 30% 85%;
+  --mobility-text: 214 57% 18%;
+  --mobility-muted: 214 22% 43%;
+  --mobility-red-bg: 0 70% 95%;
+  --mobility-red-text: 0 70% 40%;
+  --mobility-amber-bg: 35 90% 95%;
+  --mobility-amber-text: 35 90% 40%;
+  --mobility-emerald-bg: 150 80% 95%;
+  --mobility-emerald-text: 150 80% 30%;
+  --app-bg-layer-1: hsla(176, 83%, 38%, 0.1);
+  --app-bg-layer-2: hsla(214, 57%, 18%, 0.12);
+  --app-bg-layer-3: hsla(0, 0%, 100%, 0.86);
+  --app-bg-layer-4: hsla(212, 42%, 96%, 0.86);
+  --scrollbar-thumb: 214 30% 72%;
+}
+
+.theme-dark,
+.dark {
+  --mobility-primary: 215 35% 90%;
+  --mobility-accent: 176 73% 54%;
+  --mobility-background: 222 29% 11%;
+  --mobility-surface: 219 27% 15%;
+  --mobility-border: 217 19% 27%;
+  --mobility-text: 214 33% 94%;
+  --mobility-muted: 216 18% 69%;
+  --mobility-red-bg: 0 44% 18%;
+  --mobility-red-text: 0 92% 80%;
+  --mobility-amber-bg: 39 58% 19%;
+  --mobility-amber-text: 43 95% 74%;
+  --mobility-emerald-bg: 159 52% 18%;
+  --mobility-emerald-text: 159 83% 76%;
+  --app-bg-layer-1: hsla(176, 73%, 54%, 0.09);
+  --app-bg-layer-2: hsla(214, 33%, 94%, 0.06);
+  --app-bg-layer-3: hsla(222, 29%, 11%, 0.9);
+  --app-bg-layer-4: hsla(222, 29%, 11%, 0.96);
+  --scrollbar-thumb: 216 18% 44%;
+}
+
 @layer base {
   body {
-    @apply bg-mobility-background text-mobility-text font-sans;
+    @apply text-mobility-text font-sans;
+    background-color: hsl(var(--mobility-background));
+    background-image:
+      radial-gradient(1200px 600px at -10% -10%, var(--app-bg-layer-1), transparent 55%),
+      radial-gradient(900px 450px at 110% -20%, var(--app-bg-layer-2), transparent 58%),
+      linear-gradient(180deg, var(--app-bg-layer-3), var(--app-bg-layer-4));
+    background-attachment: fixed;
   }
 }
 
 @layer utilities {
   .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: hsl(214, 20%, 88%) transparent;
+    scrollbar-color: hsl(var(--scrollbar-thumb)) transparent;
   }
   .scrollbar-thin::-webkit-scrollbar {
     width: 6px;
@@ -23,7 +72,7 @@
     background: transparent;
   }
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: hsl(214, 20%, 88%);
-    border-radius: 8px;
+    background-color: hsl(var(--scrollbar-thumb));
+    border-radius: 999px;
   }
 }

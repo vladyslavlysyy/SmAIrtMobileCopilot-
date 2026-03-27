@@ -2,22 +2,32 @@
 
 import React, { useEffect } from 'react';
 import { useAppStore } from '@/store/appStore';
+import { getStatusLabelCa, getVisitTypeLabelCa } from '@/lib/labels';
 
 function getStatusBadge(status: string) {
   switch (status) {
-    case 'pending': return 'bg-amber-100/60 text-amber-700 font-mono border-amber-200/40';
-    case 'in_progress': return 'bg-cyan-100/70 text-cyan-700 font-mono border-cyan-200/40';
-    case 'completed': return 'bg-emerald-100/60 text-emerald-700 font-mono border-emerald-200/40';
-    case 'cancelled': return 'bg-red-100/60 text-red-700 font-mono border-red-200/30';
-    default: return 'bg-mobility-background text-mobility-muted font-mono border-mobility-border';
+    case 'pending': return 'bg-amber-200/75 text-amber-950 font-mono border-amber-400 dark:bg-amber-500/20 dark:text-amber-100 dark:border-amber-400/40';
+    case 'in_progress': return 'bg-cyan-200/75 text-cyan-950 font-mono border-cyan-400 dark:bg-cyan-500/20 dark:text-cyan-100 dark:border-cyan-400/40';
+    case 'completed': return 'bg-emerald-200/75 text-emerald-950 font-mono border-emerald-400 dark:bg-emerald-500/20 dark:text-emerald-100 dark:border-emerald-400/40';
+    case 'cancelled': return 'bg-red-200/75 text-red-950 font-mono border-red-400 dark:bg-red-500/20 dark:text-red-100 dark:border-red-400/40';
+    default: return 'bg-mobility-background text-mobility-primary font-mono border-mobility-border';
   }
 }
 
 function getVisitTypeBadge(type: string) {
   switch (type) {
-    case 'correctivo_critico': return 'text-red-600';
-    case 'preventivo': return 'text-mobility-accent';
-    default: return 'text-mobility-primary';
+    case 'correctivo_critico':
+      return 'px-2 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-red-200/75 text-red-950 border border-red-400 dark:bg-red-500/20 dark:text-red-100 dark:border-red-400/40';
+    case 'correctivo_no_critico':
+      return 'px-2 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-200/75 text-amber-950 border border-amber-400 dark:bg-amber-500/20 dark:text-amber-100 dark:border-amber-400/40';
+    case 'diagnosi':
+      return 'px-2 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-cyan-200/75 text-cyan-950 border border-cyan-400 dark:bg-cyan-500/20 dark:text-cyan-100 dark:border-cyan-400/40';
+    case 'puesta_en_marcha':
+      return 'px-2 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-violet-200/75 text-violet-950 border border-violet-400 dark:bg-violet-500/20 dark:text-violet-100 dark:border-violet-400/40';
+    case 'preventivo':
+      return 'px-2 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-emerald-200/75 text-emerald-950 border border-emerald-400 dark:bg-emerald-500/20 dark:text-emerald-100 dark:border-emerald-400/40';
+    default:
+      return 'px-2 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-mobility-background text-mobility-primary border border-mobility-border';
   }
 }
 
@@ -69,8 +79,8 @@ export default function RecentInterventionsTable() {
                 <tr key={v.id} className="hover:bg-mobility-background hover:text-mobility-primary transition-colors group">
                   <td className="px-4 py-3 font-bold text-mobility-primary">#{v.id}</td>
                   <td className="px-4 py-3">
-                    <span className={`text-[11px] font-bold uppercase tracking-wider ${getVisitTypeBadge(v.visit_type)}`}>
-                      {v.visit_type.replace('_', ' ')}
+                    <span className={getVisitTypeBadge(v.visit_type)}>
+                      {getVisitTypeLabelCa(v.visit_type)}
                     </span>
                   </td>
                   <td className="px-4 py-3">
@@ -82,7 +92,7 @@ export default function RecentInterventionsTable() {
                   </td>
                   <td className="px-4 py-3">
                     <span className={`px-2 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider border ${getStatusBadge(v.status)}`}>
-                      {v.status.replace('_', ' ')}
+                      {getStatusLabelCa(v.status)}
                     </span>
                   </td>
                 </tr>

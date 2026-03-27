@@ -13,7 +13,7 @@ export default function MetricsDashboard() {
     <AppLayout>
       <div className="flex flex-col min-h-screen bg-mobility-background">
         <MetricsHeader />
-        <div className="flex-1 px-6 pb-6 space-y-5 max-w-screen-2xl mx-auto w-full">
+        <div className="flex-1 px-3 sm:px-4 lg:px-6 pt-[0.9cm] sm:pt-[1.2cm] lg:pt-[1.5cm] pb-6 space-y-[0.9cm] sm:space-y-[1.2cm] lg:space-y-[1.5cm] max-w-screen-2xl mx-auto w-full">
           <MetricsKpiGrid />
           <div className="grid grid-cols-1 xl:grid-cols-3 2xl:grid-cols-3 gap-5">
             <div className="xl:col-span-2">

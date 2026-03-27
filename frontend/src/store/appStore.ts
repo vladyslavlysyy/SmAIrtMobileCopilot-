@@ -151,21 +151,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const users = await api.getUsers();
       const techUsers = users.filter((u) => u.is_technician && u.technician_id !== null);
 
-      if (techUsers.length > 0) {
-        setTechnicians(
-          techUsers.map((u) => ({
-            id: u.technician_id as number,
-            name: u.name,
-            zone: 'General',
-          }))
-        );
-      } else {
-        const allVisits = await api.getAllVisits();
-        const ids = Array.from(
-          new Set(allVisits.map((v) => v.technician_id).filter((x): x is number => x !== null))
-        );
-        setTechnicians(ids.map((id) => ({ id, name: `Technician ${id}`, zone: 'Unknown' })));
-      }
+      setTechnicians(
+        techUsers.map((u) => ({
+          id: u.technician_id as number,
+          name: u.name,
+          zone: 'General',
+        }))
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load technicians');
       setTechnicians([]);

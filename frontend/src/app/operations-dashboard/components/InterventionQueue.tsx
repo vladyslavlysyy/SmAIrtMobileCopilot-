@@ -5,9 +5,10 @@ import { Play, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAppStore } from '@/store/appStore';
 import { api, type Visit } from '@/lib/api';
+import { getStatusLabelCa, getVisitTypeLabelCa } from '@/lib/labels';
 
 interface InterventionQueueProps {
-  onlyPending: boolean;
+  forcedStatusFilter?: Visit['status'] | 'scheduled' | 'all';
   onDataChanged?: () => Promise<void> | void;
 }
 
@@ -36,50 +37,62 @@ function getPriorityValue(visit: Visit) {
 }
 
 function formatVisitType(type: Visit['visit_type']) {
-  return type.replace(/_/g, ' ');
+  return getVisitTypeLabelCa(type);
 }
 
 function formatStatus(status: Visit['status']) {
-  if (status === 'pending') return 'pendent';
-  if (status === 'in_progress') return 'en curs';
-  if (status === 'completed') return 'completada';
-  if (status === 'cancelled') return 'cancelada';
-  if (status === 'blocked') return 'bloquejada';
-  return String(status).replace(/_/g, ' ');
+  return getStatusLabelCa(status);
+}
+
+function formatLocation(value: Visit) {
+  if (value.address && value.address.trim()) {
+    const parts = value.address
+      .split(',')
+      .map((p) => p.trim())
+      .filter(Boolean);
+    if (parts.length >= 2) {
+      return `${parts[parts.length - 2]}, ${parts[parts.length - 1]}`;
+    }
+    return value.address;
+  }
+
+  return 'Barri i ciutat no disponibles';
 }
 
 function getVisitTypeBadge(type: Visit['visit_type']) {
   switch (type) {
     case 'correctivo_critico':
-      return 'bg-red-100/60 text-red-700 font-mono border border-red-200/30';
+      return 'bg-red-200/75 text-red-950 font-mono border border-red-400 dark:bg-red-500/20 dark:text-red-100 dark:border-red-400/40';
     case 'correctivo_no_critico':
-      return 'bg-amber-100/60 text-amber-700 font-mono border border-amber-200/40';
+      return 'bg-amber-200/75 text-amber-950 font-mono border border-amber-400 dark:bg-amber-500/20 dark:text-amber-100 dark:border-amber-400/40';
     case 'diagnosi':
-      return 'bg-cyan-100/70 text-cyan-700 font-mono border border-cyan-200/40';
+      return 'bg-cyan-200/75 text-cyan-950 font-mono border border-cyan-400 dark:bg-cyan-500/20 dark:text-cyan-100 dark:border-cyan-400/40';
     case 'puesta_en_marcha':
-      return 'bg-cyan-100/70 text-cyan-700 font-mono border border-cyan-200/40';
+      return 'bg-violet-200/75 text-violet-950 font-mono border border-violet-400 dark:bg-violet-500/20 dark:text-violet-100 dark:border-violet-400/40';
     case 'preventivo':
-      return 'bg-emerald-100/60 text-emerald-700 font-mono border border-emerald-200/40';
+      return 'bg-emerald-200/75 text-emerald-950 font-mono border border-emerald-400 dark:bg-emerald-500/20 dark:text-emerald-100 dark:border-emerald-400/40';
     default:
-      return 'bg-mobility-background text-mobility-muted font-mono border border-mobility-border';
+      return 'bg-mobility-background text-mobility-primary font-mono border border-mobility-border';
   }
 }
 
 function getStatusBadge(status: Visit['status']) {
+  if (String(status).toLowerCase() === 'scheduled') {
+    return 'bg-indigo-200/75 text-indigo-950 font-mono border border-indigo-400 dark:bg-indigo-500/20 dark:text-indigo-100 dark:border-indigo-400/40';
+  }
   switch (status) {
-    case 'pending': return 'bg-amber-100/60 text-amber-700 font-mono border border-amber-200/40';
-    case 'in_progress': return 'bg-cyan-100/70 text-cyan-700 font-mono border border-cyan-200/40';
-    case 'completed': return 'bg-emerald-100/60 text-emerald-700 font-mono border border-emerald-200/40';
-    case 'cancelled': return 'bg-red-100/60 text-red-700 font-mono border border-red-200/30';
-    default: return 'bg-mobility-background text-mobility-muted font-mono border border-mobility-border';
+    case 'pending': return 'bg-amber-200/75 text-amber-950 font-mono border border-amber-400 dark:bg-amber-500/20 dark:text-amber-100 dark:border-amber-400/40';
+    case 'in_progress': return 'bg-cyan-200/75 text-cyan-950 font-mono border border-cyan-400 dark:bg-cyan-500/20 dark:text-cyan-100 dark:border-cyan-400/40';
+    case 'completed': return 'bg-emerald-200/75 text-emerald-950 font-mono border border-emerald-400 dark:bg-emerald-500/20 dark:text-emerald-100 dark:border-emerald-400/40';
+    case 'cancelled': return 'bg-red-200/75 text-red-950 font-mono border border-red-400 dark:bg-red-500/20 dark:text-red-100 dark:border-red-400/40';
+    default: return 'bg-mobility-background text-mobility-primary font-mono border border-mobility-border';
   }
 }
 
-export default function InterventionQueue({ onlyPending, onDataChanged }: InterventionQueueProps) {
+export default function InterventionQueue({ forcedStatusFilter = 'all', onDataChanged }: InterventionQueueProps) {
   const { visits, technicians, loadVisits, loadTechnicians, isLoading } = useAppStore();
 
   const [selectedVisitId, setSelectedVisitId] = useState<number | null>(null);
-  const [filter, setFilter] = useState<'all' | 'pending' | 'in_progress'>('pending');
   const [techFilter, setTechFilter] = useState<number | 'all'>('all');
   const [assigningVisitId, setAssigningVisitId] = useState<number | null>(null);
   const [assignTechByVisit, setAssignTechByVisit] = useState<Record<number, number | 'auto'>>({});
@@ -88,26 +101,12 @@ export default function InterventionQueue({ onlyPending, onDataChanged }: Interv
     loadTechnicians();
   }, [loadTechnicians]);
 
-  useEffect(() => {
-    if (onlyPending) {
-      setFilter('pending');
-    }
-  }, [onlyPending]);
-
-  const techs = useMemo(() => {
-    const ids = new Set<number>();
-    technicians.forEach((t) => ids.add(t.id));
-    visits.forEach((v) => {
-      if (v.technician_id !== null) ids.add(v.technician_id);
-    });
-    return Array.from(ids) as number[];
-  }, [technicians, visits]);
+  const techs = useMemo(() => technicians.map((t) => t.id), [technicians]);
 
   const filteredVisits = useMemo(() => {
     return visits
       .filter((v) => {
-        if (onlyPending && v.status !== 'pending') return false;
-        if (filter !== 'all' && v.status !== filter) return false;
+        if (forcedStatusFilter !== 'all' && String(v.status).toLowerCase() !== forcedStatusFilter) return false;
         if (techFilter !== 'all' && v.technician_id !== techFilter) return false;
         return true;
       })
@@ -116,7 +115,7 @@ export default function InterventionQueue({ onlyPending, onDataChanged }: Interv
         const pB = getPriorityValue(b);
         return pB - pA;
       });
-  }, [visits, filter, techFilter, onlyPending]);
+  }, [visits, techFilter, forcedStatusFilter]);
 
   const handleRunOptimizer = async () => {
     try {
@@ -156,15 +155,69 @@ export default function InterventionQueue({ onlyPending, onDataChanged }: Interv
   const handleAssignTech = async (visitId: number) => {
     try {
       setAssigningVisitId(visitId);
-      const planning = await api.planningAssign({ visit_id: visitId });
       const selectedTech = assignTechByVisit[visitId] ?? 'auto';
+      const visit = visits.find((v) => v.id === visitId);
+      if (!visit) {
+        toast.error('No s\'ha trobat la visita');
+        return;
+      }
+
+      // Manual reassignment path: direct update without planning proposal.
+      if (selectedTech !== 'auto') {
+        if (!techs.includes(selectedTech)) {
+          toast.error('El tecnic seleccionat no existeix a la BD');
+          return;
+        }
+
+        const targetDate = new Date(visit.planned_date).toISOString().slice(0, 10);
+        const targetHour = new Date(visit.planned_date).toTimeString().slice(0, 5);
+
+        try {
+          // Primary path: dedicated single-visit assignment endpoint.
+          await api.manualAssignVisit({
+            visit_id: visitId,
+            technician_id: selectedTech,
+            target_date: targetDate,
+            hora_inici: targetHour,
+          });
+        } catch (assignRouteError) {
+          const msg = assignRouteError instanceof Error ? assignRouteError.message : '';
+          const isNotFound = msg.toLowerCase().includes('not found') || msg.includes('404');
+
+          if (!isNotFound) {
+            throw assignRouteError;
+          }
+
+          try {
+            // Compatibility with backend versions exposing /ruta/assignar.
+            await api.assignRouteAdmin({
+              technician_id: selectedTech,
+              visit_ids_ordered: [visitId],
+              target_date: targetDate,
+              hora_inici: targetHour,
+            });
+          } catch {
+            // Compatibility with backend versions that expose /visits/reassign.
+            await api.reassignVisit({
+              visit_id: visitId,
+              technician_id: selectedTech,
+            });
+          }
+        }
+
+        if (onDataChanged) {
+          await onDataChanged();
+        } else {
+          await loadVisits();
+        }
+        toast.success(`Visita #${visitId} reassignada a tecnic ${selectedTech}`);
+        return;
+      }
+
+      const planning = await api.planningAssign({ visit_id: visitId });
 
       let candidate = planning.candidates[0];
-      if (selectedTech === 'auto') {
-        candidate = planning.candidates.find((c) => c.technician_id === planning.recommended.technician_id) ?? planning.candidates[0];
-      } else {
-        candidate = planning.candidates.find((c) => c.technician_id === selectedTech) ?? planning.candidates[0];
-      }
+      candidate = planning.candidates.find((c) => c.technician_id === planning.recommended.technician_id) ?? planning.candidates[0];
 
       if (!candidate) {
         toast.error('No hi ha candidats per a l\'assignació');
@@ -185,16 +238,46 @@ export default function InterventionQueue({ onlyPending, onDataChanged }: Interv
       }
       toast.success(`Visita #${visitId} assignada a tecnic ${candidate.technician_id}`);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : 'No s\'ha pogut assignar la visita');
+      const message = e instanceof Error ? e.message : 'No s\'ha pogut assignar la visita';
+
+      const selectedTech = assignTechByVisit[visitId] ?? 'auto';
+      const isNotFound = message.toLowerCase().includes('not found') || message.includes('404');
+      if (selectedTech !== 'auto' && isNotFound && techs.includes(selectedTech)) {
+        try {
+          const visit = visits.find((v) => v.id === visitId);
+          const proposedDate = visit
+            ? new Date(visit.planned_date).toISOString().slice(0, 10)
+            : new Date().toISOString().slice(0, 10);
+
+          await api.planningConfirm({
+            visit_id: visitId,
+            technician_id: selectedTech,
+            proposed_date: proposedDate,
+            insertion_index: 0,
+          });
+
+          if (onDataChanged) {
+            await onDataChanged();
+          } else {
+            await loadVisits();
+          }
+          toast.success(`Visita #${visitId} reassignada a tecnic ${selectedTech}`);
+          return;
+        } catch {
+          // If fallback also fails, show original message below.
+        }
+      }
+
+      toast.error(message);
     } finally {
       setAssigningVisitId(null);
     }
   };
 
   return (
-    <div className="bg-mobility-surface shadow-sm rounded-xl border border-mobility-border h-[600px] flex flex-col">
+    <div className="bg-mobility-surface shadow-sm rounded-xl border border-mobility-border h-[68vh] min-h-[420px] sm:h-[600px] flex flex-col overflow-hidden">
       {/* HEADER */}
-      <div className="p-4 border-b border-mobility-border bg-mobility-surface shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="p-3 sm:p-4 border-b border-mobility-border bg-mobility-surface shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
           <h2 className="text-base font-bold text-mobility-primary tracking-tight flex items-center gap-2">
             Cua d'Intervencions
@@ -206,37 +289,6 @@ export default function InterventionQueue({ onlyPending, onDataChanged }: Interv
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Status Filter */}
-          <div className="flex bg-mobility-background p-1 rounded-lg border border-mobility-border">
-            <button
-              onClick={() => setFilter('all')}
-              disabled={onlyPending}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
-                filter === 'all' ? 'bg-mobility-accent text-white shadow-sm' : 'text-mobility-muted hover:text-mobility-primary'
-              }`}
-            >
-              Totes
-            </button>
-            <button
-              onClick={() => setFilter('pending')}
-              disabled={onlyPending}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
-                filter === 'pending' ? 'bg-mobility-accent text-white shadow-sm' : 'text-mobility-muted hover:text-mobility-primary'
-              }`}
-            >
-              Pendents
-            </button>
-            <button
-              onClick={() => setFilter('in_progress')}
-              disabled={onlyPending}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
-                filter === 'in_progress' ? 'bg-mobility-accent text-white shadow-sm' : 'text-mobility-muted hover:text-mobility-primary'
-              }`}
-            >
-              En curs
-            </button>
-          </div>
-
           <select
             value={String(techFilter)}
             onChange={(e) => {
@@ -246,8 +298,8 @@ export default function InterventionQueue({ onlyPending, onDataChanged }: Interv
             className="px-2.5 py-1.5 text-xs rounded-lg border border-mobility-border bg-mobility-background text-mobility-primary"
           >
             <option value="all">Tots els tecnics</option>
-            {techs.map((t) => (
-              <option key={t} value={t}>{`Tecnic ${t}`}</option>
+            {technicians.map((t) => (
+              <option key={t.id} value={t.id}>{`${t.name} (T${t.id})`}</option>
             ))}
           </select>
 
@@ -263,15 +315,15 @@ export default function InterventionQueue({ onlyPending, onDataChanged }: Interv
       </div>
 
       {/* BODY */}
-      <div className="flex-1 overflow-auto scrollbar-thin">
-        <table className="w-full text-left text-sm whitespace-nowrap">
+      <div className="flex-1 overflow-auto overflow-x-auto scrollbar-thin rounded-b-xl">
+        <table className="w-full min-w-[680px] text-left text-xs sm:text-sm whitespace-nowrap">
           <thead className="sticky top-0 bg-mobility-background border-b border-mobility-border shadow-sm z-10">
-            <tr className="text-mobility-muted text-xs font-semibold">
-              <th className="px-4 py-3 font-medium">Prioritat</th>
-              <th className="px-4 py-3 font-medium">Visita</th>
-              <th className="px-4 py-3 font-medium">Estat</th>
-              <th className="px-4 py-3 font-medium">Tecnic</th>
-              <th className="px-4 py-3 font-medium">Localització</th>
+            <tr className="text-mobility-muted text-sm font-bold">
+              <th className="px-4 py-3 text-center">Prioritat</th>
+              <th className="px-4 py-3 text-center">Visita</th>
+              <th className="px-4 py-3 text-center">Estat</th>
+              <th className="px-4 py-3 text-center">Tècnic</th>
+              <th className="px-4 py-3 text-center">Localització</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-mobility-border/60">
@@ -292,38 +344,38 @@ export default function InterventionQueue({ onlyPending, onDataChanged }: Interv
                       className={`bg-mobility-surface shadow-sm hover:bg-mobility-background hover:text-mobility-primary transition-colors cursor-pointer ${isSelected ? 'bg-mobility-background' : ''}`}
                       onClick={() => setSelectedVisitId(isSelected ? null : visit.id)}
                     >
-                      <td className="px-4 py-3">
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shadow-sm ${getPriorityColor(priority)}`}>
+                      <td className="px-4 py-3 text-center">
+                        <div className={`w-6 h-6 mx-auto rounded-full flex items-center justify-center text-xs font-bold shadow-sm ${getPriorityColor(priority)}`}>
                           {Math.round(priority)}
                         </div>
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-3 text-center">
                         <p className="font-bold text-mobility-primary mb-0.5">#{visit.id}</p>
-                        <span className={`px-2 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider ${getVisitTypeBadge(visit.visit_type)}`}>
+                        <span className={`px-2 py-1 rounded-full text-[11px] uppercase font-bold tracking-wider ${getVisitTypeBadge(visit.visit_type)}`}>
                           {formatVisitType(visit.visit_type)}
                         </span>
                       </td>
-                      <td className="px-4 py-3">
-                        <span className={`px-2 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider ${getStatusBadge(visit.status)}`}>
+                      <td className="px-4 py-3 text-center">
+                        <span className={`px-2 py-1 rounded-full text-[11px] uppercase font-bold tracking-wider ${getStatusBadge(visit.status)}`}>
                           {formatStatus(visit.status)}
                         </span>
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-3 text-center">
                         {visit.technician_id ? (
-                          <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 rounded bg-mobility-primary border border-mobility-border flex items-center justify-center text-[10px] text-mobility-accent font-bold">
+                          <div className="flex items-center justify-center gap-2">
+                            <div className="w-6 h-6 rounded bg-mobility-accent border border-mobility-accent/70 flex items-center justify-center text-[11px] text-white font-bold">
                               T{visit.technician_id}
                             </div>
                           </div>
                         ) : (
-                          <span className="text-mobility-accent/80 text-xs flex items-center gap-1">
+                          <span className="text-mobility-accent/80 text-xs flex items-center justify-center gap-1">
                             <AlertTriangle size={12} />
                             Sense assignar
                           </span>
                         )}
                       </td>
-                      <td className="px-4 py-3">
-                        <p className="text-mobility-primary truncate max-w-[220px]">{visit.address || visit.postal_code || 'Sense adreça'}</p>
+                      <td className="px-4 py-3 text-center">
+                        <p className="text-mobility-primary truncate max-w-[220px] mx-auto">{formatLocation(visit)}</p>
                       </td>
                     </tr>
                     
@@ -347,8 +399,8 @@ export default function InterventionQueue({ onlyPending, onDataChanged }: Interv
                                 className="px-2.5 py-1.5 text-xs rounded-lg border border-mobility-border bg-mobility-background text-mobility-primary"
                               >
                                 <option value="auto">IA recomanat</option>
-                                {techs.map((t) => (
-                                  <option key={t} value={t}>{`Tecnic ${t}`}</option>
+                                {technicians.map((t) => (
+                                  <option key={t.id} value={t.id}>{`${t.name} (T${t.id})`}</option>
                                 ))}
                               </select>
                               <button

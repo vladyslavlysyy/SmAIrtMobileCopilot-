@@ -8,21 +8,19 @@ import ContingencyBanner from './components/ContingencyBanner';
 import InterventionQueue from './components/InterventionQueue';
 import MapPanel from './components/MapPanel';
 import AISuggestionsPanel from './components/AISuggestionsPanel';
-import AdminCalendarPanel from './components/AdminCalendarPanel';
-import ManualTaskPanel from './components/ManualTaskPanel';
 import { toast } from 'sonner';
 import { useAppStore } from '@/store/appStore';
+import type { VisitStatus } from '@/lib/api';
+
+type DashboardStatusFilter = VisitStatus | 'scheduled' | 'all';
 
 export default function OperationsDashboard() {
   const { visits, loadVisits, loadAllVisits, isLoading } = useAppStore();
   const [refreshNonce, setRefreshNonce] = useState(0);
-  const [filterMode, setFilterMode] = useState<
-    'today_all' | 'today_pending' | 'all_all' | 'all_pending'
-  >('today_all');
+  const [dateFilter, setDateFilter] = useState<'today' | 'all'>('today');
+  const [statusFilter, setStatusFilter] = useState<DashboardStatusFilter>('pending');
 
   const today = useMemo(() => new Date().toISOString().split('T')[0], []);
-  const dateFilter = useMemo<'today' | 'all'>(() => (filterMode.startsWith('today') ? 'today' : 'all'), [filterMode]);
-  const onlyPending = useMemo(() => filterMode.endsWith('pending'), [filterMode]);
 
   const refreshVisits = useCallback(
     async (showToast = false) => {
@@ -52,40 +50,43 @@ export default function OperationsDashboard() {
   }, [refreshVisits]);
 
   const visibleCount = useMemo(() => {
-    if (!onlyPending) return visits.length;
-    return visits.filter((v) => v.status === 'pending').length;
-  }, [onlyPending, visits]);
+    if (statusFilter === 'all') return visits.length;
+    return visits.filter((v) => String(v.status).toLowerCase() === statusFilter).length;
+  }, [statusFilter, visits]);
+
+  const filteredVisits = useMemo(() => {
+    if (statusFilter === 'all') return visits;
+    return visits.filter((v) => String(v.status).toLowerCase() === statusFilter);
+  }, [statusFilter, visits]);
 
   return (
     <AppLayout>
       <div className="flex flex-col h-full min-h-screen bg-mobility-background">
         <OperationsHeader
-          filterMode={filterMode}
+          dateFilter={dateFilter}
+          statusFilter={statusFilter}
           visibleCount={visibleCount}
           totalCount={visits.length}
-          isLoadingData={isLoading}
-          onFilterModeChange={async (value) => {
-            setFilterMode(value);
-          }}
-          onRefresh={() => refreshVisits(true)}
+          onDateFilterChange={setDateFilter}
+          onStatusFilterChange={setStatusFilter}
         />
-        <div className="flex-1 px-6 pb-6 space-y-5 max-w-screen-2xl mx-auto w-full">
-          <ManualTaskPanel onTaskCreated={() => refreshVisits(true)} />
-          <AdminCalendarPanel refreshNonce={refreshNonce} onlyPending={onlyPending} />
+        <div className="flex-1 px-3 sm:px-4 lg:px-6 pt-[0.9cm] sm:pt-[1.2cm] lg:pt-[1.5cm] pb-8 space-y-[0.9cm] sm:space-y-[1.2cm] lg:space-y-[1.5cm] max-w-screen-2xl mx-auto w-full">
           <ContingencyBanner />
-          <KpiCardsGrid />
-          <div className="grid grid-cols-1 xl:grid-cols-3 2xl:grid-cols-3 gap-5">
-            <div className="xl:col-span-2 2xl:col-span-2">
-              <InterventionQueue
-                key={`queue-${refreshNonce}`}
-                onlyPending={onlyPending}
-                onDataChanged={() => refreshVisits(false)}
-              />
+          <KpiCardsGrid visits={filteredVisits} />
+          <InterventionQueue
+            key={`queue-${refreshNonce}`}
+            forcedStatusFilter={statusFilter}
+            onDataChanged={() => refreshVisits(false)}
+          />
+
+          <section className="pt-2 md:pt-3 border-t border-mobility-border/60">
+            <div className="rounded-2xl p-3 md:p-4 bg-gradient-to-b from-transparent via-mobility-background/70 to-[#0d1520]/10">
+              <MapPanel dashboardFullHeight />
             </div>
-            <div className="xl:col-span-1 2xl:col-span-1 space-y-5">
-              <MapPanel />
-              <AISuggestionsPanel />
-            </div>
+          </section>
+
+          <div className="max-w-xl pt-1">
+            <AISuggestionsPanel />
           </div>
         </div>
       </div>

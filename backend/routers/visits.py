@@ -50,6 +50,12 @@ class CreateFromIncidenceRequest(BaseModel):
     escalate_to: str | None = None  # None|p4|p5
 
 
+class ReassignVisitRequest(BaseModel):
+    visit_id: int
+    technician_id: int
+    planned_date: str | None = None
+
+
 def _rows_to_visits(rows) -> list[VisitOut]:
     visits = []
     for row in rows:
@@ -408,6 +414,104 @@ def create_visit_from_incidence(
             """
         ),
         {"id": int(next_id)},
+    ).fetchone()
+
+    return _rows_to_visits([row])[0]
+
+
+@router.post("/visits/reassign", response_model=VisitOut)
+def reassign_visit(
+    payload: ReassignVisitRequest,
+    db: Session = Depends(get_db),
+) -> VisitOut:
+    """Direct admin reassignment of a visit to a technician."""
+    visit = db.execute(
+        text("SELECT id FROM visit WHERE id = :id LIMIT 1"),
+        {"id": payload.visit_id},
+    ).fetchone()
+    if not visit:
+        raise HTTPException(status_code=404, detail=f"Visita {payload.visit_id} no trobada")
+
+    technician = db.execute(
+        text("SELECT id FROM technician WHERE id = :id LIMIT 1"),
+        {"id": payload.technician_id},
+    ).fetchone()
+    if not technician:
+        # Keep manual assignment usable: create a minimal technician row on demand.
+        db.execute(
+            text(
+                """
+                INSERT INTO technician (id, zone, vehicle, status, start_work_day, end_work_day)
+                VALUES (:id, :zone, :vehicle, :status, :start_work_day, :end_work_day)
+                ON CONFLICT (id) DO NOTHING
+                """
+            ),
+            {
+                "id": payload.technician_id,
+                "zone": "General",
+                "vehicle": "N/A",
+                "status": "available",
+                "start_work_day": None,
+                "end_work_day": None,
+            },
+        )
+
+    planned_dt = None
+    if payload.planned_date:
+        try:
+            planned_dt = datetime.strptime(payload.planned_date, "%Y-%m-%dT%H:%M")
+        except ValueError:
+            raise HTTPException(status_code=422, detail="planned_date ha de ser YYYY-MM-DDTHH:MM")
+
+    if planned_dt is None:
+        current = db.execute(
+            text("SELECT planned_date FROM visit WHERE id = :id"),
+            {"id": payload.visit_id},
+        ).fetchone()
+        planned_dt = current.planned_date if current and current.planned_date else datetime.utcnow()
+
+    db.execute(
+        text(
+            """
+            UPDATE visit
+            SET technician_id = :technician_id,
+                planned_date = :planned_date,
+                status = :status
+            WHERE id = :id
+            """
+        ),
+        {
+            "technician_id": payload.technician_id,
+            "planned_date": planned_dt,
+            "status": "pending",
+            "id": payload.visit_id,
+        },
+    )
+    db.commit()
+
+    row = db.execute(
+        text(
+            """
+            SELECT
+                v.id,
+                v.assignable_id,
+                v.technician_id,
+                v.visit_type,
+                v.status,
+                v.planned_date,
+                v.estimated_duration,
+                v.score,
+                NULL::integer as route_order,
+                COALESCE(c.latitude, 0.0) as latitude,
+                COALESCE(c.longitude, 0.0) as longitude,
+                COALESCE(c.postal_code, '') as postal_code
+            FROM visit v
+            LEFT JOIN assignable a ON v.assignable_id = a.id
+            LEFT JOIN charger c ON a.charger_id = c.id
+            WHERE v.id = :id
+            """
+        ),
+        {"id": payload.visit_id},
     ).fetchone()
 
     return _rows_to_visits([row])[0]

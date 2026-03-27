@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Metadata, Viewport } from 'next';
 import '../styles/tailwind.css';
+import 'leaflet/dist/leaflet.css';
 import { Toaster } from 'sonner';
 
 import { AppProvider } from '@/store/appStore';

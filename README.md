@@ -15,6 +15,35 @@ Proyecto full-stack para operaciones de mantenimiento de cargadores electricos.
 
 ### Actualizacion UI admin (27-03-2026)
 
+- Estructura de producto (modo serio):
+  - `Operacions` queda centrado en ejecucion en tiempo real: cola, imprevistos, mapa y sugerencias IA.
+  - `Planificacio` pasa a seccion propia: calendarios y creacion manual de tareas.
+  - `Mètriques` se mantiene como analitica separada.
+  - Sidebar actualizado con los tres modulos para reducir ruido y separar contextos de trabajo.
+  - Sidebar con indicadores dinamicos (sin hardcode):
+    - `Operacions` muestra volumen de visitas bloqueadas.
+    - `Planificacio` muestra volumen de pendientes.
+    - Ambos contadores se calculan desde datos reales de BD via API.
+
+- Espaciado visual entre cabecera y modulos:
+  - Se añade separacion superior consistente en `Operacions`, `Planificacio` y `Mètriques` para evitar efecto de bloques pegados al header.
+
+- Mapa operativo mejorado:
+  - Render principal migrado a `OpenStreetMap embed` (iframe) para evitar la pantalla negra derivada de fallos del servicio de static maps.
+  - `Mapa operatiu` incorpora modo `Pantalla completa` dentro de la app para trabajar la ruta a tamaño total.
+  - En `Operacions`, el modulo de mapa pasa a estar debajo de la cola de prioridades y ocupa ancho completo del dashboard.
+  - El mapa se renderiza por defecto en formato alto tipo pantalla completa embebida (`full-height`) dentro del dashboard, tanto con sidebar abierto como plegado.
+  - Selector de tecnico dentro del mapa para analizar ruta por tecnico concreto o todos.
+  - Zoom automatico por bounds de puntos visibles para encuadrar mejor la operativa diaria.
+  - Altura responsive por breakpoints para escritorio/portatil sin tapar el resto de modulos.
+  - Panel lateral de ruta y puntos se mantiene en fullscreen para no perder control operativo.
+  - Si falla la carga de tiles externos, se activa una vista operativa alternativa (fallback) para evitar panel gris sin mapa.
+  - Fallback de localizacion en la lista de puntos:
+    - `address` si existe.
+    - si no, `postal_code`.
+    - si no, coordenadas (`lat, lon`) cuando esten disponibles.
+    - solo en ultimo caso muestra `Sense adreça`.
+
 - Web centrada en Admin:
   - El dashboard web activo es Operacions.
   - El dashboard de Tecnic en web queda bloqueado y redirige a Operacions con aviso de que la vista de tecnico vive en la app movil separada.
@@ -65,9 +94,23 @@ Proyecto full-stack para operaciones de mantenimiento de cargadores electricos.
   - Incluye validaciones basicas de IDs, tecnico opcional, fecha opcional y nivel de escalado opcional.
   - Tras crear una tarea, se refrescan cola y calendarios para que la gestion sea comoda y visible al instante.
 
+- Planificacio dedicada:
+  - Nueva ruta web: `frontend/src/app/planning-dashboard/page.tsx`.
+  - Incluye:
+    - `Gestio manual de tasques`.
+    - Calendari comu / per tecnic.
+  - Filtro unico de alcance: `Setmana completa` o `Nomes pendents`.
+
 - Backend routing (correccion de 404):
   - Se registra el router de planning en FastAPI (`/api/v1/planning/assign` y `/api/v1/planning/confirm`).
   - Evita el popup `Not Found` en Operacions al cargar paneles que usan sugerencias IA/assignaciones.
+  - Se añade endpoint estable de asignacion manual en router activo de rutas:
+    - `POST /api/v1/ruta/manual-assign`
+    - Payload: `visit_id`, `technician_id`, `target_date?`, `hora_inici?`
+    - Comportamiento: reasigna una sola visita y crea tecnico minimo si no existe para no romper la operativa.
+  - El frontend de `Cua d'Intervencions` usa `manual-assign` como via principal, con fallback a:
+    - `POST /api/v1/ruta/assignar`
+    - `POST /api/v1/visits/reassign`
 
 - Alta de tecnico (admin):
   - Formulario con validacion basica (nombre, email, telefono, zona).
@@ -210,6 +253,7 @@ npm run dev
 
 - `POST /api/v1/ruta/generar`
 - `POST /api/v1/ruta/assignar`
+- `POST /api/v1/ruta/manual-assign`
 - `POST /api/v1/ruta/geometria`
 
 ### Imprevistos
@@ -234,6 +278,23 @@ Esperado:
 
 ```text
 Failures: 0
+
+## Seed de tipos de visita (sin hardcode)
+
+Para asegurar casos de todos los tipos canónicos en BD (`correctivo_critico`, `correctivo_no_critico`, `diagnosi`, `puesta_en_marcha`, `preventivo`):
+
+```powershell
+cd backend
+& ..\.venv\Scripts\Activate.ps1
+python scripts/seed_visit_types.py --per-type 3
+```
+
+El script inserta solo los que falten hasta el minimo por tipo, reutilizando IDs reales de `assignable` y `technician`.
+
+## Registro de ideas
+
+- Archivo de seguimiento: `IDEAS_LOG.md`.
+- Politica: toda idea nueva se implementa o queda registrada como pendiente para siguientes iteraciones.
 ```
 
 ## Notas de dependencias IA

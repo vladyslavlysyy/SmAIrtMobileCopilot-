@@ -1,76 +1,100 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
-import { AlertCircle, CheckCircle2, Clock, Navigation, TrendingUp } from 'lucide-react';
-import { api, type MetricsResponse } from '@/lib/api';
+import React, { useMemo } from 'react';
+import { CheckCircle2, Clock, Navigation, TrendingUp } from 'lucide-react';
+import type { Visit } from '@/lib/api';
 
-export default function KpiCardsGrid() {
-  const [metrics, setMetrics] = useState<MetricsResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface KpiCardsGridProps {
+  visits: Visit[];
+}
 
-  useEffect(() => {
-    let active = true;
-    const load = async () => {
-      setLoading(true);
-      try {
-        const data = await api.getMetrics({});
-        if (!active) return;
-        setMetrics(data);
-        setError(null);
-      } catch (e) {
-        if (!active) return;
-        setError(e instanceof Error ? e.message : "No s'han pogut carregar les metriques");
-      } finally {
-        if (active) setLoading(false);
-      }
-    };
+function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number) {
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const R = 6371;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
 
-    load();
-    const timer = setInterval(load, 30000);
-    return () => {
-      active = false;
-      clearInterval(timer);
-    };
-  }, []);
+export default function KpiCardsGrid({ visits }: KpiCardsGridProps) {
+  const completed = useMemo(
+    () => visits.filter((v) => String(v.status).toLowerCase() === 'completed').length,
+    [visits]
+  );
+
+  const pending = useMemo(
+    () => visits.filter((v) => String(v.status).toLowerCase() === 'pending').length,
+    [visits]
+  );
+
+  const inProgress = useMemo(
+    () => visits.filter((v) => String(v.status).toLowerCase() === 'in_progress').length,
+    [visits]
+  );
+
+  const hoursTotal = useMemo(() => {
+    const minutes = visits.reduce((acc, v) => acc + (v.estimated_duration ?? 0), 0);
+    return minutes / 60;
+  }, [visits]);
 
   const kmTotal = useMemo(() => {
-    if (!metrics) return 0;
-    return metrics.km_por_tecnico.reduce((acc, row) => acc + row.km_total, 0);  
-  }, [metrics]);
+    const byTech = new Map<number, Array<Visit & { latitude: number; longitude: number }>>();
 
-  if (error) {
-    return (
-      <div className="p-4 bg-mobility-surface shadow-sm border border-red-200 rounded-xl flex items-start gap-2">
-        <AlertCircle size={16} className="text-red-600 mt-0.5" />
-        <div>
-          <p className="text-sm font-semibold text-red-600">Error KPI</p>   
+    visits.forEach((v) => {
+      if (
+        v.technician_id === null ||
+        typeof v.latitude !== 'number' ||
+        typeof v.longitude !== 'number'
+      ) {
+        return;
+      }
+      const list = byTech.get(v.technician_id) ?? [];
+      list.push(v as Visit & { latitude: number; longitude: number });
+      byTech.set(v.technician_id, list);
+    });
 
-          <p className="text-xs text-red-600/80">{error}</p>
-        </div>
-      </div>
-    );
-  }
+    let total = 0;
+    byTech.forEach((techVisits) => {
+      const ordered = [...techVisits].sort(
+        (a, b) => new Date(a.planned_date).getTime() - new Date(b.planned_date).getTime()
+      );
+      for (let i = 1; i < ordered.length; i += 1) {
+        total += haversineKm(
+          ordered[i - 1].latitude,
+          ordered[i - 1].longitude,
+          ordered[i].latitude,
+          ordered[i].longitude
+        );
+      }
+    });
+
+    return total;
+  }, [visits]);
 
   const cards = [
     {
       id: 'done',
       title: 'Completades',
-      value: metrics?.completades ?? 0,
+      value: completed,
       subtitle: 'visites',
       icon: <CheckCircle2 size={24} className="text-mobility-accent/60" />,       
     },
     {
       id: 'pending',
       title: 'Pendents',
-      value: metrics?.pendentes ?? 0,
+      value: pending,
       subtitle: 'visites',
       icon: <Clock size={24} className="text-mobility-accent/60" />,
     },
     {
       id: 'progress',
       title: 'En progrés',
-      value: metrics?.en_progreso ?? 0,
+      value: inProgress,
       subtitle: 'actives',
       icon: <TrendingUp size={24} className="text-mobility-accent/60" />,
     },
@@ -84,7 +108,7 @@ export default function KpiCardsGrid() {
     {
       id: 'hours',
       title: 'Hores efectives',
-      value: (metrics?.horas_efectivas_total ?? 0).toFixed(1),
+      value: hoursTotal.toFixed(1),
       subtitle: 'h',
       icon: <Clock size={24} className="text-mobility-accent/60" />,
     },
@@ -95,7 +119,7 @@ export default function KpiCardsGrid() {
       {cards.map((card) => (
         <div
           key={card.id}
-          className={`bg-mobility-surface shadow-sm rounded-xl p-5 border border-mobility-border ${loading ? 'opacity-70 animate-pulse bg-mobility-background' : ''}`}
+          className="bg-mobility-surface shadow-sm rounded-xl p-5 border border-mobility-border"
         >
           <div className="flex items-start justify-between mb-3">
             <div className="flex flex-col">

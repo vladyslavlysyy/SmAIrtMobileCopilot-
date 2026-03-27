@@ -5,6 +5,7 @@ import { MapPin, Navigation, Clock, CheckCircle2, ChevronRight, Play } from 'luc
 import { toast } from 'sonner';
 import { useAppStore } from '@/store/appStore';
 import { api, type Visit } from '@/lib/api';
+import { getStatusLabelCa } from '@/lib/labels';
 
 interface RouteTimelineProps {
   technicianId?: number;
@@ -135,11 +136,11 @@ export default function RouteTimeline({ technicianId }: RouteTimelineProps) {
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <span className={`text-xs px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
-                        isCompleted ? 'bg-emerald-100/60 text-emerald-700 font-mono' : 
-                        isActive ? 'bg-cyan-100/70 text-cyan-700 font-mono' : 
-                        'bg-amber-100/60 text-amber-700 font-mono'
+                        isCompleted ? 'bg-emerald-200/75 text-emerald-950 border border-emerald-400 font-mono dark:bg-emerald-500/20 dark:text-emerald-100 dark:border-emerald-400/40' : 
+                        isActive ? 'bg-cyan-200/75 text-cyan-950 border border-cyan-400 font-mono dark:bg-cyan-500/20 dark:text-cyan-100 dark:border-cyan-400/40' : 
+                        'bg-amber-200/75 text-amber-950 border border-amber-400 font-mono dark:bg-amber-500/20 dark:text-amber-100 dark:border-amber-400/40'
                       }`}>
-                        {v.status.replace('_', ' ')}
+                        {getStatusLabelCa(v.status)}
                       </span>
                       {v.last_priority_score && v.last_priority_score > 80 && (
                         <span className="text-[10px] bg-red-100/60 text-red-700 font-mono px-1.5 py-0.5 rounded-md font-bold flex items-center gap-1">

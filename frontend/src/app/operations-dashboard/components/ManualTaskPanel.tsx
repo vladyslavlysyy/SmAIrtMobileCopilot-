@@ -3,10 +3,10 @@
 import React, { useState } from 'react';
 import { PlusCircle } from 'lucide-react';
 import { toast } from 'sonner';
-import { api } from '@/lib/api';
+import { api, type Visit } from '@/lib/api';
 
 interface ManualTaskPanelProps {
-  onTaskCreated: () => Promise<void> | void;
+  onTaskCreated: (createdVisit: Visit) => Promise<void> | void;
 }
 
 export default function ManualTaskPanel({ onTaskCreated }: ManualTaskPanelProps) {
@@ -22,20 +22,20 @@ export default function ManualTaskPanel({ onTaskCreated }: ManualTaskPanelProps)
   const [incidenceTechnician, setIncidenceTechnician] = useState('');
   const [escalateTo, setEscalateTo] = useState<'none' | 'p4' | 'p5'>('none');
 
-  const createFromContract = async () => {
+  const createFromContract = async (): Promise<Visit | null> => {
     const parsedContractId = Number(contractId);
     if (!Number.isFinite(parsedContractId) || parsedContractId <= 0) {
       toast.error('Contracte invàlid');
-      return;
+      return null;
     }
 
     const parsedTech = contractTechnician.trim() ? Number(contractTechnician) : undefined;
     if (contractTechnician.trim() && (!Number.isFinite(parsedTech) || (parsedTech ?? 0) <= 0)) {
       toast.error('ID de tècnic invàlid');
-      return;
+      return null;
     }
 
-    await api.createVisitFromContract({
+    const created = await api.createVisitFromContract({
       contract_id: parsedContractId,
       technician_id: parsedTech,
       visit_type: contractType,
@@ -46,22 +46,23 @@ export default function ManualTaskPanel({ onTaskCreated }: ManualTaskPanelProps)
     setContractId('');
     setContractTechnician('');
     setContractDate('');
+    return created;
   };
 
-  const createFromIncidence = async () => {
+  const createFromIncidence = async (): Promise<Visit | null> => {
     const parsedIncidenceId = Number(incidenceId);
     if (!Number.isFinite(parsedIncidenceId) || parsedIncidenceId <= 0) {
       toast.error('Incidència invàlida');
-      return;
+      return null;
     }
 
     const parsedTech = incidenceTechnician.trim() ? Number(incidenceTechnician) : undefined;
     if (incidenceTechnician.trim() && (!Number.isFinite(parsedTech) || (parsedTech ?? 0) <= 0)) {
       toast.error('ID de tècnic invàlid');
-      return;
+      return null;
     }
 
-    await api.createVisitFromIncidence({
+    const created = await api.createVisitFromIncidence({
       incidence_id: parsedIncidenceId,
       technician_id: parsedTech,
       escalate_to: escalateTo === 'none' ? undefined : escalateTo,
@@ -71,18 +72,22 @@ export default function ManualTaskPanel({ onTaskCreated }: ManualTaskPanelProps)
     setIncidenceId('');
     setIncidenceTechnician('');
     setEscalateTo('none');
+    return created;
   };
 
   const handleSubmit = async () => {
     try {
       setIsCreating(true);
+      let createdVisit: Visit | null = null;
       if (mode === 'contracte') {
-        await createFromContract();
+        createdVisit = await createFromContract();
       } else {
-        await createFromIncidence();
+        createdVisit = await createFromIncidence();
       }
 
-      await onTaskCreated();
+      if (!createdVisit) return;
+
+      await onTaskCreated(createdVisit);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'No s\'ha pogut crear la tasca manual');
     } finally {
@@ -128,7 +133,7 @@ export default function ManualTaskPanel({ onTaskCreated }: ManualTaskPanelProps)
             <input
               value={contractId}
               onChange={(e) => setContractId(e.target.value)}
-              placeholder="Ex: 12"
+              placeholder="Ex: 1"
               className="w-full rounded-lg border border-mobility-border bg-mobility-background px-3 py-2 text-sm text-mobility-primary"
             />
           </label>
@@ -172,7 +177,7 @@ export default function ManualTaskPanel({ onTaskCreated }: ManualTaskPanelProps)
             <input
               value={incidenceId}
               onChange={(e) => setIncidenceId(e.target.value)}
-              placeholder="Ex: 45"
+              placeholder="Ex: 11"
               className="w-full rounded-lg border border-mobility-border bg-mobility-background px-3 py-2 text-sm text-mobility-primary"
             />
           </label>

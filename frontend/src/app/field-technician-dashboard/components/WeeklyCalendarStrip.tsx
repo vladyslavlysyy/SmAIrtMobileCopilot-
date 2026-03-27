@@ -125,15 +125,15 @@ export default function WeeklyCalendarStrip() {
               }}
               className={`relative flex flex-col items-center p-3 rounded-xl transition-all ${
                 isSelected
-                  ? 'bg-mobility-accent text-white text-mobility-primary border border-mobility-accent shadow-[0_0_10px_rgba(0,200,81,0.2)]'
-                  : 'bg-mobility-primary hover:bg-mobility-background hover:text-mobility-primary text-mobility-primary border border-mobility-border'
+                  ? 'bg-mobility-accent text-white border border-mobility-accent shadow-[0_0_10px_rgba(0,200,81,0.2)]'
+                  : 'bg-mobility-surface text-mobility-primary hover:bg-mobility-background border border-mobility-border'
               }`}
             >
               {isToday && !isSelected && (
-                <div className="absolute top-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-mobility-accent text-white" />
+                <div className="absolute top-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-mobility-accent" />
               )}
 
-              <span className={`text-xs font-medium mb-1 ${isSelected ? 'text-mobility-primary/90' : 'text-mobility-muted'}`}>
+              <span className={`text-xs font-medium mb-1 ${isSelected ? 'text-white/90' : 'text-mobility-muted'}`}>
                 {day.label}
               </span>
               <span className="text-lg font-bold leading-none mb-2">

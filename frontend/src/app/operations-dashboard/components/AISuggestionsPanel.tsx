@@ -15,6 +15,7 @@ export default function AISuggestionsPanel() {
   const { visits, loadVisits } = useAppStore();
   const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [planningUnavailable, setPlanningUnavailable] = useState(false);
 
   const pendingTop = useMemo(() => {
     const score: Record<Visit['visit_type'], number> = {
@@ -31,6 +32,11 @@ export default function AISuggestionsPanel() {
   }, [visits]);
 
   const loadSuggestions = async () => {
+    if (planningUnavailable) {
+      setSuggestions([]);
+      return;
+    }
+
     if (visits.length === 0) {
       await loadVisits();
     }
@@ -44,8 +50,17 @@ export default function AISuggestionsPanel() {
         })
       );
       setSuggestions(results);
+      setPlanningUnavailable(false);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "No s'han pogut generar suggeriments");
+      const message = e instanceof Error ? e.message : "No s'han pogut generar suggeriments";
+      const normalized = message.toLowerCase();
+      const isNotFound = normalized.includes('not found') || normalized.includes('404');
+
+      if (isNotFound) {
+        setPlanningUnavailable(true);
+      } else {
+        toast.error(message);
+      }
       setSuggestions([]);
     } finally {
       setLoading(false);
@@ -106,8 +121,14 @@ export default function AISuggestionsPanel() {
         {!loading && suggestions.length === 0 && (
           <div className="flex flex-col items-center justify-center py-10 text-center px-4 bg-mobility-primary/30 rounded-xl border border-mobility-border/50">
             <CheckCircle2 size={32} className="text-mobility-accent mb-3 opacity-80" />
-            <p className="text-sm font-medium text-mobility-primary mb-1">Xarxa optimitzada</p>
-            <p className="text-xs text-mobility-muted">No hi ha suggeriments pendents per aplicar.</p>
+            <p className="text-sm font-medium text-mobility-primary mb-1">
+              {planningUnavailable ? 'Suggeriments IA no disponibles' : 'Xarxa optimitzada'}
+            </p>
+            <p className="text-xs text-mobility-muted">
+              {planningUnavailable
+                ? 'El backend actual no exposa planning. La resta del dashboard continua operatiu.'
+                : 'No hi ha suggeriments pendents per aplicar.'}
+            </p>
           </div>
         )}
 

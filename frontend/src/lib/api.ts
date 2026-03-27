@@ -187,6 +187,26 @@ export interface CreateVisitFromIncidenceRequest {
   escalate_to?: 'p4' | 'p5';
 }
 
+export interface ReassignVisitRequest {
+  visit_id: number;
+  technician_id: number;
+  planned_date?: string;
+}
+
+export interface AssignRouteAdminRequest {
+  technician_id: number;
+  visit_ids_ordered: number[];
+  target_date: string;
+  hora_inici?: string;
+}
+
+export interface ManualAssignVisitRequest {
+  visit_id: number;
+  technician_id: number;
+  target_date?: string;
+  hora_inici?: string;
+}
+
 export interface ReportSubmitRequest {
   visit_id: number;
   report_type: ReportType;
@@ -300,7 +320,9 @@ export const api = {
       technician_id: technicianId,
       date,
     });
-    const response = await fetch(`${BASE_URL}/api/v1/visits${qs}`);
+    const response = await fetch(`${BASE_URL}/api/v1/visits${qs}`, {
+      cache: 'no-store',
+    });
     return handleResponse(response);
   },
 
@@ -310,7 +332,9 @@ export const api = {
    */
   getVisits: async (date?: string, technicianId?: number): Promise<Visit[]> => {
     const qs = buildQueryString({ date, technician_id: technicianId });
-    const response = await fetch(`${BASE_URL}/api/v1/visits${qs}`);
+    const response = await fetch(`${BASE_URL}/api/v1/visits${qs}`, {
+      cache: 'no-store',
+    });
     return handleResponse(response);
   },
 
@@ -328,7 +352,9 @@ export const api = {
       date_from: params?.dateFrom,
       date_to: params?.dateTo,
     });
-    const response = await fetch(`${BASE_URL}/api/v1/visits/all${qs}`);
+    const response = await fetch(`${BASE_URL}/api/v1/visits/all${qs}`, {
+      cache: 'no-store',
+    });
     return handleResponse(response);
   },
 
@@ -417,6 +443,52 @@ export const api = {
    */
   createVisitFromIncidence: async (request: CreateVisitFromIncidenceRequest): Promise<Visit> => {
     const response = await fetch(`${BASE_URL}/api/v1/visits/from-incidence`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(request),
+    });
+    return handleResponse(response);
+  },
+
+  /**
+   * POST /api/v1/visits/reassign
+   */
+  reassignVisit: async (request: ReassignVisitRequest): Promise<Visit> => {
+    const response = await fetch(`${BASE_URL}/api/v1/visits/reassign`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(request),
+    });
+    return handleResponse(response);
+  },
+
+  /**
+   * POST /api/v1/ruta/assignar
+   */
+  assignRouteAdmin: async (request: AssignRouteAdminRequest): Promise<{
+    ok: boolean;
+    technician_id: number;
+    target_date: string;
+    visits_assigned: number;
+  }> => {
+    const response = await fetch(`${BASE_URL}/api/v1/ruta/assignar`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(request),
+    });
+    return handleResponse(response);
+  },
+
+  /**
+   * POST /api/v1/ruta/manual-assign
+   */
+  manualAssignVisit: async (request: ManualAssignVisitRequest): Promise<{
+    ok: boolean;
+    visit_id: number;
+    technician_id: number;
+    assigned_at: string;
+  }> => {
+    const response = await fetch(`${BASE_URL}/api/v1/ruta/manual-assign`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(request),
@@ -542,19 +614,19 @@ export const PRIORITY_COLORS: Record<VisitType, string> = {
 };
 
 export const PRIORITY_LABELS: Record<VisitType, string> = {
-  correctivo_critico: 'P5 - Crítico',
-  correctivo_no_critico: 'P4 - Urgente',
-  diagnosi: 'P3 - Diagnóstico',
-  puesta_en_marcha: 'P2 - Puesta en marcha',
-  preventivo: 'P1 - Preventivo',
+  correctivo_critico: 'P5 - Correctiu critic',
+  correctivo_no_critico: 'P4 - Correctiu urgent',
+  diagnosi: 'P3 - Diagnosi',
+  puesta_en_marcha: 'P2 - Posada en marxa',
+  preventivo: 'P1 - Preventiu',
 };
 
 export const STATUS_LABELS: Record<VisitStatus, string> = {
-  pending: 'Pendiente',
-  in_progress: 'En progreso',
+  pending: 'Pendent',
+  in_progress: 'En curs',
   completed: 'Completada',
-  blocked: 'Bloqueada',
-  cancelled: 'Cancelada',
+  blocked: 'Bloquejada',
+  cancelled: 'Cancel-lada',
 };
 
 export const STATUS_COLORS: Record<VisitStatus, string> = {

@@ -48,6 +48,13 @@ class GeometriaRutaRequest(BaseModel):
     origen: Coordenada | None = None
 
 
+class ManualAssignVisitRequest(BaseModel):
+    visit_id: int
+    technician_id: int
+    target_date: str | None = None  # YYYY-MM-DD
+    hora_inici: str | None = None   # HH:MM
+
+
 def _require_routing_libs() -> tuple[Any, Any, Any]:
     try:
         import osmnx as ox
@@ -503,6 +510,85 @@ def assignar_ruta_admin(
         "technician_id": payload.technician_id,
         "target_date": payload.target_date,
         "visits_assigned": len(payload.visit_ids_ordered),
+    }
+
+
+@router.post("/manual-assign")
+def manual_assign_visit(
+    payload: ManualAssignVisitRequest,
+    db: Session = Depends(get_db),
+):
+    """Assign a single visit to a technician with permissive admin behavior."""
+    visit_row = db.execute(
+        text(
+            """
+            SELECT id, planned_date
+            FROM visit
+            WHERE id = :id
+            LIMIT 1
+            """
+        ),
+        {"id": payload.visit_id},
+    ).fetchone()
+    if not visit_row:
+        raise HTTPException(status_code=404, detail=f"Visita {payload.visit_id} no trobada")
+
+    # Ensure technician exists to avoid manual assignment failures.
+    db.execute(
+        text(
+            """
+            INSERT INTO technician (id, zone, vehicle, status, start_work_day, end_work_day)
+            VALUES (:id, :zone, :vehicle, :status, :start_work_day, :end_work_day)
+            ON CONFLICT (id) DO NOTHING
+            """
+        ),
+        {
+            "id": payload.technician_id,
+            "zone": "General",
+            "vehicle": "N/A",
+            "status": "available",
+            "start_work_day": None,
+            "end_work_day": None,
+        },
+    )
+
+    if payload.target_date:
+        target_date = datetime.strptime(payload.target_date, "%Y-%m-%d").date()
+    else:
+        target_date = visit_row.planned_date.date() if visit_row.planned_date else datetime.utcnow().date()
+
+    if payload.hora_inici:
+        hh, mm = map(int, payload.hora_inici.split(":"))
+    else:
+        base_dt = visit_row.planned_date or datetime.utcnow()
+        hh, mm = base_dt.hour, base_dt.minute
+
+    planned_dt = datetime.combine(target_date, datetime.min.time()) + timedelta(hours=hh, minutes=mm)
+
+    db.execute(
+        text(
+            """
+            UPDATE visit
+            SET technician_id = :tech_id,
+                planned_date = :planned_date,
+                status = :status
+            WHERE id = :id
+            """
+        ),
+        {
+            "tech_id": payload.technician_id,
+            "planned_date": planned_dt,
+            "status": "pending",
+            "id": payload.visit_id,
+        },
+    )
+    db.commit()
+
+    return {
+        "ok": True,
+        "visit_id": payload.visit_id,
+        "technician_id": payload.technician_id,
+        "assigned_at": planned_dt.isoformat(),
     }
 
 

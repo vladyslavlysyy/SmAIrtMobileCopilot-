@@ -1,5 +1,6 @@
 ﻿/** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'class',
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -13,32 +14,32 @@ module.exports = {
       },
       colors: {
         mobility: {
-          primary: 'hsl(211, 80%, 28%)',
-          accent: 'hsl(197, 100%, 43%)',
-          background: 'hsl(210, 20%, 98%)',
-          surface: 'hsl(0, 0%, 100%)',
-          border: 'hsl(214, 20%, 88%)',
-          text: 'hsl(211, 80%, 28%)',
-          muted: 'hsl(214, 15%, 50%)',
+          primary: 'hsl(var(--mobility-primary) / <alpha-value>)',
+          accent: 'hsl(var(--mobility-accent) / <alpha-value>)',
+          background: 'hsl(var(--mobility-background) / <alpha-value>)',
+          surface: 'hsl(var(--mobility-surface) / <alpha-value>)',
+          border: 'hsl(var(--mobility-border) / <alpha-value>)',
+          text: 'hsl(var(--mobility-text) / <alpha-value>)',
+          muted: 'hsl(var(--mobility-muted) / <alpha-value>)',
           
-          'red-bg': 'hsl(0, 70%, 95%)',
-          'red-text': 'hsl(0, 70%, 40%)',
-          'amber-bg': 'hsl(35, 90%, 95%)',
-          'amber-text': 'hsl(35, 90%, 40%)',
-          'emerald-bg': 'hsl(150, 80%, 95%)',
-          'emerald-text': 'hsl(150, 80%, 30%)',
+          'red-bg': 'hsl(var(--mobility-red-bg) / <alpha-value>)',
+          'red-text': 'hsl(var(--mobility-red-text) / <alpha-value>)',
+          'amber-bg': 'hsl(var(--mobility-amber-bg) / <alpha-value>)',
+          'amber-text': 'hsl(var(--mobility-amber-text) / <alpha-value>)',
+          'emerald-bg': 'hsl(var(--mobility-emerald-bg) / <alpha-value>)',
+          'emerald-text': 'hsl(var(--mobility-emerald-text) / <alpha-value>)',
         },
       },
       borderRadius: {
-        lg: '8px',
-        md: '8px',
-        sm: '8px',
-        xl: '8px', // Ensuring all defaults to exactly 8px or 0.5rem if large is used
-        '2xl': '8px',
+        sm: '10px',
+        md: '12px',
+        lg: '14px',
+        xl: '16px',
+        '2xl': '20px',
       },
       boxShadow: {
-        sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', // Very light shadow
-        md: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+        sm: '0 2px 8px rgba(20, 35, 58, 0.08)',
+        md: '0 10px 24px rgba(20, 35, 58, 0.12)',
       },
     },
   },
