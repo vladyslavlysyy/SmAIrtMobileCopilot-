@@ -9,14 +9,27 @@ interface LoteCreationProps {
   onAssigned?: () => Promise<void> | void;
 }
 
+const ZONE_DEPOTS = {
+  Tarragona: { lat: 41.1189, lon: 1.2445 },
+  Reus: { lat: 41.1541, lon: -1.1078 },
+  Cambrils: { lat: 41.0659, lon: -1.0579 },
+  Valls: { lat: 41.2858, lon: -1.252 },
+  Tortosa: { lat: 40.8121, lon: 0.5213 },
+} as const;
+
+type ZoneName = keyof typeof ZONE_DEPOTS;
+
 export default function LoteCreation({ onAssigned }: LoteCreationProps) {
   const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
+  const [selectedZone, setSelectedZone] = useState<ZoneName>('Tarragona');
+
+  const defaultDepot = ZONE_DEPOTS.Tarragona;
 
   const [form, setForm] = useState({
-    startLat: '41.1189',
-    startLon: '1.2445',
-    endLat: '41.1189',
-    endLon: '1.2445',
+    startLat: String(defaultDepot.lat),
+    startLon: String(defaultDepot.lon),
+    endLat: String(defaultDepot.lat),
+    endLon: String(defaultDepot.lon),
     targetDate: today,
     limitHours: '8',
   });
@@ -29,6 +42,18 @@ export default function LoteCreation({ onAssigned }: LoteCreationProps) {
   const [startTime, setStartTime] = useState('08:00');
 
   const parseNumber = (raw: string) => Number(raw.trim());
+
+  const handleZoneChange = (zoneName: ZoneName) => {
+    setSelectedZone(zoneName);
+    const depot = ZONE_DEPOTS[zoneName];
+    setForm((prev) => ({
+      ...prev,
+      startLat: String(depot.lat),
+      startLon: String(depot.lon),
+      endLat: String(depot.lat),
+      endLon: String(depot.lon),
+    }));
+  };
 
   const loadTechnicians = async () => {
     const users = await api.getUsers();
@@ -138,6 +163,21 @@ export default function LoteCreation({ onAssigned }: LoteCreationProps) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+        <label className="space-y-1">
+          <span className="text-xs text-mobility-muted">Zona</span>
+          <select
+            value={selectedZone}
+            onChange={(e) => handleZoneChange(e.target.value as ZoneName)}
+            className="w-full rounded-lg border border-mobility-border bg-mobility-background px-3 py-2 text-sm text-mobility-primary"
+          >
+            {Object.keys(ZONE_DEPOTS).map((zone) => (
+              <option key={zone} value={zone}>
+                {zone}
+              </option>
+            ))}
+          </select>
+        </label>
+
         <label className="space-y-1">
           <span className="text-xs text-mobility-muted">Latitud inicio</span>
           <input
