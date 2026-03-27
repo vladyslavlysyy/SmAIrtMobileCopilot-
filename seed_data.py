@@ -61,13 +61,22 @@ def seed_database():
                 (i, zona, f'Furgoneta {i}', 'ON_DUTY', '08:00:00', '16:00:00')
             )
 
+        visit_types = [
+            'correctivo_critico',
+            'correctivo_no_critico',
+            'diagnosi',
+            'puesta_en_marcha',
+            'preventivo'
+        ]
+
         # 6. Visit 
         for i in range(1, 21):
             tech_id = random.randint(1, 10)
             planned_date = datetime.now() + timedelta(days=random.randint(1, 15))
+            visit_type = visit_types[(i - 1) % len(visit_types)]
             cur.execute(
                 "INSERT INTO visit (id, assignable_id, technician_id, visit_type, status, planned_date, estimated_duration, score) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-                (i, i, tech_id, 'correctivo_no_critico', 'SCHEDULED', planned_date, 90, None)
+                (i, i, tech_id, visit_type, 'SCHEDULED', planned_date, 90, None)
             )
 
         # 6.1 Pending visits en diferentes días y semanas (sin eliminar datos existentes)
@@ -76,9 +85,10 @@ def seed_database():
             tech_id = random.randint(1, 10)
             assignable_id = random.randint(1, 20)
             planned_date = datetime.now() + timedelta(days=offset_days)
+            visit_type = visit_types[(idx - 21) % len(visit_types)]
             cur.execute(
                 "INSERT INTO visit (id, assignable_id, visit_type, status, planned_date, estimated_duration, score) VALUES (%s, %s, %s, %s, %s, %s, %s)",
-                (idx, assignable_id, 'correctivo_no_critico', 'PENDING', planned_date, 90, None)
+                (idx, assignable_id, visit_type, 'PENDING', planned_date, 90, None)
             )
 
         # 7. Report 
