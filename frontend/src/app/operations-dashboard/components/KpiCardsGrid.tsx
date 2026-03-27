@@ -1,100 +1,74 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { CheckCircle2, Clock, Navigation, TrendingUp } from 'lucide-react';
-import type { Visit } from '@/lib/api';
+import { api, type MetricsResponse } from '@/lib/api';
 
 interface KpiCardsGridProps {
-  visits: Visit[];
+  dateFilter: 'today' | 'all';
+  refreshToken?: number;
+  technicianId?: number;
 }
 
-function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number) {
-  const toRad = (deg: number) => (deg * Math.PI) / 180;
-  const R = 6371;
-  const dLat = toRad(lat2 - lat1);
-  const dLon = toRad(lon2 - lon1);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
-}
+export default function KpiCardsGrid({ dateFilter, refreshToken, technicianId }: KpiCardsGridProps) {
+  const [metrics, setMetrics] = useState<MetricsResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-export default function KpiCardsGrid({ visits }: KpiCardsGridProps) {
-  const completed = useMemo(
-    () => visits.filter((v) => String(v.status).toLowerCase() === 'completed').length,
-    [visits]
-  );
+  useEffect(() => {
+    let cancelled = false;
 
-  const pending = useMemo(
-    () => visits.filter((v) => String(v.status).toLowerCase() === 'pending').length,
-    [visits]
-  );
-
-  const inProgress = useMemo(
-    () => visits.filter((v) => String(v.status).toLowerCase() === 'in_progress').length,
-    [visits]
-  );
-
-  const hoursTotal = useMemo(() => {
-    const minutes = visits.reduce((acc, v) => acc + (v.estimated_duration ?? 0), 0);
-    return minutes / 60;
-  }, [visits]);
-
-  const kmTotal = useMemo(() => {
-    const byTech = new Map<number, Array<Visit & { latitude: number; longitude: number }>>();
-
-    visits.forEach((v) => {
-      if (
-        v.technician_id === null ||
-        typeof v.latitude !== 'number' ||
-        typeof v.longitude !== 'number'
-      ) {
-        return;
+    async function loadMetrics() {
+      setIsLoading(true);
+      try {
+        const today = new Date().toISOString().slice(0, 10);
+        const params = dateFilter === 'today'
+          ? { dateFrom: today, dateTo: today, technicianId }
+          : { technicianId };
+        const data = await api.getMetrics(params);
+        if (!cancelled) {
+          setMetrics(data);
+        }
+      } catch {
+        if (!cancelled) {
+          setMetrics(null);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
       }
-      const list = byTech.get(v.technician_id) ?? [];
-      list.push(v as Visit & { latitude: number; longitude: number });
-      byTech.set(v.technician_id, list);
-    });
+    }
 
-    let total = 0;
-    byTech.forEach((techVisits) => {
-      const ordered = [...techVisits].sort(
-        (a, b) => new Date(a.planned_date).getTime() - new Date(b.planned_date).getTime()
-      );
-      for (let i = 1; i < ordered.length; i += 1) {
-        total += haversineKm(
-          ordered[i - 1].latitude,
-          ordered[i - 1].longitude,
-          ordered[i].latitude,
-          ordered[i].longitude
-        );
-      }
-    });
+    void loadMetrics();
+    return () => {
+      cancelled = true;
+    };
+  }, [dateFilter, refreshToken, technicianId]);
 
-    return total;
-  }, [visits]);
+  const kmTotal = useMemo(
+    () => (metrics?.km_por_tecnico ?? []).reduce((acc, t) => acc + (t.km_total ?? 0), 0),
+    [metrics]
+  );
 
   const cards = [
     {
       id: 'done',
       title: 'Completades',
-      value: completed,
+      value: metrics?.completades ?? 0,
       subtitle: 'visites',
       icon: <CheckCircle2 size={24} className="text-mobility-accent/60" />,       
     },
     {
       id: 'pending',
       title: 'Pendents',
-      value: pending,
+      value: metrics?.pendentes ?? 0,
       subtitle: 'visites',
       icon: <Clock size={24} className="text-mobility-accent/60" />,
     },
     {
       id: 'progress',
       title: 'En progrés',
-      value: inProgress,
+      value: metrics?.en_progreso ?? 0,
       subtitle: 'actives',
       icon: <TrendingUp size={24} className="text-mobility-accent/60" />,
     },
@@ -108,7 +82,7 @@ export default function KpiCardsGrid({ visits }: KpiCardsGridProps) {
     {
       id: 'hours',
       title: 'Hores efectives',
-      value: hoursTotal.toFixed(1),
+      value: (metrics?.horas_efectivas_total ?? 0).toFixed(1),
       subtitle: 'h',
       icon: <Clock size={24} className="text-mobility-accent/60" />,
     },
@@ -130,7 +104,7 @@ export default function KpiCardsGrid({ visits }: KpiCardsGridProps) {
             <div className="flex-shrink-0">{card.icon}</div>
           </div>
           <div className="mt-2 text-2xl font-bold tabular-nums font-mono text-mobility-accent">
-            {card.value}
+            {isLoading ? '...' : card.value}
             <span className="text-sm font-normal text-mobility-muted font-sans">{' '}{card.subtitle}</span>
           </div>
         </div>
