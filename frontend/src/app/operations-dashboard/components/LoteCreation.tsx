@@ -11,9 +11,9 @@ interface LoteCreationProps {
 
 const ZONE_DEPOTS = {
   Tarragona: { lat: 41.1189, lon: 1.2445 },
-  Reus: { lat: 41.1541, lon: -1.1078 },
-  Cambrils: { lat: 41.0659, lon: -1.0579 },
-  Valls: { lat: 41.2858, lon: -1.252 },
+  Reus: { lat: 41.1541, lon: 1.1078 },
+  Cambrils: { lat: 41.0659, lon: 1.0579 },
+  Valls: { lat: 41.2858, lon: 1.252 },
   Tortosa: { lat: 40.8121, lon: 0.5213 },
 } as const;
 
@@ -21,7 +21,8 @@ type ZoneName = keyof typeof ZONE_DEPOTS;
 
 export default function LoteCreation({ onAssigned }: LoteCreationProps) {
   const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
-  const [selectedZone, setSelectedZone] = useState<ZoneName>('Tarragona');
+  const [selectedOriginZone, setSelectedOriginZone] = useState<ZoneName>('Tarragona');
+  const [selectedDestinationZone, setSelectedDestinationZone] = useState<ZoneName>('Tarragona');
 
   const defaultDepot = ZONE_DEPOTS.Tarragona;
 
@@ -43,13 +44,21 @@ export default function LoteCreation({ onAssigned }: LoteCreationProps) {
 
   const parseNumber = (raw: string) => Number(raw.trim());
 
-  const handleZoneChange = (zoneName: ZoneName) => {
-    setSelectedZone(zoneName);
+  const handleOriginZoneChange = (zoneName: ZoneName) => {
+    setSelectedOriginZone(zoneName);
     const depot = ZONE_DEPOTS[zoneName];
     setForm((prev) => ({
       ...prev,
       startLat: String(depot.lat),
       startLon: String(depot.lon),
+    }));
+  };
+
+  const handleDestinationZoneChange = (zoneName: ZoneName) => {
+    setSelectedDestinationZone(zoneName);
+    const depot = ZONE_DEPOTS[zoneName];
+    setForm((prev) => ({
+      ...prev,
       endLat: String(depot.lat),
       endLon: String(depot.lon),
     }));
@@ -164,14 +173,29 @@ export default function LoteCreation({ onAssigned }: LoteCreationProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
         <label className="space-y-1">
-          <span className="text-xs text-mobility-muted">Zona</span>
+          <span className="text-xs text-mobility-muted">Zona origen</span>
           <select
-            value={selectedZone}
-            onChange={(e) => handleZoneChange(e.target.value as ZoneName)}
+            value={selectedOriginZone}
+            onChange={(e) => handleOriginZoneChange(e.target.value as ZoneName)}
             className="w-full rounded-lg border border-mobility-border bg-mobility-background px-3 py-2 text-sm text-mobility-primary"
           >
             {Object.keys(ZONE_DEPOTS).map((zone) => (
               <option key={zone} value={zone}>
+                {zone}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="space-y-1">
+          <span className="text-xs text-mobility-muted">Zona destino</span>
+          <select
+            value={selectedDestinationZone}
+            onChange={(e) => handleDestinationZoneChange(e.target.value as ZoneName)}
+            className="w-full rounded-lg border border-mobility-border bg-mobility-background px-3 py-2 text-sm text-mobility-primary"
+          >
+            {Object.keys(ZONE_DEPOTS).map((zone) => (
+              <option key={`dest-${zone}`} value={zone}>
                 {zone}
               </option>
             ))}
