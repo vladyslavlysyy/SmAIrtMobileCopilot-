@@ -56,6 +56,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import ProgrammingError, SQLAlchemyError
 from pydantic import BaseModel
 
 from database import get_db
@@ -508,35 +509,46 @@ def assign_visit(payload: AssignRequest, db: Session = Depends(get_db)) -> Assig
     Calcula la proposta d'assignació. NO escriu res a la BD.
     Operacions revisa i confirma amb /confirm.
     """
-    visit = db.query(Visit).filter(Visit.id == payload.visit_id).first()
-    if not visit:
-        raise HTTPException(404, f"Visita {payload.visit_id} no trobada.")
-    if visit.technician_id is not None:
-        raise HTTPException(409, "La visita ja té tècnic assignat.")
-    if not visit.lat or not visit.lon:
-        raise HTTPException(
-            422,
-            "La visita no té coordenades. "
-            "Comprova que el charger associat (via contracte o incidència) "
-            "té latitude i longitude.",
+    try:
+        visit = db.query(Visit).filter(Visit.id == payload.visit_id).first()
+        if not visit:
+            raise HTTPException(404, f"Visita {payload.visit_id} no trobada.")
+        if visit.technician_id is not None:
+            raise HTTPException(409, "La visita ja té tècnic assignat.")
+        if not visit.lat or not visit.lon:
+            raise HTTPException(
+                422,
+                "La visita no té coordenades. "
+                "Comprova que el charger associat (via contracte o incidència) "
+                "té latitude i longitude.",
+            )
+
+        today      = datetime.utcnow().date()
+        candidates = dispatch(db, visit, today)
+
+        if not candidates:
+            raise HTTPException(
+                409,
+                f"No s'ha trobat cap slot per a la visita P{visit.effective_priority}. "
+                "Considera augmentar la prioritat o ampliar la finestra.",
+            )
+
+        return AssignProposal(
+            visit_id    = visit.id,
+            priority    = visit.effective_priority,
+            candidates  = candidates,
+            recommended = candidates[0],
         )
-
-    today      = datetime.utcnow().date()
-    candidates = dispatch(db, visit, today)
-
-    if not candidates:
+    except ProgrammingError as exc:
+        db.rollback()
         raise HTTPException(
-            409,
-            f"No s'ha trobat cap slot per a la visita P{visit.effective_priority}. "
-            "Considera augmentar la prioritat o ampliar la finestra.",
-        )
-
-    return AssignProposal(
-        visit_id    = visit.id,
-        priority    = visit.effective_priority,
-        candidates  = candidates,
-        recommended = candidates[0],
-    )
+            503,
+            "Planning no disponible amb l'esquema actual de BD. "
+            "Cal aplicar les migrations de planning.",
+        ) from exc
+    except SQLAlchemyError as exc:
+        db.rollback()
+        raise HTTPException(503, "Error de base de dades al calcular planning.") from exc
 
 
 @router.post("/confirm", response_model=ConfirmResponse)
@@ -544,27 +556,38 @@ def confirm_assignment(payload: ConfirmRequest, db: Session = Depends(get_db)) -
     """
     Operacions confirma. S'apliquen tots els canvis a la BD.
     """
-    visit = db.query(Visit).filter(Visit.id == payload.visit_id).first()
-    if not visit:
-        raise HTTPException(404, f"Visita {payload.visit_id} no trobada.")
+    try:
+        visit = db.query(Visit).filter(Visit.id == payload.visit_id).first()
+        if not visit:
+            raise HTTPException(404, f"Visita {payload.visit_id} no trobada.")
 
-    proposed_date       = datetime.strptime(payload.proposed_date, "%Y-%m-%d").date()
-    visit.technician_id = payload.technician_id
-    visit.planned_date  = datetime.combine(proposed_date, time(8, 0))
-    visit.status        = VisitStatus.pending
+        proposed_date       = datetime.strptime(payload.proposed_date, "%Y-%m-%d").date()
+        visit.technician_id = payload.technician_id
+        visit.planned_date  = datetime.combine(proposed_date, time(8, 0))
+        visit.status        = VisitStatus.pending
 
-    # Cancel·lar visita desplaçada si escau (P5)
-    if payload.cancelled_visit_id:
-        cancelled = db.query(Visit).filter(Visit.id == payload.cancelled_visit_id).first()
-        if cancelled:
-            cancelled.status = VisitStatus.cancelled
+        # Cancel·lar visita desplaçada si escau (P5)
+        if payload.cancelled_visit_id:
+            cancelled = db.query(Visit).filter(Visit.id == payload.cancelled_visit_id).first()
+            if cancelled:
+                cancelled.status = VisitStatus.cancelled
 
-    db.commit()
+        db.commit()
 
-    return ConfirmResponse(
-        ok                 = True,
-        visit_id           = visit.id,
-        technician_id      = payload.technician_id,
-        assigned_date      = payload.proposed_date,
-        cancelled_visit_id = payload.cancelled_visit_id,
-    )
+        return ConfirmResponse(
+            ok                 = True,
+            visit_id           = visit.id,
+            technician_id      = payload.technician_id,
+            assigned_date      = payload.proposed_date,
+            cancelled_visit_id = payload.cancelled_visit_id,
+        )
+    except ProgrammingError as exc:
+        db.rollback()
+        raise HTTPException(
+            503,
+            "Planning no disponible amb l'esquema actual de BD. "
+            "Cal aplicar les migrations de planning.",
+        ) from exc
+    except SQLAlchemyError as exc:
+        db.rollback()
+        raise HTTPException(503, "Error de base de dades al confirmar planning.") from exc
