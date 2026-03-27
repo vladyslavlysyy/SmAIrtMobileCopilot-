@@ -6,7 +6,6 @@ import OperationsHeader from './components/OperationsHeader';
 import KpiCardsGrid from './components/KpiCardsGrid';
 import ContingencyBanner from './components/ContingencyBanner';
 import LoteCreation from './components/LoteCreation';
-import MapPanel from './components/MapPanel';
 import { toast } from 'sonner';
 import { useAppStore } from '@/store/appStore';
 import type { VisitStatus } from '@/lib/api';
@@ -66,12 +65,6 @@ export default function OperationsDashboard() {
             technicianId={undefined}
           />
           <LoteCreation onAssigned={() => refreshVisits(false)} />
-
-          <section className="pt-2 md:pt-3 border-t border-mobility-border/60">
-            <div className="rounded-2xl p-3 md:p-4 bg-gradient-to-b from-transparent via-mobility-background/70 to-[#0d1520]/10">
-              <MapPanel dashboardFullHeight />
-            </div>
-          </section>
         </div>
       </div>
     </AppLayout>
