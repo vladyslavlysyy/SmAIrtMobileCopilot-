@@ -14,9 +14,9 @@ export default function LoteCreation({ onAssigned }: LoteCreationProps) {
 
   const [form, setForm] = useState({
     startLat: '41.1189',
-    startLon: '-1.2445',
+    startLon: '1.2445',
     endLat: '41.1189',
-    endLon: '-1.2445',
+    endLon: '1.2445',
     targetDate: today,
     limitHours: '8',
   });
