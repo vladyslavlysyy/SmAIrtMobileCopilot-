@@ -154,6 +154,71 @@ def _fetch_pending_tasks(
     return out
 
 
+def _fetch_tasks_by_visit_ids(
+    db: Session,
+    visit_ids: list[int],
+) -> list[dict[str, Any]]:
+    if not visit_ids:
+        return []
+
+    rows = db.execute(
+        text(
+            """
+            SELECT
+                v.id,
+                v.assignable_id,
+                v.technician_id,
+                v.visit_type,
+                v.status,
+                v.planned_date,
+                v.estimated_duration,
+                COALESCE(v.score, 0.0) AS score,
+                COALESCE(a.priority, 0) AS assignable_priority,
+                COALESCE(c.num_visits, 0) AS visitas_totales,
+                COALESCE(c.latitude, 0.0) AS latitude,
+                COALESCE(c.longitude, 0.0) AS longitude,
+                COALESCE(c.zone, '') AS zone,
+                COALESCE(c.postal_code, '') AS postal_code
+            FROM visit v
+            LEFT JOIN assignable a ON v.assignable_id = a.id
+            LEFT JOIN charger c ON a.charger_id = c.id
+            WHERE v.id = ANY(:visit_ids)
+            """
+        ),
+        {"visit_ids": visit_ids},
+    ).fetchall()
+
+    out: list[dict[str, Any]] = []
+    today = datetime.utcnow().date()
+    for r in rows:
+        if r.latitude is None or r.longitude is None:
+            continue
+        visit_type = (r.visit_type or "preventivo").lower()
+        priority = int(r.assignable_priority or PRIORITY_FROM_VISIT_TYPE.get(visit_type, 3) or 3)
+        days_waiting = max((today - r.planned_date.date()).days, 0) if r.planned_date else 0
+        out.append(
+            {
+                "visit_id": int(r.id),
+                "assignable_id": int(r.assignable_id) if r.assignable_id is not None else None,
+                "technician_id": int(r.technician_id) if r.technician_id is not None else None,
+                "visit_type": r.visit_type,
+                "status": r.status,
+                "planned_date": r.planned_date,
+                "estimated_duration": int(r.estimated_duration or 45),
+                "latitude": float(r.latitude),
+                "longitude": float(r.longitude),
+                "zone": r.zone,
+                "postal_code": r.postal_code,
+                "priority": priority,
+                "visit_type_num": VISIT_TYPE_NUM_MAP.get(visit_type, 1),
+                "days_waiting": days_waiting,
+                "visitas_totales": int(r.visitas_totales or 0),
+                "impacto_cliente": max(1, min(5, priority)),
+            }
+        )
+    return out
+
+
 def generar_ruta_ia(
     db: Session,
     technician_id: int,
@@ -245,6 +310,7 @@ def generar_ruta_ia(
         best_score = -10**9
         for cand in remaining:
             stay = float(cand.get("estimated_duration", 45) or 45)
+            p_out = None
             if use_osm and nx is not None and G is not None and cur_node is not None and base_node is not None:
                 try:
                     p_out = nx.shortest_path(G, cur_node, cand["osm_node"], weight="travel_time")
@@ -384,4 +450,189 @@ def generar_geometria_simple(visits: list[dict[str, Any]], origen: tuple[float, 
         "distancia_total_km": round(dist_total, 2),
         "tiempo_total_min": round(time_total, 1),
         "ruta_geojson": {"type": "Feature", "geometry": {"type": "LineString", "coordinates": points}},
+    }
+
+
+def generar_ruta_ia_desde_visitas(
+    db: Session,
+    visit_ids: list[int],
+    origen_lat: float,
+    origen_lon: float,
+    destino_lat: float | None = None,
+    destino_lon: float | None = None,
+) -> dict[str, Any]:
+    """Recompute an optimized route for an explicit visit list (no DB pending filter)."""
+    tasks = _fetch_tasks_by_visit_ids(db, visit_ids)
+    if not tasks:
+        return {
+            "resumen": {
+                "distancia_km": 0.0,
+                "tiempo_total_min": 0.0,
+                "horas_totales": 0.0,
+                "tareas_realizadas": 0,
+            },
+            "paradas_ordenadas": [],
+            "ruta_geojson": {"type": "Feature", "geometry": {"type": "LineString", "coordinates": []}},
+        }
+
+    for t in tasks:
+        t["km"] = calcular_haversine(origen_lat, origen_lon, t["latitude"], t["longitude"])
+        t["tiempo_llegada"] = _travel_minutes_from_km(t["km"])
+
+    df = pd.DataFrame(tasks)
+    model = _load_xgb_model()
+    if model is not None:
+        x = df[
+            [
+                "priority",
+                "visit_type_num",
+                "days_waiting",
+                "visitas_totales",
+                "impacto_cliente",
+                "tiempo_llegada",
+                "km",
+            ]
+        ]
+        df["score_ia"] = model.predict(x)
+    else:
+        df["score_ia"] = df.apply(lambda r: _default_score(r.to_dict()), axis=1)
+
+    remaining = df.sort_values(by="score_ia", ascending=False).to_dict("records")
+
+    use_osm = True
+    G = None
+    ox = None
+    nx = None
+    try:
+        import osmnx as _ox
+        import networkx as _nx
+
+        ox = _ox
+        nx = _nx
+        place = f"{(remaining[0].get('zone') or 'Tarragona')}, Spain"
+        G = ox.graph_from_place(place, network_type="drive")
+        G = ox.add_edge_speeds(G)
+        G = ox.add_edge_travel_times(G)
+    except Exception:
+        use_osm = False
+
+    t_used = 0.0
+    dist_m = 0.0
+    cur_lat, cur_lon = origen_lat, origen_lon
+    cur_node = None
+    base_node = None
+    route_nodes: list[int] = []
+
+    if use_osm and ox is not None and G is not None:
+        base_node = ox.nearest_nodes(G, origen_lon, origen_lat)
+        cur_node = base_node
+        route_nodes = [base_node]
+        for f in remaining:
+            f["osm_node"] = ox.nearest_nodes(G, f["longitude"], f["latitude"])
+
+    selected: list[dict[str, Any]] = []
+
+    while remaining:
+        best = None
+        best_score = -10**9
+        for cand in remaining:
+            stay = float(cand.get("estimated_duration", 45) or 45)
+            p_out = None
+            if use_osm and nx is not None and G is not None and cur_node is not None:
+                try:
+                    p_out = nx.shortest_path(G, cur_node, cand["osm_node"], weight="travel_time")
+                    t_out = nx.path_weight(G, p_out, weight="travel_time") / 60.0
+                    d_out = nx.path_weight(G, p_out, weight="length")
+                except Exception:
+                    continue
+            else:
+                km_out = calcular_haversine(cur_lat, cur_lon, cand["latitude"], cand["longitude"])
+                t_out = _travel_minutes_from_km(km_out)
+                d_out = km_out * 1000.0
+
+            score_final = float(cand["score_ia"]) - (t_out * 1.5)
+            if score_final > best_score:
+                best_score = score_final
+                best = {
+                    "task": cand,
+                    "t_out": t_out,
+                    "d_out": d_out,
+                    "path_out": p_out if use_osm else None,
+                    "stay": stay,
+                }
+
+        if best is None:
+            break
+
+        win = best["task"]
+        t_used += best["t_out"] + best["stay"]
+        dist_m += best["d_out"]
+
+        if use_osm and best["path_out"] is not None and route_nodes:
+            route_nodes.extend(best["path_out"][1:])
+            cur_node = win["osm_node"]
+        cur_lat, cur_lon = win["latitude"], win["longitude"]
+
+        selected.append(
+            {
+                "visit_id": int(win["visit_id"]),
+                "assignable_id": int(win["assignable_id"]) if win.get("assignable_id") is not None else None,
+                "latitude": float(win["latitude"]),
+                "longitude": float(win["longitude"]),
+                "postal_code": win.get("postal_code", ""),
+                "estimated_duration": int(win.get("estimated_duration", 45) or 45),
+                "score_ia": round(float(win["score_ia"]), 2),
+            }
+        )
+
+        remaining = [r for r in remaining if r["visit_id"] != win["visit_id"]]
+
+    target_lat = destino_lat if destino_lat is not None else origen_lat
+    target_lon = destino_lon if destino_lon is not None else origen_lon
+
+    if use_osm and nx is not None and G is not None and cur_node is not None and base_node is not None:
+        try:
+            if destino_lat is not None and destino_lon is not None and ox is not None:
+                destination_node = ox.nearest_nodes(G, target_lon, target_lat)
+            else:
+                destination_node = base_node
+
+            p_back = nx.shortest_path(G, cur_node, destination_node, weight="travel_time")
+            dist_m += nx.path_weight(G, p_back, weight="length")
+            t_used += nx.path_weight(G, p_back, weight="travel_time") / 60.0
+            if route_nodes:
+                route_nodes.extend(p_back[1:])
+        except Exception:
+            pass
+    else:
+        km_back = calcular_haversine(cur_lat, cur_lon, target_lat, target_lon)
+        dist_m += km_back * 1000.0
+        t_used += _travel_minutes_from_km(km_back)
+
+    coords: list[list[float]] = []
+    if use_osm and G is not None and len(route_nodes) > 1:
+        for u, v in zip(route_nodes[:-1], route_nodes[1:]):
+            edge_data = G.get_edge_data(u, v)
+            if not edge_data:
+                continue
+            edge = edge_data[min(edge_data.keys())]
+            if "geometry" in edge:
+                coords.extend([[c[0], c[1]] for c in list(edge["geometry"].coords)])
+            else:
+                coords.append([G.nodes[u]["x"], G.nodes[u]["y"]])
+    else:
+        coords = [[origen_lon, origen_lat]] + [[s["longitude"], s["latitude"]] for s in selected] + [[target_lon, target_lat]]
+
+    return {
+        "resumen": {
+            "distancia_km": round(dist_m / 1000.0, 2),
+            "tiempo_total_min": round(t_used, 2),
+            "horas_totales": round(t_used / 60.0, 2),
+            "tareas_realizadas": len(selected),
+        },
+        "paradas_ordenadas": selected,
+        "ruta_geojson": {
+            "type": "Feature",
+            "geometry": {"type": "LineString", "coordinates": coords},
+        },
     }

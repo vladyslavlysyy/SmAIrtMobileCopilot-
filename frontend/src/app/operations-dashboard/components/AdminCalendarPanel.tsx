@@ -9,6 +9,7 @@ import { useAppStore } from '@/store/appStore';
 interface AdminCalendarPanelProps {
   refreshNonce: number;
   focusDateIso?: string | null;
+  onSlotUpdated?: () => Promise<void> | void;
 }
 
 function startOfWeek(date: Date): Date {
@@ -93,7 +94,11 @@ function getVisitTone(visit: Visit, theme: 'light' | 'dark'): { container: strin
   };
 }
 
-export default function AdminCalendarPanel({ refreshNonce, focusDateIso }: AdminCalendarPanelProps) {
+export default function AdminCalendarPanel({
+  refreshNonce,
+  focusDateIso,
+  onSlotUpdated,
+}: AdminCalendarPanelProps) {
   const { technicians, loadTechnicians } = useAppStore();
   const detectTheme = () =>
     typeof document !== 'undefined' &&
@@ -110,6 +115,7 @@ export default function AdminCalendarPanel({ refreshNonce, focusDateIso }: Admin
   const [selectedTechnician, setSelectedTechnician] = useState<number | 'all'>('all');
   const [isLoading, setIsLoading] = useState(false);
   const [weekVisits, setWeekVisits] = useState<Visit[]>([]);
+  const [isUpdatingSlot, setIsUpdatingSlot] = useState(false);
 
   const weekDays = useMemo(() => {
     return Array.from({ length: 7 }, (_, i) => {
@@ -268,6 +274,43 @@ export default function AdminCalendarPanel({ refreshNonce, focusDateIso }: Admin
     setWeekStart(next);
   };
 
+  const handleAddTaskToSlot = async (dateKey: string) => {
+    if (calendarMode !== 'technician' || selectedTechnician === 'all') {
+      toast.error('Selecciona primer un tècnic concret');
+      return;
+    }
+
+    const rawVisitId = window.prompt('Introdueix l\'ID de la visita independent que vols afegir al slot');
+    if (!rawVisitId) return;
+
+    const visitId = Number(rawVisitId.trim());
+    if (!Number.isFinite(visitId) || visitId <= 0) {
+      toast.error('ID de visita invàlid');
+      return;
+    }
+
+    try {
+      setIsUpdatingSlot(true);
+      const result = await api.addVisitToSlotAndRecalculate({
+        technician_id: selectedTechnician,
+        visit_id: visitId,
+        target_date: dateKey,
+      });
+
+      toast.success(
+        `Slot recalculat: ${result.visits_assigned} visites replanificades per T${selectedTechnician}.`
+      );
+
+      if (onSlotUpdated) {
+        await onSlotUpdated();
+      }
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'No s\'ha pogut actualitzar el slot');
+    } finally {
+      setIsUpdatingSlot(false);
+    }
+  };
+
   return (
     <div className="bg-mobility-surface border border-mobility-border rounded-xl shadow-sm p-4 space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -368,7 +411,20 @@ export default function AdminCalendarPanel({ refreshNonce, focusDateIso }: Admin
                       <span className={`text-sm font-semibold ${isToday ? 'text-cyan-700 dark:text-cyan-200' : 'text-mobility-primary'}`}>
                         {day.toLocaleDateString('ca-ES', { day: '2-digit', month: '2-digit' })}
                       </span>
-                      <span className="text-[10px] text-mobility-muted">{visits.length}</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] text-mobility-muted">{visits.length}</span>
+                        {calendarMode === 'technician' && selectedTechnician !== 'all' && (
+                          <button
+                            type="button"
+                            onClick={() => handleAddTaskToSlot(key)}
+                            disabled={isUpdatingSlot}
+                            className="text-[10px] px-1.5 py-0.5 rounded border border-mobility-border bg-mobility-surface text-mobility-primary hover:bg-mobility-background disabled:opacity-60"
+                            title="Afegir tasca independent al slot i recalcular ruta"
+                          >
+                            {isUpdatingSlot ? '...' : '+ tasca'}
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
 

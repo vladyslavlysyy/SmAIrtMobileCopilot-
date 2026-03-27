@@ -44,7 +44,11 @@ export default function PlanningDashboard() {
 
         <div className="flex-1 px-3 sm:px-4 lg:px-6 pt-[0.9cm] sm:pt-[1.2cm] lg:pt-[1.5cm] pb-6 space-y-[0.9cm] sm:space-y-[1.2cm] lg:space-y-[1.5cm] max-w-screen-2xl mx-auto w-full">
           <ManualTaskPanel onTaskCreated={handleTaskCreated} />
-          <AdminCalendarPanel refreshNonce={refreshNonce} focusDateIso={focusDateIso} />
+          <AdminCalendarPanel
+            refreshNonce={refreshNonce}
+            focusDateIso={focusDateIso}
+            onSlotUpdated={() => refreshPlanning(false)}
+          />
         </div>
       </div>
     </AppLayout>

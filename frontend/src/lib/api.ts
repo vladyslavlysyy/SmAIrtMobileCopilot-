@@ -16,7 +16,15 @@ export type VisitType =
   | 'puesta_en_marcha'
   | 'preventivo';
 
-export type VisitStatus = 'pending' | 'in_progress' | 'completed' | 'blocked' | 'cancelled';
+export type VisitStatus =
+  | 'pending'
+  | 'schedule'
+  | 'scheduled'
+  | 'SCHEDULED'
+  | 'in_progress'
+  | 'completed'
+  | 'blocked'
+  | 'cancelled';
 
 export type ReportType = 'puesta_en_marcha' | 'preventivo' | 'correctivo';
 
@@ -237,6 +245,25 @@ export interface LoteRecommendationResponse {
       coordinates: number[][];
     };
   };
+}
+
+export interface AddVisitToSlotRequest {
+  technician_id: number;
+  visit_id: number;
+  target_date: string;
+  hora_inici?: string;
+  limite_horas?: number;
+  origen?: Coordenada;
+  destino?: Coordenada;
+}
+
+export interface AddVisitToSlotResponse {
+  ok: boolean;
+  technician_id: number;
+  target_date: string;
+  visit_ids_ordered: number[];
+  visits_assigned: number;
+  recomendacion: LoteRecommendationResponse;
 }
 
 export interface ReportSubmitRequest {
@@ -545,6 +572,21 @@ export const api = {
   },
 
   /**
+   * POST /api/v1/ruta/slot/add-and-recalculate
+   * Adds one task to a day slot and recalculates optimal route for that slot.
+   */
+  addVisitToSlotAndRecalculate: async (
+    request: AddVisitToSlotRequest
+  ): Promise<AddVisitToSlotResponse> => {
+    const response = await fetch(`${BASE_URL}/api/v1/ruta/slot/add-and-recalculate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(request),
+    });
+    return handleResponse(response);
+  },
+
+  /**
    * POST /api/v1/reports
    * Submit a report after visiting
    */
@@ -672,6 +714,9 @@ export const PRIORITY_LABELS: Record<VisitType, string> = {
 
 export const STATUS_LABELS: Record<VisitStatus, string> = {
   pending: 'Pendent',
+  schedule: 'Programada',
+  scheduled: 'Programada',
+  SCHEDULED: 'Programada',
   in_progress: 'En curs',
   completed: 'Completada',
   blocked: 'Bloquejada',
@@ -680,6 +725,9 @@ export const STATUS_LABELS: Record<VisitStatus, string> = {
 
 export const STATUS_COLORS: Record<VisitStatus, string> = {
   pending: '#6B7280', // gray
+  schedule: '#8B5CF6', // violet
+  scheduled: '#8B5CF6', // violet
+  SCHEDULED: '#8B5CF6', // violet
   in_progress: '#3B82F6', // blue
   completed: '#10B981', // green
   blocked: '#EF4444', // red

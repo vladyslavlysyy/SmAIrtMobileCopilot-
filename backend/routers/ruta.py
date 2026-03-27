@@ -21,7 +21,8 @@ from schemas import (
     EstadisticasRuta,
     ImpactoSimulacion,
 )
-from optimizer import generar_ruta_ia, generar_geometria_simple
+from optimizer import generar_ruta_ia, generar_geometria_simple, generar_ruta_ia_desde_visitas
+from models import ZONE_DEPOTS, DEFAULT_DEPOT
 
 router = APIRouter(prefix="/api/v1/ruta", tags=["ruta"])
 
@@ -61,6 +62,16 @@ class ManualAssignVisitRequest(BaseModel):
     technician_id: int
     target_date: str | None = None  # YYYY-MM-DD
     hora_inici: str | None = None   # HH:MM
+
+
+class AddVisitToSlotRequest(BaseModel):
+    technician_id: int
+    visit_id: int
+    target_date: str  # YYYY-MM-DD
+    hora_inici: str = "08:00"
+    limite_horas: float = 8.0
+    origen: Coordenada | None = None
+    destino: Coordenada | None = None
 
 
 def _require_routing_libs() -> tuple[Any, Any, Any]:
@@ -621,6 +632,138 @@ def manual_assign_visit(
         "visit_id": payload.visit_id,
         "technician_id": payload.technician_id,
         "assigned_at": planned_dt.isoformat(),
+    }
+
+
+@router.post("/slot/add-and-recalculate")
+def add_visit_to_slot_and_recalculate(
+    payload: AddVisitToSlotRequest,
+    db: Session = Depends(get_db),
+):
+    """Add one independent visit to a technician day slot and recompute optimal order."""
+    target_date = datetime.strptime(payload.target_date, "%Y-%m-%d").date()
+    day_start = datetime.combine(target_date, datetime.min.time())
+    day_end = datetime.combine(target_date, datetime.max.time())
+
+    visit_exists = db.execute(
+        text(
+            """
+            SELECT id
+            FROM visit
+            WHERE id = :id
+            LIMIT 1
+            """
+        ),
+        {"id": payload.visit_id},
+    ).fetchone()
+    if not visit_exists:
+        raise HTTPException(status_code=404, detail=f"Visita {payload.visit_id} no trobada")
+
+    tech = db.execute(
+        text(
+            """
+            SELECT id, zone
+            FROM technician
+            WHERE id = :id
+            LIMIT 1
+            """
+        ),
+        {"id": payload.technician_id},
+    ).fetchone()
+    if not tech:
+        raise HTTPException(status_code=404, detail=f"Tècnic {payload.technician_id} no trobat")
+
+    if payload.origen is not None:
+        origen_lat = payload.origen.latitude
+        origen_lon = payload.origen.longitude
+    else:
+        depot = ZONE_DEPOTS.get((tech.zone or "").strip(), DEFAULT_DEPOT)
+        origen_lat, origen_lon = depot
+
+    if payload.destino is not None:
+        destino_lat = payload.destino.latitude
+        destino_lon = payload.destino.longitude
+    else:
+        destino_lat = origen_lat
+        destino_lon = origen_lon
+
+    slot_rows = db.execute(
+        text(
+            """
+            SELECT id
+            FROM visit
+            WHERE technician_id = :tech_id
+              AND planned_date >= :day_start
+              AND planned_date <= :day_end
+              AND LOWER(status) IN ('pending', 'schedule', 'scheduled', 'in_progress')
+            ORDER BY planned_date ASC, id ASC
+            """
+        ),
+        {
+            "tech_id": payload.technician_id,
+            "day_start": day_start,
+            "day_end": day_end,
+        },
+    ).fetchall()
+
+    visit_ids = [int(r.id) for r in slot_rows]
+    if payload.visit_id not in visit_ids:
+        visit_ids.append(payload.visit_id)
+
+    recommendation = generar_ruta_ia_desde_visitas(
+        db=db,
+        visit_ids=visit_ids,
+        origen_lat=origen_lat,
+        origen_lon=origen_lon,
+        destino_lat=destino_lat,
+        destino_lon=destino_lon,
+    )
+
+    ordered_ids = [int(p["visit_id"]) for p in recommendation.get("paradas_ordenadas", [])]
+    if not ordered_ids:
+        raise HTTPException(
+            status_code=422,
+            detail="No s'ha pogut calcular una ruta vàlida per a les visites del slot",
+        )
+
+    hh, mm = map(int, payload.hora_inici.split(":"))
+    minutes_cursor = hh * 60 + mm
+
+    existing = _fetch_visits_with_coords(db, ordered_ids)
+    for idx, vid in enumerate(ordered_ids):
+        visit = existing.get(vid)
+        if not visit:
+            continue
+
+        planned_dt = datetime.combine(target_date, datetime.min.time()) + timedelta(minutes=minutes_cursor)
+        db.execute(
+            text(
+                """
+                UPDATE visit
+                SET technician_id = :tech_id,
+                    planned_date = :planned_date,
+                    status = :status
+                WHERE id = :id
+                """
+            ),
+            {
+                "tech_id": payload.technician_id,
+                "planned_date": planned_dt,
+                "status": "SCHEDULED",
+                "id": vid,
+            },
+        )
+        minutes_cursor += int(visit.get("estimated_duration") or 45)
+
+    db.commit()
+
+    return {
+        "ok": True,
+        "technician_id": payload.technician_id,
+        "target_date": payload.target_date,
+        "visit_ids_ordered": ordered_ids,
+        "visits_assigned": len(ordered_ids),
+        "recomendacion": recommendation,
     }
 
 
