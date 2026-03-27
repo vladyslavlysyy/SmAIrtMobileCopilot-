@@ -530,7 +530,7 @@ def assignar_ruta_admin(
             {
                 "tech_id": payload.technician_id,
                 "planned_date": planned_dt,
-                "status": "pending",
+                "status": "SCHEDULED",
                 "id": vid,
             },
         )
@@ -610,7 +610,7 @@ def manual_assign_visit(
         {
             "tech_id": payload.technician_id,
             "planned_date": planned_dt,
-            "status": "pending",
+            "status": "SCHEDULED",
             "id": payload.visit_id,
         },
     )

@@ -196,7 +196,9 @@ def generar_ruta_ia(
                 "km",
             ]
         ]
+        print(x)
         df["score_ia"] = model.predict(x)
+        print(df)
     else:
         df["score_ia"] = df.apply(lambda r: _default_score(r.to_dict()), axis=1)
 

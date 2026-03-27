@@ -111,7 +111,10 @@ export default function LoteCreation({ onAssigned }: LoteCreationProps) {
         hora_inici: startTime,
       });
 
-      toast.success(`Ruta recomendada asignada. ${result.visits_assigned} visitas programadas.`);
+      toast.success(
+        `Ruta asignada. ${result.visits_assigned} visitas actualizadas a estado SCHEDULED.`
+      );
+      setRecommendation(null);
       if (onAssigned) {
         await onAssigned();
       }
