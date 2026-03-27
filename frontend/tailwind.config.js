@@ -1,79 +1,46 @@
-/** @type {import('tailwindcss').Config} */
+﻿/** @type {import('tailwindcss').Config} */
 module.exports = {
-    content: [
-      './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-      './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-      './src/app/**/*.{js,ts,jsx,tsx,mdx}',
-    ],
-    theme: {
-      extend: {
-        fontFamily: {
-          sans: ['DM Sans', 'sans-serif'],
-          mono: ['IBM Plex Mono', 'monospace'],
-        },
-        colors: {
-          border: 'hsl(var(--border))',
-          input: 'hsl(var(--input))',
-          background: 'hsl(var(--background))',
-          foreground: 'hsl(var(--foreground))',
-          primary: {
-            DEFAULT: 'hsl(var(--primary))',
-            foreground: 'hsl(var(--primary-foreground))',
-          },
-          secondary: {
-            DEFAULT: 'hsl(var(--secondary))',
-            foreground: 'hsl(var(--secondary-foreground))',
-          },
-          muted: {
-            DEFAULT: 'hsl(var(--muted))',
-            foreground: 'hsl(var(--muted-foreground))',
-          },
-          accent: {
-            DEFAULT: 'hsl(var(--accent))',
-            foreground: 'hsl(var(--accent-foreground))',
-          },
-          destructive: {
-            DEFAULT: 'hsl(var(--destructive))',
-            foreground: 'hsl(var(--destructive-foreground))',
-          },
-          card: {
-            DEFAULT: 'hsl(var(--card))',
-            foreground: 'hsl(var(--card-foreground))',
-          },
-          success: {
-            DEFAULT: 'hsl(var(--success))',
-            foreground: 'hsl(var(--success-foreground))',
-          },
-          warning: {
-            DEFAULT: 'hsl(var(--warning))',
-            foreground: 'hsl(var(--warning-foreground))',
-          },
-        },
-        borderRadius: {
-          lg: 'var(--radius)',
-          md: 'calc(var(--radius) - 2px)',
-          sm: 'calc(var(--radius) - 4px)',
-        },
-        animation: {
-          'fade-in': 'fadeIn 0.2s ease-in-out',
-          'slide-up': 'slideUp 0.3s ease-out',
-          'pulse-warning': 'pulseWarning 2s infinite',
-        },
-        keyframes: {
-          fadeIn: {
-            '0%': { opacity: '0', transform: 'scale(0.97)' },
-            '100%': { opacity: '1', transform: 'scale(1)' },
-          },
-          slideUp: {
-            '0%': { opacity: '0', transform: 'translateY(10px)' },
-            '100%': { opacity: '1', transform: 'translateY(0)' },
-          },
-          pulseWarning: {
-            '0%, 100%': { opacity: '1' },
-            '50%': { opacity: '0.6' },
-          },
+  content: [
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['"DM Sans"', 'sans-serif'],
+        mono: ['"IBM Plex Mono"', 'monospace'],
+      },
+      colors: {
+        mobility: {
+          primary: 'hsl(211, 80%, 28%)',
+          accent: 'hsl(197, 100%, 43%)',
+          background: 'hsl(210, 20%, 98%)',
+          surface: 'hsl(0, 0%, 100%)',
+          border: 'hsl(214, 20%, 88%)',
+          text: 'hsl(211, 80%, 28%)',
+          muted: 'hsl(214, 15%, 50%)',
+          
+          'red-bg': 'hsl(0, 70%, 95%)',
+          'red-text': 'hsl(0, 70%, 40%)',
+          'amber-bg': 'hsl(35, 90%, 95%)',
+          'amber-text': 'hsl(35, 90%, 40%)',
+          'emerald-bg': 'hsl(150, 80%, 95%)',
+          'emerald-text': 'hsl(150, 80%, 30%)',
         },
       },
+      borderRadius: {
+        lg: '8px',
+        md: '8px',
+        sm: '8px',
+        xl: '8px', // Ensuring all defaults to exactly 8px or 0.5rem if large is used
+        '2xl': '8px',
+      },
+      boxShadow: {
+        sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', // Very light shadow
+        md: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+      },
     },
-    plugins: [],
-  };
+  },
+  plugins: [],
+};

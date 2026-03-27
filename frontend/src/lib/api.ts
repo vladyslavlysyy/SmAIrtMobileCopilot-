@@ -40,6 +40,8 @@ export interface Visit {
   estimated_duration: number; // minutes
   last_priority_score: number | null;
   route_order: number | null;
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 export interface Technician {
@@ -172,6 +174,19 @@ export interface PlanningConfirmResponse {
   cancelled_visit_id?: number;
 }
 
+export interface CreateVisitFromContractRequest {
+  contract_id: number;
+  technician_id?: number;
+  visit_type?: 'preventivo' | 'puesta_en_marcha';
+  planned_date?: string;
+}
+
+export interface CreateVisitFromIncidenceRequest {
+  incidence_id: number;
+  technician_id?: number;
+  escalate_to?: 'p4' | 'p5';
+}
+
 export interface ReportSubmitRequest {
   visit_id: number;
   report_type: ReportType;
@@ -215,6 +230,27 @@ export interface MetricsResponse {
     completades: number;
     porcentaje_sla: number;
   }>;
+}
+
+export interface UserInfo {
+  id: number;
+  name: string;
+  username: string | null;
+  phone: string;
+  email: string;
+  is_technician: boolean;
+  technician_id: number | null;
+  created_at: string;
+}
+
+export interface UserCreateRequest {
+  name: string;
+  username?: string;
+  phone: string;
+  email: string;
+  passwd: string;
+  is_technician: boolean;
+  zone?: string;
 }
 
 export interface HealthResponse {
@@ -279,6 +315,24 @@ export const api = {
   },
 
   /**
+   * GET /api/v1/visits/all?technician_id={id}&date_from={YYYY-MM-DD}&date_to={YYYY-MM-DD}
+   * Returns all visits in a date range (used by admin calendars)
+   */
+  getAllVisits: async (params?: {
+    technicianId?: number;
+    dateFrom?: string;
+    dateTo?: string;
+  }): Promise<Visit[]> => {
+    const qs = buildQueryString({
+      technician_id: params?.technicianId,
+      date_from: params?.dateFrom,
+      date_to: params?.dateTo,
+    });
+    const response = await fetch(`${BASE_URL}/api/v1/visits/all${qs}`);
+    return handleResponse(response);
+  },
+
+  /**
    * GET /api/v1/visits/week?technician_id={id}&week_start={YYYY-MM-DD}
    * Returns { "2026-03-26": 3, "2026-03-27": 2, ... }
    */
@@ -339,6 +393,30 @@ export const api = {
    */
   planningConfirm: async (request: PlanningConfirmRequest): Promise<PlanningConfirmResponse> => {
     const response = await fetch(`${BASE_URL}/api/v1/planning/confirm`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(request),
+    });
+    return handleResponse(response);
+  },
+
+  /**
+   * POST /api/v1/visits/from-contract
+   */
+  createVisitFromContract: async (request: CreateVisitFromContractRequest): Promise<Visit> => {
+    const response = await fetch(`${BASE_URL}/api/v1/visits/from-contract`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(request),
+    });
+    return handleResponse(response);
+  },
+
+  /**
+   * POST /api/v1/visits/from-incidence
+   */
+  createVisitFromIncidence: async (request: CreateVisitFromIncidenceRequest): Promise<Visit> => {
+    const response = await fetch(`${BASE_URL}/api/v1/visits/from-incidence`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(request),
@@ -420,6 +498,26 @@ export const api = {
         porcentaje_sla: s.porcentaje_sla ?? 0,
       })),
     };
+  },
+
+  /**
+   * GET /api/v1/users
+   */
+  getUsers: async (): Promise<UserInfo[]> => {
+    const response = await fetch(`${BASE_URL}/api/v1/users`);
+    return handleResponse(response);
+  },
+
+  /**
+   * POST /api/v1/users
+   */
+  createUser: async (request: UserCreateRequest): Promise<UserInfo> => {
+    const response = await fetch(`${BASE_URL}/api/v1/users`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(request),
+    });
+    return handleResponse(response);
   },
 };
 

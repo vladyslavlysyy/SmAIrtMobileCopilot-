@@ -1,58 +1,57 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
-import { RadialBar, RadialBarChart, ResponsiveContainer, Tooltip } from 'recharts';
-import { api, type MetricsResponse } from '@/lib/api';
+import React from 'react';
+import {
+  RadialBar,
+  RadialBarChart,
+  ResponsiveContainer,
+  PolarAngleAxis,
+} from 'recharts';
 
 export default function SlaRadialChart() {
-  const [metrics, setMetrics] = useState<MetricsResponse | null>(null);
-
-  useEffect(() => {
-    api
-      .getMetrics({})
-      .then(setMetrics)
-      .catch(() => setMetrics(null));
-  }, []);
-
-  const data = useMemo(() => {
-    if (!metrics) return [];
-    return metrics.sla_por_tipo.map((row, idx) => ({
-      name: row.visit_type,
-      value: row.porcentaje_sla,
-      fill: ['#dc2626', '#d97706', '#2563eb', '#7c3aed', '#0891b2'][idx % 5],
-    }));
-  }, [metrics]);
+  const data = [
+    { name: 'SLA Complert', value: 85, fill: '#00c851' }
+  ];
 
   return (
-    <div className="bg-card rounded-xl border border-border p-5 h-full">
-      <div className="mb-4">
-        <h3 className="font-semibold text-foreground text-base">SLA per tipus</h3>
-        <p className="text-muted-foreground text-xs mt-0.5">Percentatge SLA des de backend</p>
+    <div className="bg-mobility-surface shadow-sm/90 rounded-xl border border-mobility-border p-5 flex flex-col items-center justify-center">
+      <div className="w-full mb-2">
+        <h3 className="font-semibold text-mobility-primary text-base">Compliment SLA</h3>
+        <p className="text-mobility-muted text-xs mt-0.5">?ltims 30 dies</p>
       </div>
-      <ResponsiveContainer width="100%" height={220}>
-        <RadialBarChart
-          cx="50%"
-          cy="50%"
-          innerRadius="20%"
-          outerRadius="90%"
-          data={data}
-          startAngle={90}
-          endAngle={-270}
-        >
-          <RadialBar dataKey="value" cornerRadius={4} background={{ fill: '#f1f5f9' }} />
-          <Tooltip />
-        </RadialBarChart>
-      </ResponsiveContainer>
-      <div className="space-y-2 mt-2">
-        {data.map((item) => (
-          <div key={item.name} className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.fill }} />
-            <span className="text-xs text-muted-foreground flex-1 truncate">{item.name}</span>
-            <span className="font-mono text-xs font-bold tabular-nums" style={{ color: item.fill }}>
-              {item.value.toFixed(1)}%
-            </span>
-          </div>
-        ))}
+      
+      <div className="relative w-full h-[220px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <RadialBarChart 
+            cx="50%" 
+            cy="50%" 
+            innerRadius="75%" 
+            outerRadius="100%" 
+            barSize={12} 
+            data={data}
+            startAngle={90}
+            endAngle={-270}
+          >
+            <PolarAngleAxis
+              type="number"
+              domain={[0, 100]}
+              angleAxisId={0}
+              tick={false}
+            />
+            {/* Background circle simulating a track */}
+            <RadialBar
+              background={{ fill: '#1e3a5a' }}
+              dataKey="value"
+              cornerRadius={10}
+            />
+          </RadialBarChart>
+        </ResponsiveContainer>
+        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+          <span className="text-3xl font-bold text-mobility-primary">85%</span>
+          <span className="text-[10px] text-mobility-accent font-medium uppercase tracking-wider mt-1 border border-mobility-accent/30 bg-cyan-100/70 px-2 py-0.5 rounded-full">
+            ?ptim
+          </span>
+        </div>
       </div>
     </div>
   );

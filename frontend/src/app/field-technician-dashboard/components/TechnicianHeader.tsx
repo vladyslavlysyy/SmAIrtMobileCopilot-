@@ -26,8 +26,8 @@ export default function TechnicianHeader({
             <User size={22} className="text-blue-300" />
           </div>
           <div>
-            <h1 className="text-white font-bold text-xl">
-              {selected ? selected.name : 'Selecciona tècnic'}
+            <h1 className="text-mobility-primary font-bold text-xl">
+              {selected ? selected.name : 'Selecciona tecnic'}
             </h1>
             <div className="mt-2 flex items-center gap-2 text-xs text-slate-300">
               <MapPin size={12} />
@@ -40,7 +40,7 @@ export default function TechnicianHeader({
           <select
             value={selectedTechId ?? ''}
             onChange={(e) => onSelect(Number(e.target.value))}
-            className="px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white"
+            className="px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-mobility-primary"
           >
             {technicians.map((t) => (
               <option key={t.id} value={t.id}>
@@ -51,12 +51,12 @@ export default function TechnicianHeader({
 
           <button
             onClick={() => toast.info("Contacte d'operacions enviat")}
-            className="flex items-center gap-2 px-3 py-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-sm font-medium rounded-lg"
+            className="flex items-center gap-2 px-3 py-2 bg-white/10 hover:bg-white/20 border border-white/20 text-mobility-primary text-sm font-medium rounded-lg"
           >
             <Phone size={14} /> Operacions
           </button>
 
-          <div className="text-right text-white/90">
+          <div className="text-right text-mobility-primary/90">
             <p className="text-slate-300 text-xs">{new Date().toLocaleDateString('ca-ES')}</p>
             <p className="font-bold text-sm flex items-center gap-1 justify-end">
               <Clock size={12} />

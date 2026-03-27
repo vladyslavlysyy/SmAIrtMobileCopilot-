@@ -7,14 +7,14 @@ const routeLegs = [
   {
     id: 'leg-1',
     from: 'Inici (Tarragona)',
-    to: 'CST Oncè de Setembre',
+    to: 'CST Onze de Setembre',
     km: 0,
     batteryStart: 92,
     batteryEnd: 89,
   },
   {
     id: 'leg-2',
-    from: 'CST Oncè de Setembre',
+    from: 'CST Onze de Setembre',
     to: 'CST Av. Roma',
     km: 3,
     batteryStart: 89,
@@ -31,14 +31,14 @@ const routeLegs = [
   {
     id: 'leg-4',
     from: 'Hotel Salou',
-    to: 'Recàrrega Salou',
+    to: 'Recarrega Salou',
     km: 5,
     batteryStart: 72,
     batteryEnd: 55,
   },
   {
     id: 'leg-5',
-    from: 'Recàrrega Salou',
+    from: 'Recarrega Salou',
     to: 'Ajunt. Tarragona',
     km: 18,
     batteryStart: 85,
@@ -47,14 +47,14 @@ const routeLegs = [
   {
     id: 'leg-6',
     from: 'Ajunt. Tarragona',
-    to: 'Polígon Vila-seca',
+    to: 'Poligon Vila-seca',
     km: 8,
     batteryStart: 72,
     batteryEnd: 58,
   },
   {
     id: 'leg-7',
-    from: 'Polígon Vila-seca',
+    from: 'Poligon Vila-seca',
     to: 'Residencial Ponent',
     km: 12,
     batteryStart: 58,
@@ -63,14 +63,14 @@ const routeLegs = [
 ];
 
 function getBatteryColor(val: number) {
-  if (val >= 60) return 'bg-green-500';
-  if (val >= 30) return 'bg-amber-500';
-  return 'bg-red-500';
+  if (val >= 30) return 'bg-mobility-accent text-white';
+  if (val >= 15) return 'bg-amber-400 text-white';
+  return 'bg-red-500 text-white';
 }
 
 function getBatteryTextColor(val: number) {
-  if (val >= 60) return 'text-green-600';
-  if (val >= 30) return 'text-amber-600';
+  if (val >= 30) return 'text-mobility-accent';
+  if (val >= 15) return 'text-mobility-accent';
   return 'text-red-600';
 }
 
@@ -79,42 +79,42 @@ export default function BatteryAutonomyCard() {
   const minBattery = Math.min(...routeLegs.map((l) => l.batteryEnd));
 
   return (
-    <div className="bg-card rounded-xl border border-border overflow-hidden">
-      <div className="px-4 py-3 border-b border-border">
+    <div className="bg-mobility-surface shadow-sm rounded-xl border border-mobility-border overflow-hidden">
+      <div className="px-5 py-4 border-b border-mobility-border">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-cyan-100 rounded-lg">
-              <Zap size={14} className="text-cyan-600" />
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-mobility-accent text-white/20 rounded-lg">
+              <Zap size={18} className="text-mobility-accent" />
             </div>
             <div>
-              <h3 className="font-semibold text-foreground text-sm">Autonomia del Vehicle</h3>
-              <p className="text-muted-foreground text-xs">Renault Zoe · Autonomia màx: 395 km</p>
+              <h3 className="font-semibold text-mobility-primary text-sm">Autonomia del Vehicle</h3>
+              <p className="text-mobility-muted text-xs">Renault Zoe | Autonomia max: 395 km</p>
             </div>
           </div>
           <div className="text-right">
             <p
-              className={`text-xl font-bold font-mono tabular-nums ${getBatteryTextColor(currentBattery)}`}
+              className={`text-2xl font-bold font-mono tabular-nums font-mono ${getBatteryTextColor(currentBattery)}`}
             >
               {currentBattery}%
             </p>
-            <p className="text-xs text-muted-foreground">~{Math.round(currentBattery * 3.95)}km</p>
+            <p className="text-sm font-semibold text-mobility-primary">~{Math.round(currentBattery * 3.95)} km</p>
           </div>
         </div>
 
         {/* Main battery bar */}
-        <div className="mt-3">
-          <div className="h-3 bg-slate-200 rounded-full overflow-hidden">
+        <div className="mt-4">
+          <div className="h-3 bg-mobility-background rounded-full overflow-hidden">
             <div
-              className={`h-3 rounded-full transition-all duration-500 ${getBatteryColor(currentBattery)}`}
+              className={`h-3 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(0,200,81,0.5)] ${getBatteryColor(currentBattery)}`}
               style={{ width: `${currentBattery}%` }}
             />
           </div>
           {minBattery < 30 && (
-            <div className="flex items-center gap-1.5 mt-2 text-xs text-amber-700">
-              <AlertTriangle size={12} />
+            <div className="flex items-center gap-1.5 mt-3 text-xs text-mobility-accent">
+              <AlertTriangle size={14} />
               <span>
-                Bateria mínima prevista: <span className="font-bold font-mono">{minBattery}%</span>{' '}
-                — Recàrrega planificada
+                Bateria m?nima prevista: <span className="font-bold font-mono">{minBattery}%</span>{' '}
+                | Recarrega planificada
               </span>
             </div>
           )}
@@ -122,65 +122,69 @@ export default function BatteryAutonomyCard() {
       </div>
 
       {/* Route legs */}
-      <div className="p-4 space-y-2">
-        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+      <div className="p-5 space-y-3">
+        <p className="text-xs font-semibold text-mobility-muted uppercase tracking-wider mb-4">
           Consum per tram
         </p>
-        {routeLegs.map((leg) => {
-          const isRecharge = leg.batteryEnd > leg.batteryStart;
-          const delta = leg.batteryEnd - leg.batteryStart;
-          return (
-            <div key={leg.id} className="flex items-center gap-3">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1 mb-1">
-                  <MapPin size={10} className="text-muted-foreground flex-shrink-0" />
-                  <p className="text-xs text-muted-foreground truncate">{leg.to}</p>
-                  <span className="text-xs text-muted-foreground ml-auto flex-shrink-0 font-mono">
-                    {leg.km}km
+        <div className="space-y-3">
+          {routeLegs.map((leg) => {
+            const isRecharge = leg.batteryEnd > leg.batteryStart;
+            const delta = leg.batteryEnd - leg.batteryStart;
+            return (
+              <div key={leg.id} className="flex items-center gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between mb-1.5">    
+                    <div className="flex items-center gap-1.5">
+                      <MapPin size={12} className="text-mobility-muted flex-shrink-0" />
+                      <p className="text-xs text-mobility-primary truncate">{leg.to}</p>   
+                    </div>
+                    <span className="text-xs text-mobility-muted flex-shrink-0 font-mono">
+                      {leg.km} km
+                    </span>
+                  </div>
+                  <div className="relative h-1.5 bg-mobility-primary bg-opacity-50 rounded-full overflow-hidden">
+                    {isRecharge ? (
+                      <div
+                        className="h-1.5 bg-mobility-accent text-white rounded-full"
+                        style={{ width: `${leg.batteryEnd}%` }}
+                      />
+                    ) : (
+                      <div
+                        className={`h-1.5 rounded-full ${getBatteryColor(leg.batteryEnd)}`}
+                        style={{ width: `${leg.batteryEnd}%` }}
+                      />
+                    )}
+                  </div>
+                </div>
+                <div className="flex-shrink-0 text-right w-16">
+                  <span
+                    className={`text-xs font-mono font-bold tabular-nums font-mono ${isRecharge ? 'text-mobility-accent' : getBatteryTextColor(leg.batteryEnd)}`}
+                  >
+                    {isRecharge ? `+${delta}%` : `${delta}%`}
                   </span>
-                </div>
-                <div className="relative h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                  {isRecharge ? (
-                    <div
-                      className="h-1.5 bg-cyan-400 rounded-full"
-                      style={{ width: `${leg.batteryEnd}%` }}
-                    />
-                  ) : (
-                    <div
-                      className={`h-1.5 rounded-full ${getBatteryColor(leg.batteryEnd)}`}
-                      style={{ width: `${leg.batteryEnd}%` }}
-                    />
-                  )}
+                  <p className="text-[10px] font-mono tabular-nums font-mono text-mobility-muted mt-0.5">
+                    {leg.batteryEnd}%
+                  </p>
                 </div>
               </div>
-              <div className="flex-shrink-0 text-right w-16">
-                <span
-                  className={`text-xs font-mono font-semibold tabular-nums ${isRecharge ? 'text-cyan-600' : getBatteryTextColor(leg.batteryEnd)}`}
-                >
-                  {isRecharge ? `+${delta}%` : `${delta}%`}
-                </span>
-                <p className="text-xs font-mono tabular-nums text-muted-foreground">
-                  {leg.batteryEnd}%
-                </p>
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
 
       {/* Summary */}
-      <div className="px-4 py-3 border-t border-border bg-muted/30 grid grid-cols-3 gap-3">
+      <div className="px-5 py-4 border-t border-mobility-border bg-mobility-primary grid grid-cols-3 gap-4">
         <div className="text-center">
-          <p className="text-xs text-muted-foreground">Km totals</p>
-          <p className="font-bold font-mono text-sm tabular-nums text-foreground">68 km</p>
+          <p className="text-[10px] uppercase tracking-wider text-mobility-muted mb-1">Km totals</p>
+          <p className="font-bold font-mono text-sm tabular-nums font-mono text-mobility-primary">68 km</p>
         </div>
-        <div className="text-center border-x border-border">
-          <p className="text-xs text-muted-foreground">Recàrregues</p>
-          <p className="font-bold font-mono text-sm tabular-nums text-cyan-600">1 parada</p>
+        <div className="text-center border-x border-mobility-border">
+          <p className="text-[10px] uppercase tracking-wider text-mobility-muted mb-1">Recarregues</p>
+          <p className="font-bold font-mono text-sm tabular-nums font-mono text-mobility-accent">1 parada</p>
         </div>
         <div className="text-center">
-          <p className="text-xs text-muted-foreground">Fi jornada</p>
-          <p className="font-bold font-mono text-sm tabular-nums text-foreground">45%</p>
+          <p className="text-[10px] uppercase tracking-wider text-mobility-muted mb-1">Fi jornada</p>
+          <p className="font-bold font-mono text-sm tabular-nums font-mono text-mobility-primary">45%</p>
         </div>
       </div>
     </div>

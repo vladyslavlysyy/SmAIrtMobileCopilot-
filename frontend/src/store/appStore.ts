@@ -22,6 +22,7 @@ interface AppState {
   setUserRole: (role: 'operations' | 'technician') => void;
   setSelectedTechnician: (id: number) => void;
   loadVisits: (date?: string, technicianId?: number) => Promise<void>;
+  loadAllVisits: (technicianId?: number) => Promise<void>;
   loadWeeklyVisits: (weekStart: string, technicianId: number) => Promise<Record<string, number>>;
   loadTechnicians: () => Promise<void>;
   loadImprevistos: (technicianId: number, date?: string) => Promise<void>;
@@ -48,8 +49,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (raw) {
       try {
         const user = JSON.parse(raw) as UserProfile;
-        setCurrentUser(user);
-        setSelectedTechnicianId(user.selectedTechnicianId ?? null);
+        const normalizedUser: UserProfile =
+          user.role === 'operations'
+            ? user
+            : {
+                ...user,
+                role: 'operations',
+                name: 'Operations',
+                selectedTechnicianId: undefined,
+              };
+        setCurrentUser(normalizedUser);
+        setSelectedTechnicianId(normalizedUser.selectedTechnicianId ?? null);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(normalizedUser));
       } catch {
         localStorage.removeItem(STORAGE_KEY);
       }
@@ -106,6 +117,20 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const loadAllVisits = useCallback(async (technicianId?: number) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await api.getAllVisits({ technicianId });
+      setVisits(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load all visits');
+      setVisits([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   const loadWeeklyVisits = useCallback(async (weekStart: string, technicianId: number) => {
     setIsLoading(true);
     setError(null);
@@ -123,12 +148,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     setError(null);
     try {
-      const allVisits = await api.getVisits();
-      const ids = Array.from(
-        new Set(allVisits.map((v) => v.technician_id).filter((x): x is number => x !== null))
-      );
-      const data = ids.map((id) => ({ id, name: `Technician ${id}`, zone: 'Unknown' }));
-      setTechnicians(data);
+      const users = await api.getUsers();
+      const techUsers = users.filter((u) => u.is_technician && u.technician_id !== null);
+
+      if (techUsers.length > 0) {
+        setTechnicians(
+          techUsers.map((u) => ({
+            id: u.technician_id as number,
+            name: u.name,
+            zone: 'General',
+          }))
+        );
+      } else {
+        const allVisits = await api.getAllVisits();
+        const ids = Array.from(
+          new Set(allVisits.map((v) => v.technician_id).filter((x): x is number => x !== null))
+        );
+        setTechnicians(ids.map((id) => ({ id, name: `Technician ${id}`, zone: 'Unknown' })));
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load technicians');
       setTechnicians([]);
@@ -174,6 +211,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setUserRole,
       setSelectedTechnician,
       loadVisits,
+      loadAllVisits,
       loadWeeklyVisits,
       loadTechnicians,
       loadImprevistos,
@@ -192,6 +230,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setUserRole,
       setSelectedTechnician,
       loadVisits,
+      loadAllVisits,
       loadWeeklyVisits,
       loadTechnicians,
       loadImprevistos,

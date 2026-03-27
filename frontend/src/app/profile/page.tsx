@@ -14,7 +14,7 @@ export default function ProfilePage() {
 
   return (
     <AppLayout>
-      <div className="flex flex-col h-full bg-background animate-fade-in">
+      <div className="flex flex-col h-full bg-mobility-background animate-fade-in">
         <div className="bg-card border-b border-border px-6 py-4">
           <h1 className="text-xl font-bold text-foreground tracking-tight">El meu perfil</h1>
           <p className="text-muted-foreground text-sm">Configuració local del prototip</p>
@@ -64,7 +64,7 @@ export default function ProfilePage() {
             <div className="pt-2">
               <button
                 onClick={() => toast.success('Perfil guardat localment')}
-                className="px-4 py-2 text-sm font-semibold text-white bg-primary rounded-lg hover:bg-primary/90 inline-flex items-center gap-2"
+                className="px-4 py-2 text-sm font-semibold text-mobility-primary bg-primary rounded-lg hover:bg-primary/90 inline-flex items-center gap-2"
               >
                 <Save size={14} />
                 Guardar canvis
